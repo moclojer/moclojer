@@ -1,0 +1,22 @@
+{:paths   ["src"]
+ :deps    {org.clojure/clojure          {:mvn/version "1.10.2"}
+           io.forward/yaml              {:mvn/version "1.0.11"}
+           io.pedestal/pedestal.service {:mvn/version "0.5.10"}
+           io.pedestal/pedestal.route   {:mvn/version "0.5.10"}
+           io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}}
+ :aliases {:run     {:ns-default moclojer.core
+                     :exec-fn    moclojer.core/-main
+                     :extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.10"}}}
+           :test    {:extra-paths ["test"]
+                     :extra-deps  {io.github.cognitect-labs/test-runner {:git/tag "v0.5.0"
+                                                                         :git/sha "b3fd0d2"}}
+                     :main-opts   ["-m" "cognitect.test-runner"]
+                     :exec-fn     cognitect.test-runner.api/test}
+           :depstar {:extra-deps {seancorfield/depstar {:mvn/version "2.0.171"}}}
+           :uberjar {:replace-deps {seancorfield/depstar {:mvn/version "2.0.171"}}
+                     :name         "moclojer-standalone.jar"
+                     :exec-fn      hf.depstar/uberjar
+                     :exec-args    {:aot        true
+                                    :jar        "moclojer.jar"
+                                    :main-class "moclojer.core"
+                                    :sync-pom   true}}}}
