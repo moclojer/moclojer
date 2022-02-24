@@ -8,7 +8,8 @@ jobs:
       - uses: DeLaGuardo/setup-graalvm@master
         with:
           graalvm-version: "21.0.0.java11"
-      - uses: DeLaGuardo/setup-clojure@master
+      - uses: DeLaGuardo/setup-clojure@4.0
         with:
           cli: "1.10.2"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: clojure -M:test
