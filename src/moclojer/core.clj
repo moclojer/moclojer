@@ -6,10 +6,19 @@
 (:gen-class))
 
 (defn home-handler [_]
+  "home handler /"
   {:status 200
    :body   "(-> moclojer server)"})
 
+(defn handler [r]
+  "prepare function to receive http request (handler)"
+  (fn [_] {:status       (get-in r [:endpoint :response :status] 200)
+           :content-type (get-in r [:endpoint :response :headers :content-type]
+                                 "application/json")
+           :body         (get-in r [:endpoint :response :body] "{}")}))
+
 (defn make-router [config]
+  "gets configuration structure and makes url routes based on it"
   (with-local-vars
    [routers #{["/" :get home-handler :route-name :home]}]
     (doseq [r config]
