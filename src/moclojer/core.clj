@@ -33,17 +33,20 @@
 
 (defn -main [& _]
   "start moclojer server"
-  (println "(moclojer :start-server)")
-  (-> (http/create-server
-       {:env         :prod
-        ::http/routes (make-router
-                       (yaml/from-file (or (System/getenv "CONFIG")
-                                           "moclojer.yml")))
-        ::http/type   :jetty
-        ::http/join?  true
-        ::http/port   (or (some-> (System/getenv "PORT")
-                                  Integer/parseInt)
-                          8000)})
+  (prn "(moclojer :start-server)")
+  (-> {:env                    :prod
+       ::http/routes            (make-router
+                                 (yaml/from-file (or (System/getenv "CONFIG")
+                                                     "moclojer.yml")))
+       ::http/type              :jetty
+       ::http/join?             true
+       ::http/container-options {:h2c? true}
+       ::http/port              (or (some-> (System/getenv "PORT")
+                                            Integer/parseInt)
+                                    8000)}
+      http/default-interceptors
+      (update ::http/interceptors into [http/json-body])
+      http/create-server
       http/start))
 
 

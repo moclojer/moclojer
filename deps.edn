@@ -3,7 +3,8 @@
            io.forward/yaml              {:mvn/version "1.0.11"}
            io.pedestal/pedestal.service {:mvn/version "0.5.10"}
            io.pedestal/pedestal.route   {:mvn/version "0.5.10"}
-           io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}}
+           io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}
+           org.slf4j/slf4j-simple       {:mvn/version "1.7.5"}}
  :aliases {;; Run project
            ;; clj -X:run
            :run     {:ns-default moclojer.core
