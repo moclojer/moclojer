@@ -1,0 +1,14 @@
+name: Tests
+on: [push, pull_request]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: DeLaGuardo/setup-graalvm@master
+        with:
+          graalvm-version: "21.0.0.java11"
+      - uses: DeLaGuardo/setup-clojure@master
+        with:
+          cli: "1.10.2"
+      - run: clojure -M:test

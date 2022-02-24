@@ -1,0 +1,12 @@
+name: Lint project with clj-kondo
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container: borkdude/clj-kondo:latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Run clj-kondo
+        run: clj-kondo --lint src test
