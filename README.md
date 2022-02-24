@@ -26,3 +26,9 @@ Simple and efficient HTTP mock server with specification in `yaml`.
 ```sh
 clj -X:run
 ```
+
+## test
+
+```sh
+clj -M:test
+```

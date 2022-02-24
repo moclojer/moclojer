@@ -7,26 +7,29 @@
            org.slf4j/slf4j-simple       {:mvn/version "1.7.5"}}
  :aliases {;; Run project
            ;; clj -X:run
-           :run     {:ns-default moclojer.core
-                     :exec-fn    moclojer.core/-main
-                     :extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.10"}}}
+           :run       {:ns-default moclojer.core
+                       :exec-fn    moclojer.core/-main
+                       :extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.10"}}}
            ;; Run all tests
-           ;; clj -X:test
-           :test    {:extra-paths ["test"]
-                     :extra-deps  {io.github.cognitect-labs/test-runner {:git/tag "v0.5.0"
-                                                                         :git/sha "b3fd0d2"}}
-                     :main-opts   ["-m" "cognitect.test-runner"]
-                     :exec-fn     cognitect.test-runner.api/test}
+           ;; clj -M:test
+           :test      {:extra-paths ["test"]
+                       :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner"
+                                                                :sha     "76568540e7f40268ad2b646110f237a60295fa3c"}
+                                     clj-kondo/clj-kondo       {:mvn/version "2022.02.09"}}
+                       :main-opts   ["-m" "cognitect.test-runner" "-d" "test"]}
            ;; Lint the source
            ;; clj -M:lint
-           :lint    {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2022.01.13"}}
-                     :main-opts    ["-m" "clj-kondo.main" "--lint" "src"]}
+           :lint      {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2022.01.13"}}
+                       :main-opts    ["-m" "clj-kondo.main" "--lint" "src"]}
            ;; Build the project, generate `moclojer.jar`
            ;; clj -X:uberjar
-           :uberjar {:replace-deps {seancorfield/depstar {:mvn/version "2.0.171"}}
-                     :name         "moclojer-standalone.jar"
-                     :exec-fn      hf.depstar/uberjar
-                     :exec-args    {:aot        true
-                                    :jar        "moclojer.jar"
-                                    :main-class "moclojer.core"
-                                    :sync-pom   true}}}}
+           :uberjar   {:replace-deps {io.github.clojure/tools.build   {:git/tag "v0.7.5"
+                                                                       :git/sha "2526f58"}
+                                      com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
+                       :name         "moclojer-standalone.jar"
+                       :exec-fn      hf.depstar/uberjar
+                       :exec-args    {:aot        true
+                                      :jar        "moclojer.jar"
+                                      :main-class "moclojer.core"
+                                      :sync-pom   true}}
+                       }}
