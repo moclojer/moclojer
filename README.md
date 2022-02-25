@@ -1,4 +1,4 @@
-<img src="doc/assets/logo.png" width="250px">
+[![moclojer logo](doc/assets/logo.png)](https://github.com/avelino/moclojer)
 
 Simple and efficient HTTP mock server with specification in `yaml`.
 
