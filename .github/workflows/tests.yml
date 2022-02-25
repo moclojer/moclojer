@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
+        with:
+          submodules: true
       - uses: DeLaGuardo/setup-graalvm@master
         with:
           graalvm-version: "21.0.0.java11"
