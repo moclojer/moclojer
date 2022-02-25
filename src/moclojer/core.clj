@@ -2,11 +2,11 @@
   (:gen-class)
   (:require [clojure.string :as string]
             [io.pedestal.http :as http]
+            [io.pedestal.http.jetty]
             [io.pedestal.http.route :as route]
             [yaml.core :as yaml]))
 
 ;; TODO: JSON Pointer library
-
 (def path-item->operation
   #{"get" "put" "post" "delete" "options" "head" "patch" "trace"})
 
@@ -37,7 +37,6 @@
   [coll]
   (string/join "/"
                (cons "" (map json-pointer-escape-token coll))))
-
 
 (defn home-handler
   "home handler /"
