@@ -2,6 +2,9 @@
 
 Simple and efficient HTTP mock server with specification in `yaml`.
 
+[![tests](https://github.com/avelino/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/tests.yml)
+[![linter](https://github.com/avelino/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/linter.yml)
+
 **`YAML` example**
 
 ```yaml
