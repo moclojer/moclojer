@@ -1,9 +1,10 @@
 (ns moclojer.core
+  (:gen-class)
   (:require [clojure.string :as string]
             [io.pedestal.http :as http]
+            [io.pedestal.http.jetty]
             [io.pedestal.http.route :as route]
-            [yaml.core :as yaml])
-(:gen-class))
+            [yaml.core :as yaml]))
 
 (defn home-handler
   "home handler /"
