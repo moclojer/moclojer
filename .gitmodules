@@ -1,0 +1,3 @@
+[submodule "OpenAPI-Specification"]
+	path = OpenAPI-Specification
+	url = https://github.com/OAI/OpenAPI-Specification
