@@ -63,7 +63,6 @@
                           :status  status}
                          {:status 501})))})
 
-
 (defn with-mocks
   [openapi mocks]
   (let [op->path (into {}
@@ -80,7 +79,6 @@
                    (assoc-in openapi (conj path "x-mockResponse")
                              mock)))
                openapi mocks)))
-
 
 (defn openapi-path->pedestal-path
   [path]
@@ -126,15 +124,15 @@
     (concat
       (route/expand-routes `#{["/" :get home-handler :route-name :home]})
       (sequence (mapcat
-                  (fn [{:keys [endpoint] :as r}]
-                    (route/expand-routes
-                      #{[(:path endpoint)
-                         (keyword (string/lower-case (:method endpoint "get")))
-                         (handler r)
+                 (fn [{:keys [endpoint]
+                       :as   r}]
+                   (route/expand-routes
+                    #{[(:path endpoint)
+                       (keyword (string/lower-case (:method endpoint "get")))
+                       (handler r)
                          ;; TODO: slugify router-name -> remove replace `/`
-                         :route-name (keyword (string/replace (:path endpoint) "/" ""))]})))
+                       :route-name (keyword (string/replace (:path endpoint) "/" ""))]})))
                 config))))
-
 
 (defn -main
   "start moclojer server"
@@ -158,5 +156,3 @@
         (update ::http/interceptors into [http/json-body])
         http/create-server
         http/start)))
-
-
