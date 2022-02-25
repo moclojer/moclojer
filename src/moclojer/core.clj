@@ -11,7 +11,7 @@
   "home handler /"
   [_]
   {:status 200
-   :body   "(-> moclojer server)"})
+   :body   "{\"body\": \"(-> moclojer server)\"}"})
 
 (defn handler
   "prepare function to receive http request (handler)"
@@ -41,7 +41,7 @@
 (defn -main
   "start moclojer server"
   [& _]
-  (prn "(moclojer :start-server)")
+  (prn "(-> moclojer :start-server)")
   (let [mocks (yaml/from-file (or (System/getenv "MOCKS")
                                   "mocks.yml"))
         spec (-> (yaml/from-file (or (System/getenv "CONFIG")
