@@ -83,6 +83,23 @@
                openapi mocks)))
 
 
+(defn openapi-path->pedestal-path
+  [path]
+  ;; TODO: Handle wildcards
+  ;; https://github.com/OAI/OpenAPI-Specification/issues/291
+  ;; https://datatracker.ietf.org/doc/html/rfc6570
+  (string/replace path
+                  #"\{([^}]+)\}"
+                  (fn [x]
+                    (str ":" (second x)))))
+
+(defn resolve-ref
+  [root {:strs [$ref]
+         :as   object}]
+  (if $ref
+    (get-in root (json-pointer->path $ref))
+    object))
+
 (defn make-router
   [{::keys [config]}]
   (if (= (get config "openapi") "3.0.0")
@@ -92,7 +109,8 @@
                     (mapcat (fn [[method operation]]
                               (when (contains? path-item->operation method)
                                 (route/expand-routes
-                                  #{[path (keyword method)
+                                  #{[(openapi-path->pedestal-path path)
+                                     (keyword method)
                                      [{:name  ::add-operation
                                        :enter (fn [ctx]
                                                 (assoc ctx
@@ -104,7 +122,7 @@
                                       generate-response]
                                      :route-name (keyword (or (get operation "operationId")
                                                               (json-path->pointer [path method])))]}))))
-                    path-item)))
+                    (resolve-ref config path-item))))
               (get config "paths"))
     (concat
       (route/expand-routes `#{["/" :get home-handler :route-name :home]})
