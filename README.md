@@ -1,4 +1,4 @@
-# moclojer
+<img src="doc/assets/logo.png" width="250px">
 
 Simple and efficient HTTP mock server with specification in `yaml`.
 
