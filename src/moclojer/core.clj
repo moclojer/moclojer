@@ -6,6 +6,7 @@
             [io.pedestal.http.route :as route]
             [moclojer.openapi :as openapi]
             [selmer.parser :as selmer]
+            [slugify.core :refer [slugify]]
             [yaml.core :as yaml]))
 
 (defn home-handler
@@ -37,8 +38,7 @@
                     #{[(:path endpoint)
                        (keyword (string/lower-case (:method endpoint "get")))
                        (handler r)
-                         ;; TODO: slugify router-name -> remove replace `/`
-                       :route-name (keyword (string/replace (:path endpoint) "/" ""))]})))
+                       :route-name (keyword (slugify (:path endpoint)))]})))
                 config))))
 
 (defn -main
