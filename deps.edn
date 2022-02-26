@@ -7,6 +7,7 @@
                                          :exclusions  [io.pedestal/pedestal.log]}
            io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"
                                          :exclusions  [io.pedestal/pedestal.log]}
+           selmer/selmer                {:mvn/version "1.12.50"}
            org.slf4j/slf4j-simple       {:mvn/version "1.7.5"}}
  :aliases {;; Run project
            ;; clj -X:run
