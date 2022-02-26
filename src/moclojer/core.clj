@@ -5,6 +5,7 @@
             [io.pedestal.http.jetty]
             [io.pedestal.http.route :as route]
             [moclojer.openapi :as openapi]
+            [selmer.parser :as selmer]
             [yaml.core :as yaml]))
 
 (defn home-handler
@@ -16,10 +17,12 @@
 (defn handler
   "prepare function to receive http request (handler)"
   [r]
-  (fn [_] {:status       (get-in r [:endpoint :response :status] 200)
-           :content-type (get-in r [:endpoint :response :headers :content-type]
-                                 "application/json")
-           :body         (get-in r [:endpoint :response :body] "{}")}))
+  (fn [req]
+    {:status       (get-in r [:endpoint :response :status] 200)
+     :content-type (get-in r [:endpoint :response :headers :content-type]
+                           "application/json")
+     :body         (selmer/render (get-in r [:endpoint :response :body] "{}")
+                                  (:path-params req))}))
 
 (defn make-router
   [{::keys [config]}]
