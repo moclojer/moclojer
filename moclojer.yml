@@ -1,3 +1,19 @@
+# This mock register route: GET /hello/:username
+- endpoint:
+    # Note: the method could be omitted because GET is the default
+    method: GET
+    path: /hello/:username
+    response:
+      # Note: the status could be omitted because 200 is the default
+      status: 200
+      headers:
+        Content-Type: application/json
+      # Note: the body will receive the value passed in the url using the
+      # :username placeholder
+      body: >
+        {
+          "hello": "{{username}}!"
+        }
 
 # This mock register route: GET /hello/world
 - endpoint:
@@ -13,7 +29,6 @@
         {
           "hello": "Hello, World!"
         }
-
 - endpoint:
     # Note: the method could be omitted because GET is the default
     method: GET
@@ -26,17 +41,4 @@
       body: >
         {
           "hello": "Hello, World2!"
-        }
-- endpoint:
-    # Note: the method could be omitted because GET is the default
-    method: GET
-    path: /hello-world3
-    response:
-      # Note: the status could be omitted because 200 is the default
-      status: 200
-      headers:
-        Content-Type: application/json
-      body: >
-        {
-          "hello": "Hello, World3!"
         }
