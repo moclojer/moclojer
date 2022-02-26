@@ -50,7 +50,7 @@ CONFIG="petstore.yaml" MOCKS="mocks.yaml" clojure -X:run
 
 ## dev environment
 
-We use git submodule for integration with the **OpenAPI v3** specification, you need to update the git submodule code.
+We use git submodule for integration with the [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), you need to update the git submodule code.
 
 ```sh
 git submodule update -f --init
