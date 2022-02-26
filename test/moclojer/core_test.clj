@@ -1,10 +1,10 @@
 (ns moclojer.core-test
-  (:require [clojure.test :refer [deftest is testing]]
-            [moclojer.core :as moclojer]
-            [yaml.core :as yaml]
+  (:require [cheshire.core :as json]
+            [clojure.test :refer [deftest is testing]]
             [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
-            [cheshire.core :as json]))
+            [moclojer.core :as moclojer]
+            [yaml.core :as yaml]))
 
 (def yaml-sample
   (yaml/parse-string "
@@ -39,5 +39,17 @@
     (is (= {:hello "Hello, World!"}
            (-> service-fn
                (response-for :get "/hello-world")
+               :body
+               (json/parse-string true))))))
+
+(deftest dyanamic-endpoint
+  (let [config (yaml/parse-string (slurp "moclojer.yml"))
+        service-fn (-> {::http/routes (moclojer/make-router {::moclojer/config config})}
+                       http/default-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
+    (is (= {:hello "moclojer!"}
+           (-> service-fn
+               (response-for :get "/hello/moclojer")
                :body
                (json/parse-string true))))))
