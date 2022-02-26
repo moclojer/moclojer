@@ -8,19 +8,21 @@ Simple and efficient HTTP mock server with specification in `yaml`.
 **`YAML` example**
 
 ```yaml
-# This mock register route: GET /hello-world
+# This mock register route: GET /hello/:username
 - endpoint:
     # Note: the method could be omitted because GET is the default
     method: GET
-    path: /hello-world
+    path: /hello/:username
     response:
       # Note: the status could be omitted because 200 is the default
       status: 200
       headers:
         Content-Type: application/json
+      # Note: the body will receive the value passed in the url using the
+      # :username placeholder
       body: >
         {
-          "hello": "Hello, World!"
+          "hello": "{{username}}!"
         }
 ```
 
