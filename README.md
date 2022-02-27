@@ -22,8 +22,24 @@ Simple and efficient HTTP mock server with specification in `yaml`.
       # :username placeholder
       body: >
         {
-          "hello": "{{username}}!"
+          "hello": "{{path-params.username}}!"
         }
+```
+
+## Body template
+
+The return from the endpoint (_body_) can be dynamic we have a template renderer system, and it is possible to read the parameters passed to the endpoint.
+
+- `path-params`: the parameters passed to the endpoint `/hello/:username`
+- `query-params`: the parameters passed in _query string_ to the endpoint `?param1=value1&param2=value2`
+
+**Example**
+
+```json
+{
+  "path-params": "{{path-params.param1}}",
+  "query-params": "{{query-params.param1}}"
+}
 ```
 
 ## OpenAPI Integration
