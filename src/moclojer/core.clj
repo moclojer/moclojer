@@ -23,7 +23,8 @@
      :content-type (get-in r [:endpoint :response :headers :content-type]
                            "application/json")
      :body         (selmer/render (get-in r [:endpoint :response :body] "{}")
-                                  (:path-params req))}))
+                                  {:path-params  (:path-params req)
+                                   :query-params (:query-params req)})}))
 
 (defn make-router
   [{::keys [config]}]
