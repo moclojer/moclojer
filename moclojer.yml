@@ -12,7 +12,7 @@
       # :username placeholder
       body: >
         {
-          "hello": "{{username}}!"
+          "hello": "{{path-params.username}}!"
         }
 
 # This mock register route: GET /hello/world
@@ -32,7 +32,7 @@
 - endpoint:
     # Note: the method could be omitted because GET is the default
     method: GET
-    path: /hello-world2
+    path: /with-params/:param1
     response:
       # Note: the status could be omitted because 200 is the default
       status: 200
@@ -40,5 +40,6 @@
         Content-Type: application/json
       body: >
         {
-          "hello": "Hello, World2!"
+          "path-params": "{{path-params.param1}}",
+          "query-params": "{{query-params.param1}}"
         }
