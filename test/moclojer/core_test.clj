@@ -53,3 +53,15 @@
                (response-for :get "/hello/moclojer")
                :body
                (json/parse-string true))))))
+
+(deftest with-params
+  (let [config (yaml/parse-string (slurp "moclojer.yml"))
+        service-fn (-> {::http/routes (moclojer/make-router {::moclojer/config config})}
+                       http/default-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
+    (is (= {:path-params "moclojer" :query-params "moclojer"}
+           (-> service-fn
+               (response-for :get "/with-params/moclojer?param1=moclojer")
+               :body
+               (json/parse-string true))))))
