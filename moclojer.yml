@@ -43,3 +43,14 @@
           "path-params": "{{path-params.param1}}",
           "query-params": "{{query-params.param1}}"
         }
+- endpoint:
+    method: POST
+    path: /first-post-route
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "project": "{{json-params.name}}"
+        }
