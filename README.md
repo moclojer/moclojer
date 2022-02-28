@@ -32,13 +32,15 @@ The return from the endpoint (_body_) can be dynamic we have a template renderer
 
 - `path-params`: the parameters passed to the endpoint `/hello/:username`
 - `query-params`: the parameters passed in _query string_ to the endpoint `?param1=value1&param2=value2`
+- `json-params`: the parameters passed in _data request_ to the endpoint `{"param1": "value1"}`
 
 **Example**
 
 ```json
 {
   "path-params": "{{path-params.param1}}",
-  "query-params": "{{query-params.param1}}"
+  "query-params": "{{query-params.param1}}",
+  "json-params": "{{json-params.param1}}"
 }
 ```
 
