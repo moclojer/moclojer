@@ -38,7 +38,7 @@
                (cons "" (map json-pointer-escape-token coll))))
 
 (def supported-body-engines
-  #{"js"})
+  #{"js" "python"})
 
 (defn ->proxy-obejct
   [value mappings]
@@ -51,6 +51,18 @@
           (->proxy-obejct v mappings)
           v)))))
 
+(defmulti get-json-fn (fn [ctx engine]
+                        engine))
+
+(defmethod get-json-fn "python"
+  [ctx engine]
+  (.eval ctx engine "import json")
+  (.eval ctx engine "json.dumps"))
+
+(defmethod get-json-fn "js"
+  [ctx engine]
+  (.eval ctx engine "JSON.stringify"))
+
 (def generate-response
   "Generate a response object from a response object in the OpenAPI spec"
   {:name  ::generate-response
@@ -61,14 +73,14 @@
                        (let [{:strs [status body headers body-engine]} (get operation "x-mockResponse")]
                          (cond
                            (contains? supported-body-engines body-engine)
-                           (let [ctx (Context/create (into-array supported-body-engines))
-                                 json-stringify (.eval ctx body-engine "JSON.stringify")
+                           (let [ctx (Context/create (into-array [body-engine]))
+                                 json-stringify (get-json-fn ctx body-engine)
                                  _ (.putMember (.getBindings ctx body-engine)
                                                "request" (->proxy-obejct request {"query" :query-params
                                                                                   "limit" :limit}))
                                  value (.eval ctx body-engine body)
                                  body (.execute json-stringify (into-array [value]))]
-                             {:body    (str body)
+                             {:body    (.asString body)
                               :headers headers
                               :status  status})
                            (or (some? body)

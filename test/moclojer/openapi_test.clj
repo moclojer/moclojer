@@ -114,3 +114,27 @@
                  (response-for :get "/pets?limit=42")
                  :body
                  (json/parse-string true)))))))
+
+(deftest hello-pythonic-body-engine-petstore-spec
+  (let [config (openapi/with-mocks
+                petstore-spec
+                {"listPets" {"status"      200
+                             "body-engine" "python"
+                             "body"        "
+[{'id':   int(request.query.limit),
+  'name': 'caramelo'}]
+"
+                             "headers"     {"Content-Type" "application/json"}}})
+        service-fn (-> {::http/routes (moclojer/make-router {::moclojer/config config})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
+    (testing
+     "Simple route"
+      (is (= [{:id   42
+               :name "caramelo"}]
+             (-> service-fn
+                 (response-for :get "/pets?limit=42")
+                 :body
+                 (json/parse-string true)))))))
