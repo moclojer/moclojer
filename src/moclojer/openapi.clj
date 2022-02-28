@@ -1,9 +1,9 @@
 (ns moclojer.openapi
   (:require [clojure.string :as string]
             [io.pedestal.http.route :as route])
-  (:import (org.graalvm.polyglot Context)
+  (:import (org.graalvm.polyglot Value Context)
            (org.graalvm.polyglot.proxy ProxyObject)))
-
+(set! *warn-on-reflection* true)
 ;; TODO: JSON Pointer library
 (def path-item->operation
   "Convert path item to http method"
@@ -46,22 +46,28 @@
     (hasMember [this k]
       true)
     (getMember [this k]
-      (let [v (get value (get mappings k k))]
-        (if (map? v)
-          (->proxy-obejct v mappings)
+      (let [mappings (or mappings {})
+            [current-k next-mappings] (mappings k [k])
+            v (get value current-k)]
+        (if next-mappings
+          (->proxy-obejct v next-mappings)
           v)))))
 
-(defmulti get-json-fn (fn [ctx engine]
-                        engine))
+(defmulti ^Value get-json-fn (fn [ctx engine]
+                               engine))
 
 (defmethod get-json-fn "python"
-  [ctx engine]
+  [^Context ctx engine]
   (.eval ctx engine "import json")
-  (.eval ctx engine "json.dumps"))
+  (.getMember (.getMember (.getBindings ctx engine)
+                          "json")
+              "dumps"))
 
 (defmethod get-json-fn "js"
-  [ctx engine]
-  (.eval ctx engine "JSON.stringify"))
+  [^Context ctx engine]
+  (.getMember (.getMember (.getBindings ctx engine)
+                          "JSON")
+              "stringify"))
 
 (def generate-response
   "Generate a response object from a response object in the OpenAPI spec"
@@ -76,10 +82,12 @@
                            (let [ctx (Context/create (into-array [body-engine]))
                                  json-stringify (get-json-fn ctx body-engine)
                                  _ (.putMember (.getBindings ctx body-engine)
-                                               "request" (->proxy-obejct request {"query" :query-params
-                                                                                  "limit" :limit}))
+                                               "request" (->proxy-obejct request
+                                                                         ;; TODO: Map every OpenAPI params
+                                                                         {"query" [:query-params (fn [k _]
+                                                                                                   [(keyword k)])]}))
                                  value (.eval ctx body-engine body)
-                                 body (.execute json-stringify (into-array [value]))]
+                                 body (.execute json-stringify ^"[Ljava.lang.String;" (into-array [value]))]
                              {:body    (.asString body)
                               :headers headers
                               :status  status})
