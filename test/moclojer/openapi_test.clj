@@ -1,4 +1,4 @@
-(ns moclojer.core-test
+(ns moclojer.openapi-test
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.test :refer [deftest is testing]]
@@ -18,12 +18,12 @@
 
 (deftest hello-petstore-spec
   (let [config (openapi/with-mocks
-                 petstore-spec
-                 {"listPets" {"status"  200
-                              "body"    (json/generate-string [{:id   0
-                                                                :name "caramelo"}])
-                              "headers" {"Content-Type" "application/json"}}})
-        service-fn (-> {::http/routes (moclojer/make-router {::openapi/config config})}
+                petstore-spec
+                {"listPets" {"status"  200
+                             "body"    (json/generate-string [{:id   0
+                                                               :name "caramelo"}])
+                             "headers" {"Content-Type" "application/json"}}})
+        service-fn (-> {::http/routes (moclojer/make-router {::moclojer/config config})}
                        http/default-interceptors
                        http/create-servlet
                        ::http/service-fn)]
@@ -57,7 +57,7 @@
                                     "headers" {"Content-Type" "application/json"}}})
 
 
-        service-fn (-> {::http/routes (moclojer/make-router {::openapi/config config})}
+        service-fn (-> {::http/routes (moclojer/make-router {::moclojer/config config})}
                        http/default-interceptors
                        http/create-servlet
                        ::http/service-fn)]
@@ -84,8 +84,33 @@
                  :body
                  (json/parse-string true)))))
     (testing
-      "deletePet route"
+     "deletePet route"
       (is (= 202
              (-> service-fn
                  (response-for :delete "/pets/0")
                  :status))))))
+
+
+(deftest hello-body-engine-petstore-spec
+  (let [config (openapi/with-mocks
+                petstore-spec
+                {"listPets" {"status"      200
+                             "body-engine" "js"
+                             "body"        "
+[{id:   parseInt(request.query.limit),
+  name: `caramelo`}]
+"
+                             "headers"     {"Content-Type" "application/json"}}})
+        service-fn (-> {::http/routes (moclojer/make-router {::moclojer/config config})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
+    (testing
+     "Simple route"
+      (is (= [{:id   42
+               :name "caramelo"}]
+             (-> service-fn
+                 (response-for :get "/pets?limit=42")
+                 :body
+                 (json/parse-string true)))))))

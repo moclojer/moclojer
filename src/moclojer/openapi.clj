@@ -1,6 +1,8 @@
 (ns moclojer.openapi
   (:require [clojure.string :as string]
-            [io.pedestal.http.route :as route]))
+            [io.pedestal.http.route :as route])
+  (:import (org.graalvm.polyglot Context)
+           (org.graalvm.polyglot.proxy ProxyObject)))
 
 ;; TODO: JSON Pointer library
 (def path-item->operation
@@ -35,17 +37,45 @@
   (string/join "/"
                (cons "" (map json-pointer-escape-token coll))))
 
+(def supported-body-engines
+  #{"js"})
+
+(defn ->proxy-obejct
+  [value mappings]
+  (reify ProxyObject
+    (hasMember [this k]
+      true)
+    (getMember [this k]
+      (let [v (get value (get mappings k k))]
+        (if (map? v)
+          (->proxy-obejct v mappings)
+          v)))))
+
 (def generate-response
   "Generate a response object from a response object in the OpenAPI spec"
   {:name  ::generate-response
    :enter (fn [{::keys [operation]
+                :keys  [request]
                 :as    ctx}]
             (assoc ctx :response
-                       (if-let [{:strs [status body headers]} (get operation "x-mockResponse")]
-                         {:body    body
-                          :headers headers
-                          :status  status}
-                         {:status 501})))})
+                       (let [{:strs [status body headers body-engine]} (get operation "x-mockResponse")]
+                         (cond
+                           (contains? supported-body-engines body-engine)
+                           (let [ctx (Context/create (into-array supported-body-engines))
+                                 json-stringify (.eval ctx body-engine "JSON.stringify")
+                                 _ (.putMember (.getBindings ctx body-engine)
+                                               "request" (->proxy-obejct request {"query" :query-params
+                                                                                  "limit" :limit}))
+                                 value (.eval ctx body-engine body)
+                                 body (.execute json-stringify (into-array [value]))]
+                             {:body    (str body)
+                              :headers headers
+                              :status  status})
+                           (or (some? body)
+                               status) {:body    body
+                                        :headers headers
+                                        :status  status}
+                           :else {:status 501}))))})
 
 (defn with-mocks
   "Generate a mock response for a given operation"
@@ -53,8 +83,8 @@
   (let [op->path (into {}
                        (mapcat (fn [[path path-item]]
                                  (for [[method operation] path-item
-                                       :when              (contains? path-item->operation method)
-                                       :when              (contains? operation "operationId")]
+                                       :when (contains? path-item->operation method)
+                                       :when (contains? operation "operationId")]
                                    {(get operation "operationId") ["paths" path method]})))
                        (get openapi "paths"))]
     (reduce-kv (fn [openapi pointer-or-operation mock]
@@ -88,22 +118,22 @@
   [config]
   (sequence (mapcat
              (fn [[path path-item]]
-                  (sequence
-                    (mapcat (fn [[method operation]]
-                              (when (contains? path-item->operation method)
-                                (route/expand-routes
-                                  #{[(openapi-path->pedestal-path path)
-                                     (keyword method)
-                                     [{:name  ::add-operation
-                                       :enter (fn [ctx]
-                                                (assoc ctx
-                                                  ::path path
-                                                  ::method method
-                                                  ::openapi config
-                                                  ::path-item path-item
-                                                  ::operation operation))}
-                                      generate-response]
-                                     :route-name (keyword (or (get operation "operationId")
-                                                              (json-path->pointer [path method])))]}))))
-                    (resolve-ref config path-item))))
-              (get config "paths")))
+               (sequence
+                (mapcat (fn [[method operation]]
+                          (when (contains? path-item->operation method)
+                            (route/expand-routes
+                             #{[(openapi-path->pedestal-path path)
+                                (keyword method)
+                                [{:name  ::add-operation
+                                  :enter (fn [ctx]
+                                           (assoc ctx
+                                             ::path path
+                                             ::method method
+                                             ::openapi config
+                                             ::path-item path-item
+                                             ::operation operation))}
+                                 generate-response]
+                                :route-name (keyword (or (get operation "operationId")
+                                                         (json-path->pointer [path method])))]}))))
+                (resolve-ref config path-item))))
+            (get config "paths")))
