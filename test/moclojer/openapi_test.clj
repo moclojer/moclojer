@@ -28,7 +28,7 @@
                        http/create-servlet
                        ::http/service-fn)]
     (testing
-      "Simple route"
+     "Simple route"
       (is (= [{:id   0
                :name "caramelo"}]
              (-> service-fn
@@ -36,7 +36,7 @@
                  :body
                  (json/parse-string true)))))
     (testing
-      "Not implemented route"
+     "Not implemented route"
       (is (= 501
              (-> service-fn
                  (response-for :post "/pets")
@@ -62,7 +62,7 @@
                        http/create-servlet
                        ::http/service-fn)]
     (testing
-      "findPets route"
+     "findPets route"
       (is (= [{:id   0
                :name "caramelo"}]
              (-> service-fn
@@ -70,13 +70,13 @@
                  :body
                  (json/parse-string true)))))
     (testing
-      "addPet route"
+     "addPet route"
       (is (= 303
              (-> service-fn
                  (response-for :post "/pets")
                  :status))))
     (testing
-      "find pet by id route"
+     "find pet by id route"
       (is (= {:id   0
               :name "caramelo"}
              (-> service-fn
@@ -84,7 +84,7 @@
                  :body
                  (json/parse-string true)))))
     (testing
-      "deletePet route"
+     "deletePet route"
       (is (= 202
              (-> service-fn
                  (response-for :delete "/pets/0")
