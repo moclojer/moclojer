@@ -52,5 +52,5 @@
         Content-Type: application/json
       body: >
         {
-          "project": "{{json-params.name}}"
+          "project": "{{json-params.project}}"
         }
