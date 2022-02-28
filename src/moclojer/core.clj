@@ -9,6 +9,7 @@
             [selmer.parser :as selmer]
             [slugify.core :refer [slugify]]
             [yaml.core :as yaml]))
+
 (defn home-handler
   "home handler /"
   [_]
@@ -17,22 +18,58 @@
 
 (defn handler
   "prepare function to receive http request (handler)"
-  [r]
-  [(body-params/body-params)
-   http/json-body
-   (fn [req]
-     {:status       (get-in r [:endpoint :response :status] 200)
-      :content-type (get-in r [:endpoint :response :headers :content-type]
-                            "application/json")
-      :body         (selmer/render (get-in r [:endpoint :response :body] "{}")
-                                   {:path-params  (:path-params req)
-                                    :query-params (:query-params req)
-                                    :json-params  (:json-params req)})})])
+  ([r]
+   [(body-params/body-params)
+    http/json-body
+    (fn [req]
+      {:status       (get-in r [:endpoint :response :status] 200)
+       :content-type (get-in r [:endpoint :response :headers :content-type]
+                             "application/json")
+       :body         (selmer/render (get-in r [:endpoint :response :body] "{}")
+                                    {:path-params  (:path-params req)
+                                     :query-params (:query-params req)
+                                     :json-params  (:json-params req)})})])
+  ([r route-name]
+   [(body-params/body-params)
+    http/json-body
+    (fn [req]
+      {:status       (get-in r [route-name :response :status] 200)
+       :content-type (get-in r [route-name :response :headers :content-type]
+                             "application/json")
+       :body         (selmer/render (get-in r [route-name :response :body] "{}")
+                                    {:path-params  (:path-params req)
+                                     :query-params (:query-params req)
+                                     :json-params  (:json-params req)})})]))
 
-(defn make-router
+(defmulti make-router (fn [config]
+                        (when (= (get config "openapi") "3.0.0") :open-api)
+                        (let [type (-> config ::config :type)]
+                          (cond
+                            (= type :edn) :edn
+                            :else  :route))))
+
+(defn get-endpoints-edn [config]
+  (let [endpoints (:endpoints config)]
+    endpoints))
+
+(defmethod make-router :edn
   [{::keys [config]}]
-  (if (= (get config "openapi") "3.0.0")
-    (openapi/generate-pedestal-route config)
+  (sequence (mapcat (fn [{:keys [endpoint]
+                      :as   r}]
+                      (let [route-name (first r)]
+                        (route/expand-routes
+                          #{[(:path endpoint)
+                             (keyword (string/lower-case (:method endpoint "get")))
+                             (handler r route-name)
+                             :route-name route-name]})))
+                    (get-endpoints-edn config))))
+
+(defmethod make-router :open-api
+  [{::keys [config]}]
+  (openapi/generate-pedestal-route config))
+
+(defmethod make-router :route
+  [{::keys [config]}]
     (concat
      (route/expand-routes `#{["/" :get home-handler :route-name :home]})
      (sequence (mapcat
@@ -43,7 +80,7 @@
                       (keyword (string/lower-case (:method endpoint "get")))
                       (handler r)
                       :route-name (keyword (slugify (:path endpoint)))]})))
-               config))))
+               config)))
 
 (defn -main
   "start moclojer server"

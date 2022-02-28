@@ -1,0 +1,7 @@
+{:type :edn
+ :endpoints {:get-all-pets {:method :get
+                            :path "/pets"
+                            :response {:status 200
+                                       :headers {:content-type  "applicantion/json"}
+                                       :body {:pets [{:name "Uber" :type "dog"}
+                                                     {:name "Pinpolho" :type "cat"}]}}}}}
