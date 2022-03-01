@@ -3,7 +3,7 @@ name: linter
 on: [push, pull_request]
 
 jobs:
-  lint:
+  linter:
     runs-on: ubuntu-latest
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
