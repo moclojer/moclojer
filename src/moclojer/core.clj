@@ -1,6 +1,7 @@
 (ns moclojer.core
   (:gen-class)
   (:require [clojure.string :as string]
+            [clojure.data.json :as json]
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.jetty]
@@ -13,7 +14,7 @@
 (defn home-handler
   "home handler /"
   [_]
-  {:status 200
+  {:Status 200
    :body   "{\"body\": \"(-> moclojer server)\"}"})
 
 (defn handler
@@ -30,13 +31,14 @@
                                      :query-params (:query-params req)
                                      :json-params  (:json-params req)})})])
   ([r route-name]
+   (prn r)
    [(body-params/body-params)
     http/json-body
     (fn [req]
-      {:status       (get-in r [route-name :response :status] 200)
-       :content-type (get-in r [route-name :response :headers :content-type]
+      {:status       (get-in r [:response :status] 200)
+       :content-type (get-in r [:response :headers :content-type]
                              "application/json")
-       :body         (selmer/render (get-in r [route-name :response :body] "{}")
+       :body         (selmer/render (json/write-str (get-in r [:response :body] "{}"))
                                     {:path-params  (:path-params req)
                                      :query-params (:query-params req)
                                      :json-params  (:json-params req)})})]))
@@ -54,13 +56,13 @@
 
 (defmethod make-router :edn
   [{::keys [config]}]
-  (sequence (mapcat (fn [{:keys [endpoint]
-                      :as   r}]
-                      (let [route-name (first r)]
+  (sequence (mapcat (fn [r]
+                      (let [route-name (first r)
+                            endpoint (second r)]
                         (route/expand-routes
                           #{[(:path endpoint)
-                             (keyword (string/lower-case (:method endpoint "get")))
-                             (handler r route-name)
+                             (:method endpoint :get)
+                             (handler endpoint route-name)
                              :route-name route-name]})))
                     (get-endpoints-edn config))))
 

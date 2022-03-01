@@ -21,7 +21,7 @@
 (deftest dynamic-endpoint-edn
   (let [config (load-config "moclojer.edn")
         service-fn (service-fn config)]
-    (is (= {:pest [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
+    (is (= {:pets [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
            (-> service-fn
                (response-for :get "/pets")
                :body
