@@ -3,3 +3,5 @@
 --verbose
 --no-fallback
 --allow-incomplete-classpath
+-H:ReflectionConfigurationFiles=reflect-config.json
+-jar moclojer.jar

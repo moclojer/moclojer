@@ -52,9 +52,7 @@ jobs:
           curl -s localhost:8000
           kill $PID
       - run: |
-          native-image @${{ runner.os }}-native-image-args \
-            --H:ReflectionConfigurationFiles=reflect-config.json \
-            --jar moclojer.jar
+          native-image @${{ runner.os }}-native-image-args
       - uses: "actions/upload-artifact@v2"
         with:
           name: "moclojer-${{ runner.os }}-${{ github.run_id }}-bin"
