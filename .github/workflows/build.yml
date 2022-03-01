@@ -6,32 +6,28 @@ jobs:
   build:
     runs-on: "ubuntu-20.04"
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: "actions/checkout@v2"
+      - uses: "actions/cache@v2"
         with:
           path: |
             ~/.m2/repository
             ~/.gitlibs
-          key: ${{ runner.os }}-maven-${{ hashFiles('deps.edn') }}
-      - uses: DeLaGuardo/setup-graalvm@5.0
+          key: "${{ runner.os }}-maven-${{ hashFiles('deps.edn') }}"
+      - uses: "graalvm/setup-graalvm@v1"
         with:
-          graalvm: '22.0.0.2'
-          java: 'java17'
-      - uses: DeLaGuardo/setup-clojure@4.0
+          version: "22.0.0.2"
+          java-version: "17"
+          components: "native-image"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: "DeLaGuardo/setup-clojure@4.0"
         with:
-          cli: 1.10.3.1075
-      - name: classpath
+          cli: "1.10.3.1075"
+      - name: "Download deps"
         run: |
           clojure -P
           clojure -A:dev -P
-      - name: native-image
-        run: |
-          java -version
-          clojure -M -e "(System/getenv \"JAVA_HOME\")"
-          clojure -M -e "(System/getProperty \"java.home\")"
-          clojure -A:dev -M --report stderr -m moclojer.build
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
+      - run: "clojure -A:dev -M --report stderr -m moclojer.build"
+      - uses: "actions/upload-artifact@v2"
         with:
           name: native-dist
           path: |
