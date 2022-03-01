@@ -30,6 +30,6 @@ jobs:
             sudo ./linux-install-1.10.3.1087.sh
           fi
       - name: classpath
-        run: "clojure -A:dev -M --report=stderr -m moclojer.build"
+        run: "clojure -A:dev -M --report stderr -m moclojer.build"
       - name: output
         run: "ls -lah"
