@@ -33,11 +33,15 @@ jobs:
           fi
       - name: classpath
         run: |
+          clojure -Spath
+          clojure -A:dev -Spath
+      - name: native-image
+        run: |
           JAVA_HOME="graalvm-ce-java17-22.0.0.2"
           export JAVA_HOME
           echo "$JAVA_HOME"
-          clojure -e "(System/getenv \"JAVA_HOME\")"
-          clojure -e "(System/getProperty "java.home")"
+          clojure -M -e "(System/getenv \"JAVA_HOME\")"
+          clojure -M -e "(System/getProperty \"java.home\")"
           set -x
           JAVA_HOME="$PWD/graalvm-ce-java17-22.0.0.2" clojure -A:dev -M --report stderr -m moclojer.build
       - name: output
