@@ -37,6 +37,8 @@ jobs:
           export JAVA_HOME
           echo "$JAVA_HOME"
           clojure -e "(System/getenv \"JAVA_HOME\")"
-          JAVA_HOME="graalvm-ce-java17-22.0.0.2" clojure -A:dev -M --report stderr -m moclojer.build
+          clojure -e "(System/getProperty "java.home")"
+          set -x
+          JAVA_HOME="$PWD/graalvm-ce-java17-22.0.0.2" clojure -A:dev -M --report stderr -m moclojer.build
       - name: output
         run: "ls -lah"
