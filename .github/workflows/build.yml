@@ -18,9 +18,11 @@ jobs:
           cli: "1.10.3.1075"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - run: "clojure -A:dev -M --report stderr -m moclojer.build"
+        env:
+          CI_COMMIT_SHA: "${{ github.sha }}"
       - uses: "actions/upload-artifact@v2"
         with:
-          name: "moclojer-jar"
+          name: "moclojer-${{ runner.os }}-${{ github.run_id }}-jar"
           path: |
             target/*.jar
   build-native:
