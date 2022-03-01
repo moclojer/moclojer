@@ -17,10 +17,7 @@ pom.xml.asc
 .calva/
 
 ## moclojer
-<<<<<<< HEAD
-=======
 ./moclojer
->>>>>>> upstream/main
 moclojer.build_artifacts.txt
 moclojer.core
 moclojer.core.build_artifacts.txt
