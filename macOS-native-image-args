@@ -5,4 +5,5 @@
 --allow-incomplete-classpath
 -H:ReflectionConfigurationFiles=reflect-config.json
 -H:IncludeResources=clojure/version.properties
+-H:IncludeResources=selmer-error-template.html
 -jar moclojer.jar
