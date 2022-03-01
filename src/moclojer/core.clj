@@ -1,7 +1,6 @@
 (ns moclojer.core
   (:gen-class)
   (:require [io.pedestal.http :as http]
-            [clojure.data.json :as json]
             [io.pedestal.http.jetty]
             [moclojer.handler :as handler]
             [moclojer.openapi :as openapi]
