@@ -20,18 +20,15 @@ jobs:
           if ! [ -d ~/graalvm-ce-java17-22.0.0.2 ]; then
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java17-linux-amd64-22.0.0.2.tar.gz
             tar xzf graalvm-ce-java17-linux-amd64-22.0.0.2.tar.gz
-            pwd
-            mv graalvm-ce-java17-22.0.0.2 ~/
+            mv graalvm-ce-java17-22.0.0.2 $HOME
           fi
       - name: Clojure
         run: |
           cd ~
           if ! [ -d linux-install-1.10.3.1087.sh ]; then
-            JAVA_HOME="graalvm-ce-java17-22.0.0.2"
-            export JAVA_HOME
             curl -O -sL https://download.clojure.org/install/linux-install-1.10.3.1087.sh
             chmod +x linux-install-1.10.3.1087.sh
-            JAVA_HOME="graalvm-ce-java17-22.0.0.2" sudo ./linux-install-1.10.3.1087.sh
+            sudo ./linux-install-1.10.3.1087.sh
           fi
       - name: classpath
         run: |
@@ -39,13 +36,12 @@ jobs:
           clojure -A:dev -Spath
       - name: native-image
         run: |
-          set -x
-          JAVA_HOME="$PWD/graalvm-ce-java17-22.0.0.2"
+          JAVA_HOME="$HOME/graalvm-ce-java17-22.0.0.2"
           export JAVA_HOME
-          echo "$JAVA_HOME"
+          JAVA_CMD="$JAVA_HOME/bin/java"
+          export JAVA_CMD
           clojure -M -e "(System/getenv \"JAVA_HOME\")"
           clojure -M -e "(System/getProperty \"java.home\")"
-          cat $(which clojure)
-          JAVA_HOME="$PWD/graalvm-ce-java17-22.0.0.2" clojure -A:dev -M --report stderr -m moclojer.build
+          clojure -A:dev -M --report stderr -m moclojer.build
       - name: output
         run: "ls -lah"
