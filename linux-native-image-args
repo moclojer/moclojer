@@ -1,0 +1,9 @@
+-jar moclojer.jar
+-H:Name=moclojer
+-H:+ReportExceptionStackTraces
+--initialize-at-build-time
+--verbose
+--no-fallback
+--no-server
+--allow-incomplete-classpath
+-H:ReflectionConfigurationFiles=reflect-config.json

@@ -38,21 +38,21 @@
                     :src-dirs  (:paths basis)
                     :class-dir class-dir})
     ;; JAR
-    #_(b/uber {:class-dir class-dir
-               :main      'moclojer.core
-               :uber-file uber-file
-               :basis     basis})
+    (b/uber {:class-dir class-dir
+             :main      'moclojer.core
+             :uber-file uber-file
+             :basis     basis})
     ;; native-image
-    (sh! "./bin/gu" "install" "native-image"
-         :dir (io/file (System/getProperty "java.home")))
-    (sh! (str (io/file (System/getProperty "java.home") "bin" "native-image"))
-         "-cp" (str (string/join ":" (:classpath-roots basis)) ":target/classes")
-         "-H:Name=moclojer"
-         "-H:+ReportExceptionStackTraces"
-         "--initialize-at-build-time"
-         "--verbose"
-         "--no-fallback"
-         "--no-server"
-         "--allow-incomplete-classpath"
-         "-H:ReflectionConfigurationFiles=reflect-config.json"
-         "moclojer.core")))
+    #_(sh! "./bin/gu" "install" "native-image"
+           :dir (io/file (System/getProperty "java.home")))
+    #_(sh! (str (io/file (System/getProperty "java.home") "bin" "native-image"))
+           "-cp" (str (string/join ":" (:classpath-roots basis)) ":target/classes")
+           "-H:Name=moclojer"
+           "-H:+ReportExceptionStackTraces"
+           "--initialize-at-build-time"
+           "--verbose"
+           "--no-fallback"
+           "--no-server"
+           "--allow-incomplete-classpath"
+           "-H:ReflectionConfigurationFiles=reflect-config.json"
+           "moclojer.core")))
