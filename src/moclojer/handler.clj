@@ -3,6 +3,7 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.jetty]
+            [clojure.data.json :as json]
             [io.pedestal.http.route :as route]
             [selmer.parser :as selmer]
             [slugify.core :refer [slugify]]))
@@ -22,7 +23,7 @@
      {:status       (get-in r [:endpoint :response :status] 200)
       :content-type (get-in r [:endpoint :response :headers :content-type]
                             "application/json")
-      :body         (selmer/render (get-in r [:endpoint :response :body] "{}")
+      :body         (selmer/render (json/write-str (get-in r [:endpoint :response :body] "{}"))
                                    {:path-params  (:path-params req)
                                     :query-params (:query-params req)
                                     :json-params  (:json-params req)})})])
