@@ -23,5 +23,5 @@
              :uber-file uber-file
              :manifest  (merge {}
                                (when-let [sha (System/getenv "CI_COMMIT_SHA")]
-                                 {"Source-SHA" sha}))
+                                 {"SCM-Revision" sha}))
              :basis     basis})))

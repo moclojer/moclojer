@@ -1,4 +1,3 @@
--jar moclojer.jar
 -H:Name=moclojer
 -H:+ReportExceptionStackTraces
 --verbose
