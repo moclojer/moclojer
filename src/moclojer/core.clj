@@ -4,7 +4,8 @@
             [io.pedestal.http.jetty]
             [moclojer.handler :as handler]
             [moclojer.openapi :as openapi]
-            [yaml.core :as yaml]))
+            [yaml.core :as yaml])
+  (:import (org.eclipse.jetty.server HttpOutput)))
 
 (defn make-router
   [{::keys [config]}]
