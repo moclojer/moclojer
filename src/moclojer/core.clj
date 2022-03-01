@@ -1,47 +1,11 @@
 (ns moclojer.core
   (:gen-class)
-  (:require [clojure.string :as string]
+  (:require [io.pedestal.http :as http]
             [clojure.data.json :as json]
-            [io.pedestal.http :as http]
-            [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.jetty]
-            [io.pedestal.http.route :as route]
+            [moclojer.handler :as handler]
             [moclojer.openapi :as openapi]
-            [selmer.parser :as selmer]
-            [slugify.core :refer [slugify]]
             [yaml.core :as yaml]))
-
-(defn home-handler
-  "home handler /"
-  [_]
-  {:Status 200
-   :body   "{\"body\": \"(-> moclojer server)\"}"})
-
-(defn handler
-  "prepare function to receive http request (handler)"
-  ([r]
-   [(body-params/body-params)
-    http/json-body
-    (fn [req]
-      {:status       (get-in r [:endpoint :response :status] 200)
-       :content-type (get-in r [:endpoint :response :headers :content-type]
-                             "application/json")
-       :body         (selmer/render (get-in r [:endpoint :response :body] "{}")
-                                    {:path-params  (:path-params req)
-                                     :query-params (:query-params req)
-                                     :json-params  (:json-params req)})})])
-  ([r route-name]
-   (prn r)
-   [(body-params/body-params)
-    http/json-body
-    (fn [req]
-      {:status       (get-in r [:response :status] 200)
-       :content-type (get-in r [:response :headers :content-type]
-                             "application/json")
-       :body         (selmer/render (json/write-str (get-in r [:response :body] "{}"))
-                                    {:path-params  (:path-params req)
-                                     :query-params (:query-params req)
-                                     :json-params  (:json-params req)})})]))
 
 (defmulti make-router (fn [config]
                         (when (= (get config "openapi") "3.0.0") :open-api)
@@ -50,21 +14,10 @@
                             (= type :edn) :edn
                             :else  :route))))
 
-(defn get-endpoints-edn [config]
-  (let [endpoints (:endpoints config)]
-    endpoints))
 
 (defmethod make-router :edn
   [{::keys [config]}]
-  (sequence (mapcat (fn [r]
-                      (let [route-name (first r)
-                            endpoint (second r)]
-                        (route/expand-routes
-                          #{[(:path endpoint)
-                             (:method endpoint :get)
-                             (handler endpoint route-name)
-                             :route-name route-name]})))
-                    (get-endpoints-edn config))))
+  (handler/generate-pedestal-route-from-edn config))
 
 (defmethod make-router :open-api
   [{::keys [config]}]
@@ -72,17 +25,7 @@
 
 (defmethod make-router :route
   [{::keys [config]}]
-    (concat
-     (route/expand-routes `#{["/" :get home-handler :route-name :home]})
-     (sequence (mapcat
-                (fn [{:keys [endpoint]
-                      :as   r}]
-                  (route/expand-routes
-                   #{[(:path endpoint)
-                      (keyword (string/lower-case (:method endpoint "get")))
-                      (handler r)
-                      :route-name (keyword (slugify (:path endpoint)))]})))
-               config)))
+  (handler/generate-pedestal-route config))
 
 (defn -main
   "start moclojer server"
