@@ -78,7 +78,7 @@ jobs:
           ./moclojer &
           PID=$!
           sleep 5
-          curl -s -D - localhost:8000
+          curl -vvv -s -D - localhost:8000
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" localhost:8000)
           kill $PID
           if [ -eq "x$STATUS" "x200"]; then

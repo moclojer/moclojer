@@ -6,4 +6,6 @@
 -H:ReflectionConfigurationFiles=reflect-config.json
 -H:IncludeResources=clojure/version.properties
 -H:IncludeResources=selmer-error-template.html
+-H:IncludeResources=org/eclipse/jetty/http/mime.properties
+-H:IncludeResources=org/eclipse/jetty/http/encoding.properties
 -jar moclojer.jar
