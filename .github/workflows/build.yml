@@ -17,10 +17,6 @@ jobs:
         with:
           cli: "1.10.3.1075"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: "Download deps"
-        run: |
-          clojure -P
-          clojure -A:dev -P
       - run: "clojure -A:dev -M --report stderr -m moclojer.build"
       - uses: "actions/upload-artifact@v2"
         with:
@@ -30,7 +26,7 @@ jobs:
   build-native:
     needs: "build-jar"
     runs-on: "${{ matrix.os }}"
-    name: "Build native image for ${{ matrix.os }}"
+    name: "Build native image on ${{ matrix.os }}"
     strategy:
       matrix:
         os: [ "macos-11", "ubuntu-20.04" ]
@@ -45,9 +41,9 @@ jobs:
       - uses: "actions/download-artifact@v2"
         with:
           name: "moclojer-jar"
-      - run: "native-image @linux-native-image-args"
+      - run: "native-image @${{ runner.os }}-native-image-args"
       - uses: "actions/upload-artifact@v2"
         with:
-          name: "moclojer-${{ runner.os }}-bin"
+          name: "moclojer-${{ runner.os }}-${{ github.run_id }}-bin"
           path: |
             moclojer
