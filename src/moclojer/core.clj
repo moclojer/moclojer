@@ -1,11 +1,13 @@
 (ns moclojer.core
   (:gen-class)
   (:require [io.pedestal.http :as http]
-            [io.pedestal.http.jetty]
             [moclojer.handler :as handler]
             [moclojer.openapi :as openapi]
-            [yaml.core :as yaml])
-  (:import (org.eclipse.jetty.server HttpOutput)))
+            [yaml.core :as yaml]
+            [;; For native-image
+             io.pedestal.http.jetty])
+  (:import (;; For native-image
+             org.eclipse.jetty.server HttpOutput)))
 
 (defn make-router
   [{::keys [config]}]

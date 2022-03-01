@@ -59,3 +59,25 @@ jobs:
           path: |
             moclojer
             reflect-config.json
+  test-native:
+    needs: "build-native"
+    runs-on: "${{ matrix.os }}"
+    name: "Test native image on ${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ "macos-11", "ubuntu-20.04" ]
+    steps:
+      ## - uses: "actions/checkout@v2"
+      - uses: "actions/download-artifact@v2"
+        with:
+          name: "moclojer-${{ runner.os }}-${{ github.run_id }}-bin"
+      - name: "Check http status"
+        run: |
+          echo [] > moclojer.yml
+          chmod +x moclojer
+          ./moclojer &
+          PID=$!
+          sleep 5
+          curl -s -D - localhost:8000
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" localhost:8000)
+          [ -eq "x$STATUS" "x200"]
