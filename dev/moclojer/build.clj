@@ -7,7 +7,22 @@
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
-(def java-home (System/getProperty "java.home"))
+
+(defn sh!
+  [& vs]
+  (try
+    (let [{:keys [exit out err]} (apply sh/sh vs)]
+      (println out)
+      (binding [*out* *err*]
+        (println err))
+      (when-not (== exit 0)
+        (throw (ex-info (str "Can't " (first vs))
+                        {:vs vs :exit exit}))))
+    (catch Throwable ex
+      (throw (ex-info (str (pr-str (first vs))
+                           " do not exits")
+                      {:vs vs}
+                      ex)))))
 
 (defn -main
   [& _]
@@ -28,16 +43,16 @@
                :uber-file uber-file
                :basis     basis})
     ;; native-image
-    (run! println (vals (sh/sh "./bin/gu" "install" "native-image"
-                               :dir (io/file java-home))))
-    (run! println (vals (sh/sh (str (io/file java-home "bin" "native-image"))
-                               "-cp" (str (string/join ":" (:classpath-roots (b/create-basis {:project "deps.edn"}))) ":target/classes")
-                               "-H:Name=moclojer"
-                               "-H:+ReportExceptionStackTraces"
-                               "--initialize-at-build-time"
-                               "--verbose"
-                               "--no-fallback"
-                               "--no-server"
-                               "--allow-incomplete-classpath"
-                               "-H:ReflectionConfigurationFiles=reflect-config.json"
-                               "moclojer.core")))))
+    (sh! "./bin/gu" "install" "native-image"
+         :dir (io/file (System/getProperty "java.home")))
+    (sh! (str (io/file (System/getProperty "java.home") "bin" "native-image"))
+         "-cp" (str (string/join ":" (:classpath-roots basis)) ":target/classes")
+         "-H:Name=moclojer"
+         "-H:+ReportExceptionStackTraces"
+         "--initialize-at-build-time"
+         "--verbose"
+         "--no-fallback"
+         "--no-server"
+         "--allow-incomplete-classpath"
+         "-H:ReflectionConfigurationFiles=reflect-config.json"
+         "moclojer.core")))
