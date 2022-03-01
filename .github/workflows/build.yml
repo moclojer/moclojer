@@ -32,6 +32,7 @@ jobs:
       - name: classpath
         run: |
           JAVA_HOME="graalvm-ce-java17-22.0.0.2"
+          export JAVA_HOME
           clojure -A:dev -M --report stderr -m moclojer.build
       - name: output
         run: "ls -lah"
