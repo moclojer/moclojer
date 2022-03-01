@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+      - "graal-build"
+jobs:
+  build:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/graalvm-ce-java17-22.0.0.2
+          key: ${{ runner.os }}-maven-${{ hashFiles('deps.edn') }}
+      - name: Download GraalVM
+        run: |
+          cd ~
+          if ! [ -d graalvm-ce-java17-22.0.0.2 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java17-linux-amd64-22.0.0.2.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-22.0.0.2.tar.gz
+          fi
+      - name: Clojure
+        run: |
+          cd ~
+          if ! [ -d linux-install-1.10.3.1087.sh ]; then
+            curl -O -sL https://download.clojure.org/install/linux-install-1.10.3.1087.sh
+            chmod +x linux-install-1.10.3.1087.sh
+            sudo ./linux-install-1.10.3.1087.sh
+          fi
+      - name: classpath
+        run: "clj -Stree"
