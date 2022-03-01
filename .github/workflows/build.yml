@@ -13,12 +13,6 @@ jobs:
             ~/.m2/repository
             ~/.gitlibs
           key: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
-      - uses: "graalvm/setup-graalvm@v1"
-        with:
-          version: "22.0.0.2"
-          java-version: "17"
-          components: "native-image"
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: "DeLaGuardo/setup-clojure@4.0"
         with:
           cli: "1.10.3.1075"
@@ -30,12 +24,12 @@ jobs:
       - run: "clojure -A:dev -M --report stderr -m moclojer.build"
       - uses: "actions/upload-artifact@v2"
         with:
-          name: moclojer-jar
+          name: "moclojer-jar"
           path: |
             target/*.jar
   build-native:
     runs-on: "ubuntu-20.04"
-    needs: build-jar
+    needs: "build-jar"
     steps:
       - uses: "actions/checkout@v2"
       - uses: "graalvm/setup-graalvm@v1"
@@ -44,8 +38,12 @@ jobs:
           java-version: "17"
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/download-artifact@v2
+      - uses: "actions/download-artifact@v2"
         with:
-          name: moclojer-jar
-      - run: ls -lah
-      - run: native-image --version
+          name: "moclojer-jar"
+      - run: "native-image @linux-native-image-args"
+      - uses: "actions/upload-artifact@v2"
+        with:
+          name: "moclojer-linux-bin"
+          path: |
+            moclojer
