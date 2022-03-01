@@ -28,8 +28,12 @@ jobs:
           path: |
             target/*.jar
   build-native:
-    runs-on: "ubuntu-20.04"
     needs: "build-jar"
+    runs-on: "${{ matrix.os }}"
+    name: "Build native image for ${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ "macos-11", "ubuntu-20.04" ]
     steps:
       - uses: "actions/checkout@v2"
       - uses: "graalvm/setup-graalvm@v1"
@@ -44,6 +48,6 @@ jobs:
       - run: "native-image @linux-native-image-args"
       - uses: "actions/upload-artifact@v2"
         with:
-          name: "moclojer-linux-bin"
+          name: "moclojer-${{ runner.os }}-bin"
           path: |
             moclojer
