@@ -51,7 +51,10 @@ jobs:
           while ! echo exit | nc localhost 8000; do sleep 5; done
           curl -s localhost:8000
           kill $PID
-      - run: "native-image @${{ runner.os }}-native-image-args -jar moclojer.jar"
+      - run: |
+          native-image @${{ runner.os }}-native-image-args \
+            --H:ReflectionConfigurationFiles=reflect-config.json \
+            --jar moclojer.jar
       - uses: "actions/upload-artifact@v2"
         with:
           name: "moclojer-${{ runner.os }}-${{ github.run_id }}-bin"

@@ -2,6 +2,5 @@
 -H:+ReportExceptionStackTraces
 --verbose
 --no-fallback
---no-server
 --allow-incomplete-classpath
--H:ReflectionConfigurationFiles=reflect-config.json
+
