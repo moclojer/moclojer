@@ -1,8 +1,5 @@
 (ns moclojer.build
-  (:require [clojure.tools.build.api :as b]
-            [clojure.java.shell :as sh]
-            [clojure.java.io :as io]
-            [clojure.string :as string]))
+  (:require [clojure.tools.build.api :as b]))
 
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
