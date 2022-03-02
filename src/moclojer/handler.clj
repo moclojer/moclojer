@@ -23,7 +23,7 @@
      {:status       (get-in r [:endpoint :response :status] 200)
       :content-type (get-in r [:endpoint :response :headers :content-type]
                             "application/json")
-      :body         (selmer/render (json/write-str (get-in r [:endpoint :response :body] "{}"))
+      :body         (selmer/render (get-in r [:endpoint :response :body] "{}")
                                    {:path-params  (:path-params req)
                                     :query-params (:query-params req)
                                     :json-params  (:json-params req)})})])
@@ -52,11 +52,11 @@
   [config]
   (sequence (mapcat (fn [r]
                       (let [route-name (first r)
-                            endpoint (second r)]
+                            endpoint (second r)
+                            body (json/write-str (-> endpoint :response :body))]
                         (route/expand-routes
                           #{[(:path endpoint)
                              (:method endpoint :get)
-                             (handler {:endpoint
-                                       endpoint})
+                             (handler {:endpoint (-> endpoint (assoc-in [:response :body] body))})
                              :route-name route-name]})))
                     (get-endpoints-edn config))))

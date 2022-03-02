@@ -1,17 +1,9 @@
 (ns moclojer.edn-test
   (:require [cheshire.core :as json]
             [clojure.test :refer [deftest is]]
-            [io.pedestal.http :as http]
             [clojure.edn :as edn]
             [io.pedestal.test :refer [response-for]]
-            [moclojer.core :as moclojer]))
-
-(defn service-fn
-  [config]
-  (-> {::http/routes (moclojer/make-router {::moclojer/config config})}
-      http/default-interceptors
-      http/create-servlet
-      ::http/service-fn))
+            [moclojer.aux.service :refer [service-fn]]))
 
 (defn load-config
   "Given a filename, load & return a config file"

@@ -1,41 +1,32 @@
 (ns moclojer.core
   (:gen-class)
-  (:require [io.pedestal.http :as http]
+  (:require [clojure.edn :as edn]
+            [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
-            [moclojer.handler :as handler]
             [moclojer.openapi :as openapi]
-            [yaml.core :as yaml]))
-
-(defmulti make-router (fn [config]
-                        (when (= (get config "openapi") "3.0.0") :open-api)
-                        (let [type (-> config ::config :type)]
-                          (cond
-                            (= type :edn) :edn
-                            :else  :route))))
+            [yaml.core :as yaml]
+            [clojure.string :as str]
+            [moclojer.mrouter :as mrouter]))
 
 
-(defmethod make-router :edn
-  [{::keys [config]}]
-  (handler/generate-pedestal-route-from-edn config))
+(defn parse []
+  (let [config (or (System/getenv "CONFIG")
+                                  "moclojer.yml")
+        mocks (yaml/from-file (or (System/getenv "MOCKS")
+                                  "mocks.yml"))]
+    (if (str/includes? config ".edn")
+      (edn/read-string (slurp config))
+      (-> config
+          (yaml/from-file)
+          (openapi/with-mocks mocks)))))
 
-(defmethod make-router :open-api
-  [{::keys [config]}]
-  (openapi/generate-pedestal-route config))
-
-(defmethod make-router :route
-  [{::keys [config]}]
-  (handler/generate-pedestal-route config))
 
 (defn -main
   "start moclojer server"
   [& _]
   (prn "(-> moclojer :start-server)")
-  (let [mocks (yaml/from-file (or (System/getenv "MOCKS")
-                                  "mocks.yml"))
-        spec (-> (yaml/from-file (or (System/getenv "CONFIG")
-                                     "moclojer.yml"))
-                 (openapi/with-mocks mocks))
-        routes (make-router {::config spec})]
+  (let [routes (-> (parse)
+                   (mrouter/smart-router))]
     (-> {:env                     :prod
          ::http/routes            routes
          ::http/type              :jetty

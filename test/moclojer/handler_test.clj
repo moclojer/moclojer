@@ -26,4 +26,3 @@
       (is (= (count routers) 2))
       (is (:path (first routers)) "/")
       (is (:path (last routers)) "/hello-world"))))
-

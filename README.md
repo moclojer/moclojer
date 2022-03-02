@@ -65,6 +65,11 @@ Then call `moclojer` passing both OpenAPI spec and mocks as paramters:
 ```shell
 CONFIG="petstore.yaml" MOCKS="mocks.yaml" clojure -X:run
 ```
+you can config a mock server with edn file as well
+
+```shell
+CONFIG="moclojer.edn" clojure -X:run
+```
 
 ## dev environment
 
