@@ -1,6 +1,6 @@
 [![moclojer logo](doc/assets/logo.png)](https://github.com/avelino/moclojer)
 
-Simple and efficient HTTP mock server with specification in `yaml`.
+Simple and efficient HTTP mock server with specification in `yaml` or `edn`.
 
 [![tests](https://github.com/avelino/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/tests.yml)
 [![linter](https://github.com/avelino/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/linter.yml)
@@ -24,6 +24,25 @@ Simple and efficient HTTP mock server with specification in `yaml`.
         {
           "hello": "{{path-params.username}}!"
         }
+```
+
+**`EDN` example**
+
+```edn
+{:endpoint {:method :get
+            :path "/pets"
+            :response {:status 200
+                       :headers {:content-type  "applicantion/json"}
+                       :body {:pets [{:name "Uber" :type "dog"}
+                                     {:name "Pinpolho" :type "cat"}]}}
+            :router-name :get-all-pets}}
+
+{:endpoint {:method :get
+            :path "/pet/:id"
+            :response {:status 200
+                       :headers {:content-type  "applicantion/json"}
+                       :body {:id 1 :name "uber" :type "dog"}}
+            :router-name :get-pet-by-id}}
 ```
 
 ## Body template
@@ -64,6 +83,11 @@ Then call `moclojer` passing both OpenAPI spec and mocks as paramters:
 
 ```shell
 CONFIG="petstore.yaml" MOCKS="mocks.yaml" clojure -X:run
+```
+you can config a mock server with edn file as well
+
+```shell
+CONFIG="moclojer.edn" clojure -X:run
 ```
 
 ## dev environment

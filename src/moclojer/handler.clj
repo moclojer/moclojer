@@ -3,6 +3,7 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.jetty]
+            [clojure.data.json :as json]
             [io.pedestal.http.route :as route]
             [selmer.parser :as selmer]
             [slugify.core :refer [slugify]]))
@@ -42,3 +43,17 @@
            (handler r)
            :route-name (keyword (slugify (:path endpoint)))]})))
     config)))
+
+
+(defn generate-pedestal-edn-route
+  "Generate a Pedestal route from a Moclojer route"
+  [config]
+  (sequence (mapcat (fn [{:keys [endpoint]
+                          :as r}]
+                      (let [body (-> endpoint :response :body)]
+                        (route/expand-routes
+                          #{[(:path endpoint)
+                             (:method endpoint :get)
+                             (handler (-> r (assoc-in [:endpoint :response :body] (json/write-str body))))
+                             :route-name (:router-name endpoint)]})))
+                    config)))

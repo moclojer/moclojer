@@ -2,26 +2,13 @@
   (:gen-class)
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
-            [moclojer.handler :as handler]
-            [moclojer.openapi :as openapi]
-            [yaml.core :as yaml]))
-
-(defn make-router
-  [{::keys [config]}]
-  (if (= (get config "openapi") "3.0.0")
-    (openapi/generate-pedestal-route config)
-    (handler/generate-pedestal-route config)))
+            [moclojer.router :as router]))
 
 (defn -main
   "start moclojer server"
   [& _]
   (prn "(-> moclojer :start-server)")
-  (let [mocks (yaml/from-file (or (System/getenv "MOCKS")
-                                  "mocks.yml"))
-        spec (-> (yaml/from-file (or (System/getenv "CONFIG")
-                                     "moclojer.yml"))
-                 (openapi/with-mocks mocks))
-        routes (make-router {::config spec})]
+  (let [routes (router/make-smart-router)]
     (-> {:env                     :prod
          ::http/routes            routes
          ::http/type              :jetty

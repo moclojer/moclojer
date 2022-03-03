@@ -1,17 +1,9 @@
 (ns moclojer.core-test
   (:require [cheshire.core :as json]
             [clojure.test :refer [deftest is]]
-            [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
-            [moclojer.core :as moclojer]
-            [yaml.core :as yaml]))
-
-(defn service-fn
-  [config]
-  (-> {::http/routes (moclojer/make-router {::moclojer/config config})}
-      http/default-interceptors
-      http/create-servlet
-      ::http/service-fn))
+            [yaml.core :as yaml]
+            [moclojer.aux.service :refer [service-fn]]))
 
 (deftest hello-world
   (let [config (yaml/parse-string (slurp "moclojer.yml"))
