@@ -46,6 +46,7 @@
 
 
 (defn generate-pedestal-edn-route
+  "Generate a Pedestal route from a Moclojer route"
   [config]
   (sequence (mapcat (fn [{:keys [endpoint]
                           :as r}]
