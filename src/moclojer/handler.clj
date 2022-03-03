@@ -44,19 +44,15 @@
            :route-name (keyword (slugify (:path endpoint)))]})))
     config)))
 
-(defn get-endpoints-edn [config]
-  (let [endpoints (:endpoints config)]
-    endpoints))
 
-(defn generate-pedestal-route-from-edn
+(defn generate-pedestal-edn-route
   [config]
-  (sequence (mapcat (fn [r]
-                      (let [route-name (first r)
-                            endpoint (second r)
-                            body (json/write-str (-> endpoint :response :body))]
+  (sequence (mapcat (fn [{:keys [endpoint]
+                          :as r}]
+                      (let [body (-> endpoint :response :body)]
                         (route/expand-routes
                           #{[(:path endpoint)
                              (:method endpoint :get)
-                             (handler {:endpoint (-> endpoint (assoc-in [:response :body] body))})
-                             :route-name route-name]})))
-                    (get-endpoints-edn config))))
+                             (handler (-> r (assoc-in [:endpoint :response :body] (json/write-str body))))
+                             :route-name (:router-name endpoint)]})))
+                    config)))

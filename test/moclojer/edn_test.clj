@@ -1,20 +1,23 @@
 (ns moclojer.edn-test
   (:require [cheshire.core :as json]
-            [clojure.test :refer [deftest is]]
-            [clojure.edn :as edn]
+            [clojure.test :refer [deftest is testing]]
             [io.pedestal.test :refer [response-for]]
-            [moclojer.aux.service :refer [service-fn]]))
+            [moclojer.aux.service :refer [service-fn]]
+            [moclojer.router :as router]))
 
-(defn load-config
-  "Given a filename, load & return a config file"
-  [filename]
-  (edn/read-string (slurp filename)))
 
 (deftest dynamic-endpoint-edn
-  (let [config (load-config "moclojer.edn")
+  (let [config (router/make-edn-specs "moclojer.edn")
         service-fn (service-fn config)]
-    (is (= {:pets [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
-           (-> service-fn
-               (response-for :get "/pets")
-               :body
-               (json/parse-string true))))))
+    (testing "get all pets"
+      (is (= {:pets [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
+             (-> service-fn
+                 (response-for :get "/pets")
+                 :body
+                 (json/parse-string true)))))
+    (testing "get pet by id"
+      (is (= {:id 1 :name "uber" :type "dog"}
+             (-> service-fn
+                 (response-for :get "/pet/1")
+                 :body
+                 (json/parse-string true)))))))

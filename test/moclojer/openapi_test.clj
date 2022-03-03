@@ -26,16 +26,14 @@
      "Simple route"
       (is (= [{:id   0
                :name "caramelo"}]
-             (-> config
-                 service-fn
+             (-> (service-fn config)
                  (response-for :get "/pets")
                  :body
                  (json/parse-string true)))))
     (testing
      "Not implemented route"
       (is (= 501
-             (-> config
-                 service-fn
+             (-> (service-fn config)
                  (response-for :post "/pets")
                  :status))))))
 
@@ -56,31 +54,27 @@
      "findPets route"
       (is (= [{:id   0
                :name "caramelo"}]
-             (-> config
-                 service-fn
+             (-> (service-fn config)
                  (response-for :get "/pets")
                  :body
                  (json/parse-string true)))))
     (testing
      "addPet route"
       (is (= 303
-             (-> config
-                 service-fn
+             (-> (service-fn config)
                  (response-for :post "/pets")
                  :status))))
     (testing
      "find pet by id route"
       (is (= {:id   0
               :name "caramelo"}
-             (-> config
-                 service-fn
+             (-> (service-fn config)
                  (response-for :get "/pets/0")
                  :body
                  (json/parse-string true)))))
     (testing
      "deletePet route"
       (is (= 202
-             (-> config
-                 service-fn
+             (-> (service-fn config)
                  (response-for :delete "/pets/0")
                  :status))))))

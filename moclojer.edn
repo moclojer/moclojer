@@ -1,7 +1,14 @@
-{:type :edn
- :endpoints {:get-all-pets {:method :get
-                            :path "/pets"
-                            :response {:status 200
-                                       :headers {:content-type  "applicantion/json"}
-                                       :body {:pets [{:name "Uber" :type "dog"}
-                                                     {:name "Pinpolho" :type "cat"}]}}}}}
+{:endpoint {:method :get
+            :path "/pets"
+            :response {:status 200
+                       :headers {:content-type  "applicantion/json"}
+                       :body {:pets [{:name "Uber" :type "dog"}
+                                     {:name "Pinpolho" :type "cat"}]}}
+            :router-name :get-all-pets}}
+
+{:endpoint {:method :get
+            :path "/pet/:id"
+            :response {:status 200
+                       :headers {:content-type  "applicantion/json"}
+                       :body {:id 1 :name "uber" :type "dog"}}
+            :router-name :get-pet-by-id}}
