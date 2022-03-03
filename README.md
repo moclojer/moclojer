@@ -26,6 +26,25 @@ Simple and efficient HTTP mock server with specification in `yaml`.
         }
 ```
 
+**`EDN` example**
+
+```edn
+{:endpoint {:method :get
+            :path "/pets"
+            :response {:status 200
+                       :headers {:content-type  "applicantion/json"}
+                       :body {:pets [{:name "Uber" :type "dog"}
+                                     {:name "Pinpolho" :type "cat"}]}}
+            :router-name :get-all-pets}}
+
+{:endpoint {:method :get
+            :path "/pet/:id"
+            :response {:status 200
+                       :headers {:content-type  "applicantion/json"}
+                       :body {:id 1 :name "uber" :type "dog"}}
+            :router-name :get-pet-by-id}}
+```
+
 ## Body template
 
 The return from the endpoint (_body_) can be dynamic we have a template renderer system, and it is possible to read the parameters passed to the endpoint.
