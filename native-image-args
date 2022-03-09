@@ -1,0 +1,12 @@
+-H:Name=moclejer
+-Dio.pedestal.log.defaultMetricsRecorder=nil
+-H:+ReportExceptionStackTraces
+--allow-incomplete-classpath
+--initialize-at-build-time
+--verbose
+-H:+DashboardHeap
+-H:+DashboardCode
+-H:+DashboardBgv
+-H:+DashboardJson
+-H:DashboardDump=report/moclejer
+--no-fallback
