@@ -1,11 +1,8 @@
 (ns moclojer.build
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
-            [clojure.tools.build.api :as b])
-  (:import (java.lang ProcessBuilder$Redirect)
-           (java.net.http HttpClient HttpResponse HttpRequest HttpResponse$BodyHandlers)
-           (java.net URI ConnectException)
-           (java.nio.channels ClosedChannelException)))
+            [clojure.string :as string]
+            [clojure.tools.build.api :as b]))
 
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
@@ -30,4 +27,17 @@
              :basis     basis})
     (.mkdirs (io/file "target" "native"))
     (spit (io/file "target" "native" "filter.json")
-          (json/write-str {}))))
+          (json/write-str {}))
+    (spit (io/file "target" "native" "native-image-args")
+          (string/join "\n" ["-H:Name=moclojer"
+                             "-Dio.pedestal.log.defaultMetricsRecorder=nil"
+                             "-H:+ReportExceptionStackTraces"
+                             "--allow-incomplete-classpath"
+                             "--initialize-at-build-time"
+                             "--verbose"
+                             "-H:+DashboardHeap"
+                             "-H:+DashboardCode"
+                             "-H:+DashboardBgv"
+                             "-H:+DashboardJson"
+                             "--no-fallback"]))))
+

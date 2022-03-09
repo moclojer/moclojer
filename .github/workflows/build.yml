@@ -34,13 +34,13 @@ jobs:
       matrix:
         os: [ "macos-11", "ubuntu-20.04" ]
     steps:
-      - uses: "actions/checkout@v2"
       - uses: "graalvm/setup-graalvm@v1"
         with:
           version: "22.0.0.2"
           java-version: "17"
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: "actions/checkout@v2"
       - uses: "actions/download-artifact@v2"
         with:
           name: "moclojer-${{ github.run_id }}-jar"
@@ -48,17 +48,19 @@ jobs:
       - name: "Gen reflect.config.json"
         working-directory: "target/native"
         run: |
+          echo [] > moclojer.yml
           java -agentlib:native-image-agent=caller-filter-file=filter.json,config-output-dir=. \
             -jar ../moclojer.jar &
           PID=$!
           ## Wait startup
-          while ! echo exit | nc localhost 8000; do sleep 5; done
-          curl -s localhost:8000
+          while ! curl -s localhost:8000 -o /dev/null; do echo waiting; sleep 3; done
+          curl -s localhost:8000 -D -
           kill $PID
       - working-directory: "target/native"
         run: |
           native-image @native-image-args \
-            -jar ../target/moclejer.jar \
+            -H:DashboardDump=report/moclojer \
+            -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json
       - uses: "actions/upload-artifact@v2"
@@ -87,7 +89,7 @@ jobs:
           curl -vvv -s -D - localhost:8000
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" localhost:8000)
           kill $PID
-          if [ -eq "x$STATUS" "x200"]; then
+          if [ "x$STATUS" = "x200" ]; then
             exit 0
           else
             exit 1
