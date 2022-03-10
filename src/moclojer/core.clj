@@ -3,8 +3,7 @@
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
             [moclojer.router :as router]
-            [clojure.core.async :as async]
-            [io.pedestal.log :as log])
+            [clojure.core.async :as async])
   (:import (org.eclipse.jetty.servlet ServletContextHandler)
            (org.eclipse.jetty.server.handler.gzip GzipHandler)))
 
