@@ -1,12 +1,16 @@
 (ns moclojer.openapi
-  (:require [clojure.string :as string]
-            [io.pedestal.http.route :as route]))
+  (:require [clojure.java.io :as io]
+            [clojure.string :as string]
+            [io.pedestal.http.ring-middlewares :as middlewares]
+            [io.pedestal.http.route :as route])
+  (:import (java.time Instant)
+           (java.io File)))
 
-;; TODO: JSON Pointer library
 (def path-item->operation
   "Convert path item to http method"
   #{"get" "put" "post" "delete" "options" "head" "patch" "trace"})
 
+;; TODO: JSON Pointer library
 (defn json-pointer-escape-token
   "https://datatracker.ietf.org/doc/html/rfc6901"
   [s]
@@ -71,9 +75,9 @@
   ;; https://github.com/OAI/OpenAPI-Specification/issues/291
   ;; https://datatracker.ietf.org/doc/html/rfc6570
   (string/replace path
-                  #"\{([^}]+)\}"
-                  (fn [x]
-                    (str ":" (second x)))))
+    #"\{([^}]+)\}"
+    (fn [x]
+      (str ":" (second x)))))
 
 (defn resolve-ref
   "Resolve a reference to a schema"
@@ -83,27 +87,69 @@
     (get-in root (json-pointer->path $ref))
     object))
 
+(defn multipart-interceptors
+  [{:strs [requestBody x-mockResponse]}])
+
+
 (defn generate-pedestal-route
   "Generate a Pedestal route from an OpenAPI specification"
   [config]
   (sequence (mapcat
-             (fn [[path path-item]]
-                  (sequence
-                    (mapcat (fn [[method operation]]
-                              (when (contains? path-item->operation method)
-                                (route/expand-routes
-                                  #{[(openapi-path->pedestal-path path)
-                                     (keyword method)
-                                     [{:name  ::add-operation
-                                       :enter (fn [ctx]
-                                                (assoc ctx
-                                                  ::path path
-                                                  ::method method
-                                                  ::openapi config
-                                                  ::path-item path-item
-                                                  ::operation operation))}
-                                      generate-response]
-                                     :route-name (keyword (or (get operation "operationId")
-                                                              (json-path->pointer [path method])))]}))))
-                    (resolve-ref config path-item))))
-              (get config "paths")))
+              (fn [[path path-item]]
+                (sequence
+                  (mapcat (fn [[method operation]]
+                            (when (contains? path-item->operation method)
+                              (route/expand-routes
+                                #{[(openapi-path->pedestal-path path)
+                                   (keyword method)
+                                   (into []
+                                     cat
+                                     [[{:name  ::add-operation
+                                        :enter (fn [ctx]
+                                                 (assoc ctx
+                                                   ::path path
+                                                   ::method method
+                                                   ::openapi config
+                                                   ::path-item path-item
+                                                   ::operation operation))}]
+                                      (when (get-in operation ["requestBody" "content" "multipart/form-data"])
+                                        [(middlewares/multipart-params
+                                           (when-let [dir (get-in operation ["x-mockResponse" "store"])]
+                                             (.mkdirs (io/file dir))
+                                             {:store (fn [{:keys [stream filename content-type]}]
+                                                       (locking dir
+                                                         (let [now-str (str (Instant/now))
+                                                               temp-dir (loop [n 19]
+                                                                          (let [d (io/file dir (str "req"
+                                                                                                 (string/replace
+                                                                                                   (subs now-str
+                                                                                                     0 n)
+                                                                                                   #"[^0-9T-]"
+                                                                                                   "_")))]
+                                                                            (if (.exists d)
+                                                                              (recur (inc n))
+                                                                              (doto d
+                                                                                (.mkdirs)))))
+                                                               temp-file (io/file temp-dir filename)]
+                                                           (io/copy stream temp-file)
+                                                           {:tempfile     temp-file
+                                                            :filename     filename
+                                                            :content-type content-type
+                                                            :size         (.length temp-file)})))}))
+                                         {:name  ::save-all-multipart
+                                          :enter (fn [ctx]
+                                                   (when-let [^File f (-> ctx :request :multipart-params vals
+                                                                        (->> (some :tempfile)))]
+                                                     (doseq [[k v] (-> ctx :request :multipart-params)
+                                                             :when (not (:tempfile v))]
+                                                       (spit (io/file
+                                                               (.getParentFile (.getAbsoluteFile f))
+                                                               k)
+                                                         v)))
+
+                                                   ctx)}])
+                                      [generate-response]])
+                                   :route-name (keyword (or (get operation "operationId")
+                                                          (json-path->pointer [path method])))]}))))
+                  (resolve-ref config path-item))))
+    (get config "paths")))
