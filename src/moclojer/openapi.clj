@@ -3,8 +3,7 @@
             [clojure.string :as string]
             [io.pedestal.http.ring-middlewares :as middlewares]
             [io.pedestal.http.route :as route])
-  (:import (java.time Instant)
-           (java.io File)))
+  (:import (java.time Instant)))
 
 (def path-item->operation
   "Convert path item to http method"
