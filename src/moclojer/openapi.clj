@@ -87,10 +87,6 @@
     (get-in root (json-pointer->path $ref))
     object))
 
-(defn multipart-interceptors
-  [{:strs [requestBody x-mockResponse]}])
-
-
 (defn generate-pedestal-route
   "Generate a Pedestal route from an OpenAPI specification"
   [config]
@@ -113,40 +109,29 @@
                                                    ::path-item path-item
                                                    ::operation operation))}]
                                       (when (get-in operation ["requestBody" "content" "multipart/form-data"])
-                                        [(middlewares/multipart-params
-                                           (when-let [dir (get-in operation ["x-mockResponse" "store"])]
-                                             (.mkdirs (io/file dir))
-                                             {:store (fn [{:keys [stream filename content-type]}]
-                                                       (locking dir
-                                                         (let [now-str (str (Instant/now))
-                                                               temp-dir (loop [n 19]
-                                                                          (let [d (io/file dir (str "req"
-                                                                                                 (string/replace
-                                                                                                   (subs now-str
-                                                                                                     0 n)
-                                                                                                   #"[^0-9T-]"
-                                                                                                   "_")))]
-                                                                            (if (.exists d)
-                                                                              (recur (inc n))
-                                                                              (doto d
-                                                                                (.mkdirs)))))
-                                                               temp-file (io/file temp-dir filename)]
-                                                           (io/copy stream temp-file)
-                                                           {:tempfile     temp-file
-                                                            :filename     filename
-                                                            :content-type content-type
-                                                            :size         (.length temp-file)})))}))
-                                         {:name  ::save-all-multipart
+                                        [(middlewares/multipart-params)])
+                                      (when-let [dir (get-in operation ["x-mockResponse" "store"])]
+                                        (.mkdirs (io/file dir))
+                                        [{:name  ::save-all-multipart
                                           :enter (fn [ctx]
-                                                   (when-let [^File f (-> ctx :request :multipart-params vals
-                                                                        (->> (some :tempfile)))]
-                                                     (doseq [[k v] (-> ctx :request :multipart-params)
-                                                             :when (not (:tempfile v))]
-                                                       (spit (io/file
-                                                               (.getParentFile (.getAbsoluteFile f))
-                                                               k)
-                                                         v)))
-
+                                                   (locking dir
+                                                     (let [now-str (str (Instant/now))
+                                                           temp-dir (loop [n 19]
+                                                                      (let [d (io/file dir (str "req"
+                                                                                             (string/replace
+                                                                                               (subs now-str
+                                                                                                 0 n)
+                                                                                               #"[^0-9T-]"
+                                                                                               "_")))]
+                                                                        (if (.exists d)
+                                                                          (recur (inc n))
+                                                                          (doto d
+                                                                            (.mkdirs)))))]
+                                                       (doseq [[k v] (-> ctx :request :multipart-params)
+                                                               :let [target (io/file temp-dir k)]]
+                                                         (if (:tempfile v)
+                                                           (io/copy (:tempfile v) target)
+                                                           (spit target v)))))
                                                    ctx)}])
                                       [generate-response]])
                                    :route-name (keyword (or (get operation "operationId")
