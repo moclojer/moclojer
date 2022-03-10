@@ -70,10 +70,9 @@
                              "Content-Disposition: form-data; name=\"tag\"\r\n\r\n"
                              "beagle\r\n"
                              "--XXXX--")))))
-    (is (= ["tag"
-            "dog.txt"]
-          (map #(.getName ^File %)
-            (.listFiles (first (.listFiles (io/file "upload-filesystem")))))))))
+    (is (= ["name" "tag"]
+          (sort (map #(.getName ^File %)
+                  (.listFiles (first (.listFiles (io/file "upload-filesystem"))))))))))
 
 
 (deftest hello-petstore-expanded-spec
