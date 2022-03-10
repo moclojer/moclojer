@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - "graal-build-v2"
+      - "main"
 jobs:
   build-jar:
     runs-on: "ubuntu-20.04"
