@@ -1,7 +1,10 @@
+name: build
+
 on:
   push:
     branches:
       - "avelino/test-release"
+
 jobs:
   build-jar:
     runs-on: "ubuntu-20.04"
@@ -59,6 +62,7 @@ jobs:
       - working-directory: "target/native"
         run: |
           native-image @native-image-args \
+            -H:Name=target/moclojer_${{ matrix.os }} \
             -H:DashboardDump=report/moclojer \
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
@@ -99,24 +103,12 @@ jobs:
     runs-on: "ubuntu-20.04"
     steps:
     - uses: actions/checkout@v2
-    - uses: "actions/download-artifact@v2"
-      with:
-        name: "moclojer_Linux"
-        path: artifacts
-    - uses: "actions/download-artifact@v2"
-      with:
-        name: "moclojer_macOS"
-        path: artifacts
-    - uses: "actions/download-artifact@v2"
-      with:
-        name: "moclojer_jar"
-        path: artifacts
     - run: ls -R
-      working-directory: artifacts
+      working-directory: target
     - uses: svenstaro/upload-release-action@v2
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: "artifacts/moclojer_*"
+        file: "target/moclojer_*"
         tag: ${{ github.ref }}
         overwrite: true
