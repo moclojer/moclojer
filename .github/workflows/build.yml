@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - "main"
+      - "avelino/test-release"
 jobs:
   build-jar:
     runs-on: "ubuntu-20.04"
@@ -22,7 +22,7 @@ jobs:
           CI_COMMIT_SHA: "${{ github.sha }}"
       - uses: "actions/upload-artifact@v2"
         with:
-          name: "moclojer-${{ github.run_id }}-jar"
+          name: "moclojer_jar"
           path: |
             target/*.jar
             target/native
@@ -43,7 +43,7 @@ jobs:
       - uses: "actions/checkout@v2"
       - uses: "actions/download-artifact@v2"
         with:
-          name: "moclojer-${{ github.run_id }}-jar"
+          name: "moclojer_jar"
           path: "target"
       - name: "Gen reflect.config.json"
         working-directory: "target/native"
@@ -65,7 +65,7 @@ jobs:
             -H:ResourceConfigurationFiles=resource-config.json
       - uses: "actions/upload-artifact@v2"
         with:
-          name: "moclojer-${{ runner.os }}-${{ github.run_id }}-bin"
+          name: "moclojer_${{ runner.os }}"
           path: |
             target/native
   test-native:
@@ -78,7 +78,7 @@ jobs:
     steps:
       - uses: "actions/download-artifact@v2"
         with:
-          name: "moclojer-${{ runner.os }}-${{ github.run_id }}-bin"
+          name: "moclojer_${{ runner.os }}"
       - name: "Check http status"
         run: |
           echo [] > moclojer.yml
@@ -94,3 +94,22 @@ jobs:
           else
             exit 1
           fi
+  release:
+    needs: "test-native"
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ "macos-11", "ubuntu-20.04" ]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: "actions/download-artifact@v2"
+      with:
+        name: "moclojer_${{ runner.os }}"
+    - uses: svenstaro/upload-release-action@v2
+      # if: startsWith(github.ref, 'refs/tags/v')
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: moclojer_*
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
