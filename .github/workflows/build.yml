@@ -87,8 +87,8 @@ jobs:
       - name: "Check http status"
         run: |
           echo [] > moclojer.yml
-          chmod +x ./target/moclojer_${{ matrix.os }}
-          ./target/moclojer_${{ matrix.os }} &
+          chmod +x ./target/moclojer_${{ runner.os }}
+          ./target/moclojer_${{ runner.os }} &
           PID=$!
           sleep 5
           curl -vvv -s -D - localhost:8000
@@ -108,11 +108,11 @@ jobs:
     - uses: actions/checkout@v2
     - uses: "actions/download-artifact@v2"
       with:
-        name: "moclojer_ubuntu-20.04"
+        name: "moclojer_Linux"
         path: "target"
     - uses: "actions/download-artifact@v2"
       with:
-        name: "moclojer_macos-11"
+        name: "moclojer_macOS"
         path: "target"
     - run: ls -R
       working-directory: target
@@ -132,5 +132,5 @@ jobs:
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: target/moclojer_ubuntu-20.04
+        asset_path: target/moclojer_Linux
         asset_name: moclojer-linux-x64
