@@ -62,12 +62,12 @@ jobs:
       - working-directory: "target/native"
         run: |
           native-image @native-image-args \
-            -H:Name=moclojer_${{ matrix.os }} \
+            -H:Name=moclojer_${{ runner.os }} \
             -H:DashboardDump=report/moclojer \
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
-            -H:ResourceConfigurationFiles=resource-config.json && \
-            cp moclojer moclojer_${{ matrix.os }}
+            -H:ResourceConfigurationFiles=resource-config.json
+      - run: cp target/native/moclojer target/moclojer_${{ runner.os }}
       - uses: "actions/upload-artifact@v2"
         with:
           name: "moclojer_${{ runner.os }}"
