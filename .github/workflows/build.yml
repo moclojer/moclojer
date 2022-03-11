@@ -84,6 +84,7 @@ jobs:
         with:
           name: "moclojer_${{ runner.os }}"
           path: "target"
+      - run: ls -R
       - name: "Check http status"
         run: |
           echo [] > moclojer.yml
