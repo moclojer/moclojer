@@ -1,4 +1,4 @@
-(ns moclojer.core-test
+(ns moclojer.openapi-test
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.test :refer [deftest is testing]]
@@ -7,12 +7,15 @@
             [yaml.core :as yaml]
             [moclojer.aux.service :refer [service-fn]]))
 
+(def openapi-examples
+  (io/file "OpenAPI-Specification" "examples"))
+
 (def petstore-spec
-  (yaml/parse-string (slurp (io/resource "v3.0/petstore.yaml"))
+  (yaml/parse-string (slurp (io/file openapi-examples "v3.0" "petstore.yaml"))
                      :keywords false))
 
 (def petstore-expanded-spec
-  (yaml/parse-string (slurp (io/resource "v3.0/petstore-expanded.yaml"))
+  (yaml/parse-string (slurp (io/file openapi-examples "v3.0" "petstore-expanded.yaml"))
                      :keywords false))
 
 (deftest hello-petstore-spec

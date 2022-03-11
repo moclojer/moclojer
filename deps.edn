@@ -1,5 +1,6 @@
 {:paths   ["src"]
  :deps    {org.clojure/clojure          {:mvn/version "1.10.2"}
+           org.clojure/core.async       {:mvn/version "1.5.648"}
            io.forward/yaml              {:mvn/version "1.0.11"}
            org.clojure/data.json        {:mvn/version "2.4.0"}
            io.pedestal/pedestal.service {:mvn/version "0.5.10"}
@@ -19,7 +20,7 @@
                                                                    :exclusions [org.slf4j/slf4j-nop]}}}
            ;; Run all tests
            ;; clj -M:test
-           :test      {:extra-paths ["test" "OpenAPI-Specification/examples"]
+           :test      {:extra-paths ["test"]
                        :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner"
                                                                 :sha     "76568540e7f40268ad2b646110f237a60295fa3c"}
                                      clj-kondo/clj-kondo       {:mvn/version "2022.02.09"}}

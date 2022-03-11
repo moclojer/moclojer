@@ -2,6 +2,8 @@
 
 Simple and efficient HTTP mock server with specification in `yaml` or `edn`.
 
+> **Hot Reload** support, when updating the configuration file (`yaml` or `edn`) the new settings are reloaded automatically
+
 [![tests](https://github.com/avelino/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/tests.yml)
 [![linter](https://github.com/avelino/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/linter.yml)
 
@@ -84,6 +86,7 @@ Then call `moclojer` passing both OpenAPI spec and mocks as paramters:
 ```shell
 CONFIG="petstore.yaml" MOCKS="mocks.yaml" clojure -X:run
 ```
+
 you can config a mock server with edn file as well
 
 ```shell
