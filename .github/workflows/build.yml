@@ -62,7 +62,7 @@ jobs:
       - working-directory: "target/native"
         run: |
           native-image @native-image-args \
-            -H:Name=target/moclojer_${{ matrix.os }} \
+            -H:Name=moclojer_${{ matrix.os }} \
             -H:DashboardDump=report/moclojer \
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
@@ -83,11 +83,12 @@ jobs:
       - uses: "actions/download-artifact@v2"
         with:
           name: "moclojer_${{ runner.os }}"
+          path: "target"
       - name: "Check http status"
         run: |
           echo [] > moclojer.yml
-          chmod +x moclojer
-          ./moclojer_${{ matrix.os }} &
+          chmod +x ./target/moclojer_${{ matrix.os }}
+          ./target/moclojer_${{ matrix.os }} &
           PID=$!
           sleep 5
           curl -vvv -s -D - localhost:8000
@@ -101,14 +102,35 @@ jobs:
   release:
     needs: "test-native"
     runs-on: "ubuntu-20.04"
+    outputs:
+      upload_url: ${{ steps.create-release.outputs.upload_url }}
     steps:
     - uses: actions/checkout@v2
+    - uses: "actions/download-artifact@v2"
+      with:
+        name: "moclojer_ubuntu-20.04"
+        path: "target"
+    - uses: "actions/download-artifact@v2"
+      with:
+        name: "moclojer_macos-11"
+        path: "target"
     - run: ls -R
       working-directory: target
-    - uses: svenstaro/upload-release-action@v2
+    - name: Create Release
+      id: create-release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: test-avelino # ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: "target/moclojer_*"
-        tag: ${{ github.ref }}
-        overwrite: true
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: target/moclojer_ubuntu-20.04
+        asset_name: moclojer-linux-x64
