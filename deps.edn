@@ -3,12 +3,9 @@
            org.clojure/core.async       {:mvn/version "1.5.648"}
            io.forward/yaml              {:mvn/version "1.0.11"}
            org.clojure/data.json        {:mvn/version "2.4.0"}
-           io.pedestal/pedestal.service {:mvn/version "0.5.10"
-                                         :exclusions  [io.pedestal/pedestal.log]}
-           io.pedestal/pedestal.route   {:mvn/version "0.5.10"
-                                         :exclusions  [io.pedestal/pedestal.log]}
-           io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"
-                                         :exclusions  [io.pedestal/pedestal.log]}
+           io.pedestal/pedestal.service {:mvn/version "0.5.10"}
+           io.pedestal/pedestal.route   {:mvn/version "0.5.10"}
+           io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}
            selmer/selmer                {:mvn/version "1.12.50"}
            slugify/slugify              {:mvn/version "0.0.1"}
            org.slf4j/slf4j-simple       {:mvn/version "1.7.5"}}
@@ -18,8 +15,9 @@
                        :exec-fn    moclojer.core/-main
                        :extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.10"}}}
            :dev      {:extra-paths ["dev"]
-                      :extra-deps  {io.github.clojure/tools.build {:git/url "https://github.com/clojure/tools.build.git"
-                                                                   :sha     "e3e353262072e95ccac314a9b935b1bc42412a40"}}}
+                      :extra-deps  {io.github.clojure/tools.build {:git/url    "https://github.com/clojure/tools.build.git"
+                                                                   :sha        "e3e353262072e95ccac314a9b935b1bc42412a40"
+                                                                   :exclusions [org.slf4j/slf4j-nop]}}}
            ;; Run all tests
            ;; clj -M:test
            :test      {:extra-paths ["test"]
