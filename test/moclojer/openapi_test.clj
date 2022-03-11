@@ -10,12 +10,15 @@
             [moclojer.router :as router])
   (:import (java.io File)))
 
+(def openapi-examples
+  (io/file "OpenAPI-Specification" "examples"))
+
 (def petstore-spec
-  (yaml/parse-string (slurp (io/resource "v3.0/petstore.yaml"))
+  (yaml/parse-string (slurp (io/file openapi-examples "v3.0" "petstore.yaml"))
                      :keywords false))
 
 (def petstore-expanded-spec
-  (yaml/parse-string (slurp (io/resource "v3.0/petstore-expanded.yaml"))
+  (yaml/parse-string (slurp (io/file openapi-examples "v3.0" "petstore-expanded.yaml"))
                      :keywords false))
 
 (deftest hello-petstore-spec
