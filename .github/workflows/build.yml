@@ -87,7 +87,7 @@ jobs:
         run: |
           echo [] > moclojer.yml
           chmod +x moclojer
-          ./moclojer &
+          ./moclojer_${{ matrix.os }} &
           PID=$!
           sleep 5
           curl -vvv -s -D - localhost:8000
