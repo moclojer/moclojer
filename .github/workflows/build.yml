@@ -105,11 +105,17 @@ jobs:
     - uses: "actions/download-artifact@v2"
       with:
         name: "moclojer_${{ runner.os }}"
+        path: target
+    - uses: "actions/download-artifact@v2"
+      with:
+        name: "moclojer_jar"
+        path: target
+    - run: ls -R
+      working-directory: target
     - uses: svenstaro/upload-release-action@v2
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: moclojer_*
+        file: "moclojer_${{ runner.os }}"
         tag: ${{ github.ref }}
         overwrite: true
-        file_glob: true
