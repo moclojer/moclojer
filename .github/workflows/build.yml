@@ -67,7 +67,7 @@ jobs:
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json
-      - run: cp target/native/moclojer target/moclojer_${{ runner.os }}
+      - run: cp target/native/moclojer target/moclojer_${{ runner.os }} && ls -R
       - uses: "actions/upload-artifact@v2"
         with:
           name: "moclojer_${{ runner.os }}"
