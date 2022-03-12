@@ -67,14 +67,15 @@ jobs:
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json && \
-            echo $(pwd) && ls -R
+            cp moclojer ../moclojer_${{ runner.os }}
+            echo $(pwd) && ls -R ../
       - working-directory: "target"
-        run: ls -R && cp native/moclojer moclojer_${{ runner.os }}
+        run: ls -R
       - uses: "actions/upload-artifact@v2"
         with:
           name: "moclojer_${{ runner.os }}"
           path: |
-            target/native
+            target
   test-native:
     needs: "build-native"
     runs-on: "${{ matrix.os }}"
