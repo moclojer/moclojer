@@ -133,6 +133,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
-        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ TAG_REF }}
+        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.TAG_REF }}
         asset_path: target/moclojer_Linux
         asset_name: moclojer-linux-x64
