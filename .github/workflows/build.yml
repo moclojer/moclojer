@@ -130,7 +130,8 @@ jobs:
         release_name: ${{ env.RELEASE_NAME }}
         draft: false
         prerelease: false
-    - uses: actions/upload-release-asset@v1
+    - name: asset upload Linux
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # if: startsWith(github.ref, 'refs/tags/v')
@@ -138,3 +139,24 @@ jobs:
         upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.RELEASE_NAME }}
         asset_path: target/moclojer_Linux
         asset_name: moclojer-linux-x64
+        asset_content_type: application/x-binary
+    - name: asset upload macOS
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # if: startsWith(github.ref, 'refs/tags/v')
+      with:
+        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.RELEASE_NAME }}
+        asset_path: target/moclojer_macOS
+        asset_name: moclojer-macos-x64
+        asset_content_type: application/x-binary
+    - name: asset upload JAR
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # if: startsWith(github.ref, 'refs/tags/v')
+      with:
+        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.RELEASE_NAME }}
+        asset_path: target/moclojer_jar
+        asset_name: moclojer.jar
+        asset_content_type: application/java-archive
