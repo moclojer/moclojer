@@ -107,7 +107,7 @@ jobs:
       upload_url: ${{ steps.create-release.outputs.upload_url }}
     steps:
     - uses: actions/checkout@v2
-    - run: echo "${github_ref} - ${github.ref}"
+    - run: echo "${github_ref}"
     - uses: "actions/download-artifact@v2"
       with:
         name: "moclojer_Linux"
