@@ -107,6 +107,7 @@ jobs:
       upload_url: ${{ steps.create-release.outputs.upload_url }}
     steps:
     - uses: actions/checkout@v2
+    - run: echo "${env.github_ref} - ${env.github.ref}"
     - uses: "actions/download-artifact@v2"
       with:
         name: "moclojer_Linux"
@@ -117,7 +118,6 @@ jobs:
         path: "target"
     - run: ls -R
       working-directory: target
-    - run: echo "${env.github_ref} - ${env.github.ref}"
     - name: Set release name
       run: echo "RELEASE_NAME=${github_ref#refs/heads/}" >> $GITHUB_ENV
       # run: echo "RELEASE_NAME=${github.ref#refs/tags/}" >> $GITHUB_ENV
