@@ -68,9 +68,6 @@ jobs:
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json && \
             cp moclojer ../moclojer_${{ runner.os }}
-            echo $(pwd) && ls -R ../
-      - working-directory: "target"
-        run: ls -R
       - uses: "actions/upload-artifact@v2"
         with:
           name: "moclojer_${{ runner.os }}"
@@ -88,7 +85,6 @@ jobs:
         with:
           name: "moclojer_${{ runner.os }}"
           path: "target"
-      - run: ls -R
       - name: "Check http status"
         run: |
           echo [] > moclojer.yml
@@ -132,10 +128,13 @@ jobs:
         draft: false
         prerelease: false
     - uses: actions/upload-release-asset@v1
+      run: |
+        tag_ref="${github_ref#refs/tags/}""
+        echo "::set-env name=tag_ref::$tag_ref"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ tag_ref }}
         asset_path: target/moclojer_Linux
         asset_name: moclojer-linux-x64
