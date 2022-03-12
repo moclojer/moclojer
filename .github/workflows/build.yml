@@ -117,22 +117,24 @@ jobs:
         path: "target"
     - run: ls -R
       working-directory: target
+    - name: Set release name
+      run: echo "RELEASE_NAME=${github_ref#refs/heads/}" >> $GITHUB_ENV && echo "${github_ref} - ${github.ref}"
+      # run: echo "RELEASE_NAME=${github.ref#refs/tags/}" >> $GITHUB_ENV
     - name: Create Release
       id: create-release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: test-avelino # ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: ${{ env.RELEASE_NAME }}
+        release_name: ${{ env.RELEASE_NAME }}
         draft: false
         prerelease: false
-    - run: echo "TAG_REF=${github_ref#refs/tags/}" >> $GITHUB_ENV
     - uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
-        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.TAG_REF }}
+        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.RELEASE_NAME }}
         asset_path: target/moclojer_Linux
         asset_name: moclojer-linux-x64
