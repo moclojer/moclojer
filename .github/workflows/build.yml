@@ -127,14 +127,12 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
-    - run: |
-        tag_ref="${github_ref#refs/tags/}""
-        echo "::set-env name=tag_ref::$tag_ref"
+    - run: echo "TAG_REF=${github_ref#refs/tags/}" >> $GITHUB_ENV
     - uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
-        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ tag_ref }}
+        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ TAG_REF }}
         asset_path: target/moclojer_Linux
         asset_name: moclojer-linux-x64
