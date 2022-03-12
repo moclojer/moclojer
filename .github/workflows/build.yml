@@ -43,10 +43,6 @@ jobs:
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: "actions/checkout@v2"
-      - uses: "actions/download-artifact@v2"
-        with:
-          name: "moclojer_jar"
-          path: "target"
       - name: "Gen reflect.config.json"
         working-directory: "target/native"
         run: |
@@ -101,9 +97,8 @@ jobs:
           fi
   release:
     needs: "test-native"
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: "ubuntu-20.04"
-    outputs:
-      upload_url: ${{ steps.create-release.outputs.upload_url }}
     steps:
     - uses: actions/checkout@v2
     - uses: "actions/download-artifact@v2"
@@ -114,16 +109,12 @@ jobs:
       with:
         name: "moclojer_macOS"
         path: "target"
-    - run: ls -R
-      working-directory: target
     - name: Set release name
-      # run: echo "RELEASE_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
     - uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/v')
       with:
         name: ${{ env.RELEASE_NAME }}
         files: |
           target/moclojer_Linux
           target/moclojer_macOS
-          target/moclojer_jar
+          target/moclojer.jar
