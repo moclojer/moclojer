@@ -120,43 +120,11 @@ jobs:
     - name: Set release name
       run: echo "RELEASE_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       # run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-    - name: Create Release
-      id: create-release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ env.RELEASE_NAME }}
-        release_name: ${{ env.RELEASE_NAME }}
-        draft: false
-        prerelease: false
-    - name: asset upload Linux
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: softprops/action-gh-release@v1
       # if: startsWith(github.ref, 'refs/tags/v')
       with:
-        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.RELEASE_NAME }}
-        asset_path: target/moclojer_Linux
-        asset_name: moclojer-linux-x64
-        asset_content_type: application/x-binary
-    - name: asset upload macOS
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # if: startsWith(github.ref, 'refs/tags/v')
-      with:
-        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.RELEASE_NAME }}
-        asset_path: target/moclojer_macOS
-        asset_name: moclojer-macos-x64
-        asset_content_type: application/x-binary
-    - name: asset upload JAR
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # if: startsWith(github.ref, 'refs/tags/v')
-      with:
-        upload_url: https://github.com/avelino/moclojer/releases/tag/${{ env.RELEASE_NAME }}
-        asset_path: target/moclojer_jar
-        asset_name: moclojer.jar
-        asset_content_type: application/java-archive
+        name: ${{ env.RELEASE_NAME }}
+        files: |
+          target/moclojer_Linux
+          target/moclojer_macOS
+          target/moclojer_jar
