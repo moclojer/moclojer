@@ -118,10 +118,10 @@ jobs:
     - run: ls -R
       working-directory: target
     - name: Set release name
-      run: echo "RELEASE_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-      # run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      # run: echo "RELEASE_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+      run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
     - uses: softprops/action-gh-release@v1
-      # if: startsWith(github.ref, 'refs/tags/v')
+      if: startsWith(github.ref, 'refs/tags/v')
       with:
         name: ${{ env.RELEASE_NAME }}
         files: |
