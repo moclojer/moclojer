@@ -101,7 +101,7 @@ jobs:
             exit 1
           fi
   release:
-    #needs: "test-native"
+    needs: "test-native"
     runs-on: "ubuntu-20.04"
     outputs:
       upload_url: ${{ steps.create-release.outputs.upload_url }}
