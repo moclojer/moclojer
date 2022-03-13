@@ -101,6 +101,19 @@ We use git submodule for integration with the [**OpenAPI v3** specification](htt
 git submodule update -f --init
 ```
 
+## docker
+
+**image:** `ghcr.io/avelino/moclojer:latest`
+
+```sh
+docker run -it \
+  -v $(pwd)/moclojer.yml:/app/moclojer.yml \
+  ghcr.io/avelino/moclojer:latest
+```
+
+to use the `edn` format, you must pass the following parameters to docker:
+`-e CONFIG=moclojer.edn -v $(pwd)/moclojer.edn:/app/moclojer.edn`
+
 ## run
 
 ```sh
