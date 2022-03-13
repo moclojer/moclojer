@@ -62,11 +62,12 @@ jobs:
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json
+      - run: ls -R target
       - name: "test native image: check http status"
         run: |
           echo [] > moclojer.yml
-          chmod +x ./target/moclojer
-          ./target/moclojer &
+          chmod +x ./target/native/moclojer
+          ./target/native/moclojer &
           PID=$!
           sleep 5
           curl -vvv -s -D - localhost:8000
