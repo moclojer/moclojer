@@ -125,3 +125,9 @@ clj -X:run
 ```sh
 clj -M:test
 ```
+
+## `moclojer.jar` generate
+
+```sh
+clj -A:dev -M --report stderr -m moclojer.build
+```

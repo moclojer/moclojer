@@ -20,3 +20,4 @@ pom.xml.asc
 /moclojer
 /*.yaml
 /*.yml
+.socket-repl-port
