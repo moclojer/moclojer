@@ -64,8 +64,7 @@ jobs:
           while ! curl -s localhost:8000 -o /dev/null; do echo waiting; sleep 3; done
           curl -s localhost:8000 -D -
           kill $PID
-      - uses: actions/checkout@v2.1.0
-      - uses: uraimo/run-on-arch-action@v2
+      - uses: uraimo/run-on-arch-action@v2.1.1
         with:
           distro: ${{ matrix.distro }}
           arch: ${{ matrix.arch }}
@@ -92,6 +91,7 @@ jobs:
     strategy:
       matrix:
         os: [ "macos-11", "ubuntu-20.04" ]
+        # arch: ["X86", "X64", "ARM", "ARM64"]
     steps:
       - uses: "actions/download-artifact@v2"
         with:
