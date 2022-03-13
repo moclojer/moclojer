@@ -62,7 +62,6 @@ jobs:
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json
-      - run: ls -R target
       - name: "test native image: check http status"
         run: |
           echo [] > moclojer.yml
