@@ -24,7 +24,7 @@ jobs:
           CI_COMMIT_SHA: "${{ github.sha }}"
       - uses: "actions/upload-artifact@v2"
         with:
-          name: "moclojer_jar"
+          name: "moclojer_target"
           path: |
             target/*.jar
             target/native
@@ -43,6 +43,10 @@ jobs:
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: "actions/checkout@v2"
+      - uses: "actions/download-artifact@v2"
+        with:
+          name: "moclojer_target"
+          path: "target"
       - name: "Gen reflect.config.json"
         working-directory: "target/native"
         run: |
