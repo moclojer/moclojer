@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   linter:
     runs-on: ubuntu-latest
+    continue-on-error: true
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
