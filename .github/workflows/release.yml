@@ -1,0 +1,126 @@
+name: release
+
+on:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - 'v*'
+
+jobs:
+  build-jar:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "actions/cache@v2"
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+          key: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
+      - uses: "DeLaGuardo/setup-clojure@4.0"
+        with:
+          cli: "1.10.3.1075"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - run: "clojure -A:dev -M --report stderr -m moclojer.build"
+        env:
+          CI_COMMIT_SHA: "${{ github.sha }}"
+      - uses: "actions/upload-artifact@v2"
+        with:
+          name: "moclojer_jar"
+          path: |
+            target/*.jar
+            target/native
+  build-native:
+    needs: "build-jar"
+    runs-on: "${{ matrix.os }}"
+    name: "Build native image on ${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ "macos-11", "ubuntu-20.04" ]
+    steps:
+      - uses: "graalvm/setup-graalvm@v1"
+        with:
+          version: "22.0.0.2"
+          java-version: "17"
+          components: "native-image"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: "actions/checkout@v2"
+      - uses: "actions/download-artifact@v2"
+        with:
+          name: "moclojer_jar"
+          path: "target"
+      - name: "Gen reflect.config.json"
+        working-directory: "target/native"
+        run: |
+          echo [] > moclojer.yml
+          java -agentlib:native-image-agent=caller-filter-file=filter.json,config-output-dir=. \
+            -jar ../moclojer.jar &
+          PID=$!
+          ## Wait startup
+          while ! curl -s localhost:8000 -o /dev/null; do echo waiting; sleep 3; done
+          curl -s localhost:8000 -D -
+          kill $PID
+      - working-directory: "target/native"
+        run: |
+          native-image @native-image-args \
+            -H:Name=moclojer_${{ runner.os }} \
+            -H:DashboardDump=report/moclojer \
+            -jar ../moclojer.jar \
+            -H:ReflectionConfigurationFiles=reflect-config.json \
+            -H:ResourceConfigurationFiles=resource-config.json && \
+            cp moclojer ../moclojer_${{ runner.os }}
+      - uses: "actions/upload-artifact@v2"
+        with:
+          name: "moclojer_target_${{ runner.os }}"
+          path: |
+            target
+  test-native:
+    needs: "build-native"
+    runs-on: "${{ matrix.os }}"
+    name: "Test native image on ${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ "macos-11", "ubuntu-20.04" ]
+    steps:
+      - uses: "actions/download-artifact@v2"
+        with:
+          name: "moclojer_target_${{ runner.os }}"
+          path: "target"
+      - name: "Check http status"
+        run: |
+          echo [] > moclojer.yml
+          chmod +x ./target/moclojer_${{ runner.os }}
+          ./target/moclojer_${{ runner.os }} &
+          PID=$!
+          sleep 5
+          curl -vvv -s -D - localhost:8000
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" localhost:8000)
+          kill $PID
+          if [ "x$STATUS" = "x200" ]; then
+            exit 0
+          else
+            exit 1
+          fi
+  release:
+    needs: "test-native"
+    runs-on: "ubuntu-20.04"
+    steps:
+    - uses: actions/checkout@v2
+    - uses: "actions/download-artifact@v2"
+      with:
+        name: "moclojer_target_Linux"
+        path: "target"
+    - uses: "actions/download-artifact@v2"
+      with:
+        name: "moclojer_target_macOS"
+        path: "target"
+    - name: Set release name
+      run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - uses: softprops/action-gh-release@v1
+      with:
+        name: ${{ env.RELEASE_NAME }}
+        files: |
+          target/moclojer_Linux
+          target/moclojer_macOS
+          target/moclojer.jar
