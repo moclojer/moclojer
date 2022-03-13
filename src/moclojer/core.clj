@@ -1,11 +1,14 @@
 (ns moclojer.core
   (:gen-class)
   (:require [clojure.core.async :as async]
+            [clojure.string :as string]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
             [moclojer.router :as router])
   (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
            (org.eclipse.jetty.servlet ServletContextHandler)))
+
+(def moclojer-version (string/replace (slurp "META-INF/MOCLOJER_VERSION") "\n" ""))
 
 (defn context-configurator
   [^ServletContextHandler context]
@@ -39,7 +42,7 @@
 (defn -main
   "start moclojer server"
   [& _]
-  (prn "(-> moclojer :start-server)")
+  (prn (str "(-> moclojer :start-server :version " moclojer-version ")"))
   (let [*router (atom (router/make-smart-router))]
     ;; TODO: Use watch-service
     (async/thread

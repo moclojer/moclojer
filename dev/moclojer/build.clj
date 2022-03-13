@@ -7,6 +7,7 @@
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
+(def moclojer-version (string/replace (slurp "META-INF/MOCLOJER_VERSION") "\n" ""))
 (set! *warn-on-reflection* true)
 (defn -main
   [& _]
@@ -15,7 +16,7 @@
 
     (b/write-pom {:class-dir class-dir
                   :lib       lib
-                  :version   "1.0.0"
+                  :version   moclojer-version
                   :basis     basis
                   :src-dirs  (:paths basis)})
     (b/compile-clj {:basis     basis
