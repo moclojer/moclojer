@@ -2,21 +2,20 @@
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
             [clojure.string :as string]
-            [clojure.tools.build.api :as b]))
+            [clojure.tools.build.api :as b]
+            [moclojer.helper :as helper]))
 
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
-(def moclojer-version (string/replace (slurp "META-INF/MOCLOJER_VERSION") "\n" ""))
 (set! *warn-on-reflection* true)
 (defn -main
   [& _]
   (let [basis (b/create-basis {:project "deps.edn"})]
     (b/delete {:path "target"})
-
     (b/write-pom {:class-dir class-dir
-                  :lib       lib
-                  :version   moclojer-version
+                  :lib lib
+                  :version   helper/moclojer-version
                   :basis     basis
                   :src-dirs  (:paths basis)})
     (b/compile-clj {:basis     basis
@@ -41,4 +40,3 @@
                              "-H:+DashboardBgv"
                              "-H:+DashboardJson"
                              "--no-fallback"]))))
-
