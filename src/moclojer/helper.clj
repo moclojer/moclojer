@@ -1,6 +1,5 @@
-(ns moclojer.helper
-  (:require [clojure.string :as string]))
+(ns moclojer.helper)
 
 (def moclojer-version
   "moclojer version rendering constant"
-  (string/replace (slurp "META-INF/MOCLOJER_VERSION") "\n" ""))
+  "0.1")
