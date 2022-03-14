@@ -70,12 +70,11 @@ jobs:
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json && \
-            cp moclojer ../moclojer_${{ runner.os }}
+            cp moclojer moclojer_${{ runner.os }}
       - uses: "actions/upload-artifact@v2"
         with:
-          name: "moclojer_target_${{ runner.os }}"
-          path: |
-            target
+          name: moclojer_bin_${{ runner.os }}
+          path: moclojer_${{ runner.os }}
   test-native:
     needs: "build-native"
     runs-on: "${{ matrix.os }}"
@@ -84,15 +83,16 @@ jobs:
       matrix:
         os: [ "macos-11", "ubuntu-20.04" ]
     steps:
+      - uses: "actions/checkout@v2"
       - uses: "actions/download-artifact@v2"
         with:
-          name: "moclojer_target_${{ runner.os }}"
-          path: "target"
+          name: moclojer_bin_${{ runner.os }}"
+          path: moclojer_${{ runner.os }}"
       - name: "Check http status"
         run: |
           echo [] > moclojer.yml
-          chmod +x ./target/moclojer_${{ runner.os }}
-          ./target/moclojer_${{ runner.os }} &
+          chmod +x ./moclojer_${{ runner.os }}
+          ./moclojer_${{ runner.os }} &
           PID=$!
           sleep 5
           curl -vvv -s -D - localhost:8000
@@ -103,10 +103,6 @@ jobs:
           else
             exit 1
           fi
-      - uses: "actions/upload-artifact@v2"
-        with:
-          name: moclojer_bin_${{ runner.os }}
-          path: target/moclojer_${{ runner.os }}
   release:
     needs: "test-native"
     runs-on: "ubuntu-20.04"
