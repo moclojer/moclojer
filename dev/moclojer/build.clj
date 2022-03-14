@@ -16,6 +16,7 @@
 
     (b/write-pom {:class-dir class-dir
                   :lib       lib
+                  :scm       {:url "https://github.com/avelino/moclojer"}
                   :version   moclojer-version
                   :basis     basis
                   :src-dirs  (:paths basis)})
@@ -23,6 +24,7 @@
                     :src-dirs  (:paths basis)
                     :class-dir class-dir})
     (b/uber {:class-dir class-dir
+             :manifest  {"Implementation-Version" moclojer-version}
              :main      'moclojer.core
              :uber-file uber-file
              :basis     basis})

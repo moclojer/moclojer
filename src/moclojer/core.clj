@@ -4,11 +4,19 @@
             [clojure.string :as string]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
-            [moclojer.router :as router])
+            [moclojer.router :as router]
+            [clojure.java.io :as io])
   (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)))
+           (org.eclipse.jetty.servlet ServletContextHandler)
+           (java.util.jar Manifest)))
 
-(def moclojer-version (string/replace (slurp "META-INF/MOCLOJER_VERSION") "\n" ""))
+(def moclojer-version
+  (some-> "META-INF/MANIFEST.MF"
+    io/resource
+    io/input-stream
+    Manifest.
+    .getMainAttributes
+    (.getValue "Implementation-Version")))
 
 (defn context-configurator
   [^ServletContextHandler context]
@@ -42,13 +50,18 @@
 (defn -main
   "start moclojer server"
   [& _]
-  (prn (str "(-> moclojer :start-server :version " moclojer-version ")"))
-  (let [*router (atom (router/make-smart-router))]
+  (prn (list '-> 'moclojer :start-server :version moclojer-version))
+  (let [config (System/getenv "CONFIG")
+        mocks (System/getenv "MOCKS")
+        env {::router/config (or config "moclojer.yml")
+             ::router/mocks  mocks}
+        *router (atom (router/make-smart-router
+                        env))]
     ;; TODO: Use watch-service
     (async/thread
       (loop []
         (let [wait (async/timeout 1000)]
-          (reset! *router (router/make-smart-router))
+          (reset! *router (router/make-smart-router env))
           (async/<!! wait))
         (recur)))
     (-> {:env                     :prod

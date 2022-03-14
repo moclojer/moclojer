@@ -1,14 +1,18 @@
 (ns moclojer.edn-test
   (:require [cheshire.core :as json]
             [clojure.test :refer [deftest is testing]]
+            [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
-            [moclojer.aux.service :refer [service-fn]]
             [moclojer.router :as router]))
 
 
 (deftest dynamic-endpoint-edn
-  (let [config (router/make-edn-specs "moclojer.edn")
-        service-fn (service-fn config)]
+  (let [service-fn (-> {::http/routes (router/make-smart-router
+                                        {::router/config "moclojer.edn"})}
+                     http/default-interceptors
+                     http/dev-interceptors
+                     http/create-servlet
+                     ::http/service-fn)]
     (testing "get all pets"
       (is (= {:pets [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
              (-> service-fn

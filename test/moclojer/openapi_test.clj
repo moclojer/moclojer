@@ -2,12 +2,11 @@
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.test :refer [deftest is testing]]
-            [io.pedestal.test :refer [response-for]]
-            [moclojer.openapi :as openapi]
-            [yaml.core :as yaml]
-            [moclojer.aux.service :refer [service-fn]]
             [io.pedestal.http :as http]
-            [moclojer.router :as router])
+            [io.pedestal.test :refer [response-for]]
+            [moclojer.io-utils :as iou]
+            [moclojer.router :as router]
+            [yaml.core :as yaml])
   (:import (java.io File)))
 
 (def openapi-examples
@@ -22,26 +21,31 @@
                      :keywords false))
 
 (deftest hello-petstore-spec
-  (let [config (openapi/with-mocks
-                 petstore-spec
-                 {"listPets" {"status"  200
-                              "body"    (json/generate-string [{:id   0
-                                                                :name "caramelo"}])
-                              "headers" {"Content-Type" "application/json"}}})]
+  (let [mocks {"listPets" {"status"  200
+                           "body"    (json/generate-string [{:id   0
+                                                             :name "caramelo"}])
+                           "headers" {"Content-Type" "application/json"}}}
+        service-fn (-> {::http/routes (router/make-smart-router
+                                        {::router/config (iou/write-config "yaml" petstore-spec)
+                                         ::router/mocks  (iou/write-config "yaml" mocks)})}
+                     http/default-interceptors
+                     http/dev-interceptors
+                     http/create-servlet
+                     ::http/service-fn)]
     (testing
      "Simple route"
       (is (= [{:id   0
                :name "caramelo"}]
-            (-> (service-fn config)
-              (response-for :get "/pets"
-                :body
-                (json/parse-string true))))))
+            (-> service-fn
+              (response-for :get "/pets")
+              :body
+              (json/parse-string true)))))
     (testing
      "Not implemented route"
       (is (= 501
-            (-> (service-fn config)
-              (response-for :post "/pets"
-                :status)))))))
+            (-> service-fn
+              (response-for :post "/pets")
+              :status))))))
 
 
 (deftest multipart-form
@@ -53,11 +57,11 @@
                  (assoc content
                    "multipart/form-data"
                    (val (first content)))))
-        config (openapi/with-mocks
-                 spec
-                 {"addPet" {"store"  "upload-filesystem"
-                            "status" 303}})
-        service-fn (-> {::http/routes (router/smart-router config)}
+        mocks {"addPet" {"store"  "upload-filesystem"
+                         "status" 303}}
+        service-fn (-> {::http/routes (router/make-smart-router
+                                        {::router/config (iou/write-config "yaml" spec)
+                                         ::router/mocks  (iou/write-config "yaml" mocks)})}
                      http/default-interceptors
                      http/dev-interceptors
                      http/create-servlet
@@ -79,43 +83,48 @@
 
 
 (deftest hello-petstore-expanded-spec
-  (let [config (openapi/with-mocks
-                 petstore-expanded-spec
-                 {"find pet by id" {"status"  200
-                                    "body"    (json/generate-string {:id   0
-                                                                     :name "caramelo"})
-                                    "headers" {"Content-Type" "application/json"}}
-                  "addPet"         {"status" 303}
-                  "deletePet"      {"status" 202}
-                  "findPets"       {"status"  200
-                                    "body"    (json/generate-string [{:id   0
-                                                                      :name "caramelo"}])
-                                    "headers" {"Content-Type" "application/json"}}})]
+  (let [mocks {"find pet by id" {"status"  200
+                                 "body"    (json/generate-string {:id   0
+                                                                  :name "caramelo"})
+                                 "headers" {"Content-Type" "application/json"}}
+               "addPet"         {"status" 303}
+               "deletePet"      {"status" 202}
+               "findPets"       {"status"  200
+                                 "body"    (json/generate-string [{:id   0
+                                                                   :name "caramelo"}])
+                                 "headers" {"Content-Type" "application/json"}}}
+        service-fn (-> {::http/routes (router/make-smart-router
+                                        {::router/config (iou/write-config "yaml" petstore-expanded-spec)
+                                         ::router/mocks  (iou/write-config "yaml" mocks)})}
+                     http/default-interceptors
+                     http/dev-interceptors
+                     http/create-servlet
+                     ::http/service-fn)]
     (testing
      "findPets route"
       (is (= [{:id   0
                :name "caramelo"}]
-             (-> (service-fn config)
+             (-> service-fn
                  (response-for :get "/pets")
                  :body
                  (json/parse-string true)))))
     (testing
      "addPet route"
       (is (= 303
-             (-> (service-fn config)
+             (-> service-fn
                  (response-for :post "/pets")
                  :status))))
     (testing
      "find pet by id route"
       (is (= {:id   0
               :name "caramelo"}
-             (-> (service-fn config)
+             (-> service-fn
                  (response-for :get "/pets/0")
                  :body
                  (json/parse-string true)))))
     (testing
      "deletePet route"
       (is (= 202
-             (-> (service-fn config)
+             (-> service-fn
                  (response-for :delete "/pets/0")
                  :status))))))

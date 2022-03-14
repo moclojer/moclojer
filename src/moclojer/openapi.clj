@@ -2,7 +2,9 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
             [io.pedestal.http.ring-middlewares :as middlewares]
-            [io.pedestal.http.route :as route])
+            [io.pedestal.http.route :as route]
+            [selmer.parser :as selmer]
+            [io.pedestal.http.body-params :as body-params])
   (:import (java.time Instant)))
 
 (def path-item->operation
@@ -42,10 +44,11 @@
   "Generate a response object from a response object in the OpenAPI spec"
   {:name  ::generate-response
    :enter (fn [{::keys [operation]
+                :keys  [request]
                 :as    ctx}]
             (assoc ctx :response
                        (if-let [{:strs [status body headers]} (get operation "x-mockResponse")]
-                         {:body    body
+                         {:body    (selmer/render body request)
                           :headers headers
                           :status  status}
                          {:status 501})))})
@@ -62,9 +65,9 @@
                        (get openapi "paths"))]
     (reduce-kv (fn [openapi pointer-or-operation mock]
                  (let [path (or (op->path pointer-or-operation)
-                                (json-pointer->path pointer-or-operation))]
+                              (json-pointer->path pointer-or-operation))]
                    (assoc-in openapi (conj path "x-mockResponse")
-                             mock)))
+                     mock)))
                openapi mocks)))
 
 (defn openapi-path->pedestal-path
@@ -106,7 +109,8 @@
                                                    ::method method
                                                    ::openapi config
                                                    ::path-item path-item
-                                                   ::operation operation))}]
+                                                   ::operation operation))}
+                                       (body-params/body-params)]
                                       (when (get-in operation ["requestBody" "content" "multipart/form-data"])
                                         [(middlewares/multipart-params)])
                                       (when-let [dir (get-in operation ["x-mockResponse" "store"])]
