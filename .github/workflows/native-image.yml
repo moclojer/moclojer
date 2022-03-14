@@ -38,12 +38,10 @@ jobs:
           java-version: "17"
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - run: ls -R
       - uses: "actions/download-artifact@v2"
         with:
           name: moclojer_target
           path: target
-      - run: ls -R
       - name: Gen reflect.config.json
         working-directory: target/native
         run: |
