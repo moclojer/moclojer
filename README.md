@@ -1,13 +1,13 @@
 [![moclojer logo](doc/assets/logo.png)](https://github.com/avelino/moclojer)
 
-Simple and efficient HTTP mock server with specification in `yaml` or `edn`.
+Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `OpenAPI`.
 
-> **Hot Reload** support, when updating the configuration file (`yaml` or `edn`) the new settings are reloaded automatically
-
-> Download the binary with the latest version of moclojer to test on your computer [here](https://github.com/avelino/moclojer/releases/latest).
+> 💾 Download the binary with the latest version of moclojer to test on your computer [here](https://github.com/avelino/moclojer/releases/latest).
 
 [![tests](https://github.com/avelino/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/tests.yml)
 [![linter](https://github.com/avelino/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/linter.yml)
+
+**[📖 See the complete documentation for moclojer here](https://avelino.run/projects/moclojer/)**, if you want to contribute (or complement) the documentation, it is [here](https://github.com/avelino/avelino.run/blob/main/content/projects/moclojer.md).
 
 **`YAML` example**
 
@@ -30,79 +30,6 @@ Simple and efficient HTTP mock server with specification in `yaml` or `edn`.
         }
 ```
 
-**`EDN` example**
-
-```edn
-{:endpoint {:method :get
-            :path "/pets"
-            :response {:status 200
-                       :headers {:content-type  "applicantion/json"}
-                       :body {:pets [{:name "Uber" :type "dog"}
-                                     {:name "Pinpolho" :type "cat"}]}}
-            :router-name :get-all-pets}}
-
-{:endpoint {:method :get
-            :path "/pet/:id"
-            :response {:status 200
-                       :headers {:content-type  "applicantion/json"}
-                       :body {:id 1 :name "uber" :type "dog"}}
-            :router-name :get-pet-by-id}}
-```
-
-## Body template
-
-The return from the endpoint (_body_) can be dynamic we have a template renderer system, and it is possible to read the parameters passed to the endpoint.
-
-- `path-params`: the parameters passed to the endpoint `/hello/:username`
-- `query-params`: the parameters passed in _query string_ to the endpoint `?param1=value1&param2=value2`
-- `json-params`: the parameters passed in _data request_ to the endpoint `{"param1": "value1"}`
-
-**Example**
-
-```json
-{
-  "path-params": "{{path-params.param1}}",
-  "query-params": "{{query-params.param1}}",
-  "json-params": "{{json-params.param1}}"
-}
-```
-
-## OpenAPI Integration
-
-You can easily mock all routes routes from a OpenAPI v3 specification.
-For this, you will need to define one response for each operation.
-
-> Example `mocks.yaml`
-
-```yaml
-listPets:
-  status: 200
-  headers:
-    Content-Type: application/json
-  body: >
-    []
-```
-
-Then call `moclojer` passing both OpenAPI spec and mocks as paramters:
-
-```shell
-CONFIG="petstore.yaml" MOCKS="mocks.yaml" clojure -X:run
-```
-
-you can config a mock server with edn file as well
-
-```shell
-CONFIG="moclojer.edn" clojure -X:run
-```
-
-## dev environment
-
-We use git submodule for integration with the [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), you need to update the git submodule code.
-
-```sh
-git submodule update -f --init
-```
-
 ## docker
 
 **image:** `ghcr.io/avelino/moclojer:latest`
@@ -113,22 +40,27 @@ docker run -it \
   ghcr.io/avelino/moclojer:latest
 ```
 
-to use the `edn` format, you must pass the following parameters to docker:
-`-e CONFIG=moclojer.edn -v $(pwd)/moclojer.edn:/app/moclojer.edn`
+## 💻 dev environment
 
-## run
+We use git submodule for integration with the [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), you need to update the git submodule code.
+
+```sh
+git submodule update -f --init
+```
+
+### run
 
 ```sh
 clj -X:run
 ```
 
-## test
+### test
 
 ```sh
 clj -M:test
 ```
 
-## `moclojer.jar` generate
+### `moclojer.jar` generate
 
 ```sh
 clj -A:dev -M --report stderr -m moclojer.build
