@@ -1,13 +1,16 @@
 (ns moclojer.core
   (:gen-class)
   (:require [clojure.core.async :as async]
+            [clojure.java.io :as io]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
+            [io.pedestal.http.route :as route]
+            [io.pedestal.log :as log]
             [moclojer.router :as router]
-            [clojure.java.io :as io])
-  (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)
-           (java.util.jar Manifest)))
+            [clojure.spec.alpha :as s])
+  (:import (java.util.jar Manifest)
+           (org.eclipse.jetty.server.handler.gzip GzipHandler)
+           (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (def moclojer-version
   (some-> "META-INF/MANIFEST.MF"
@@ -54,24 +57,34 @@
         mocks (System/getenv "MOCKS")
         env {::router/config (or config "moclojer.yml")
              ::router/mocks  mocks}
-        *router (atom (router/make-smart-router
-                        env))]
+        *last-ex-msg (atom nil)
+        try-routes (fn [old-routes]
+                     (try
+                       (router/make-smart-router env)
+                       (catch Throwable ex
+                         (when-not (= (ex-message ex)
+                                     @*last-ex-msg)
+                           (log/error :exception ex)
+                           (reset! *last-ex-msg (ex-message ex)))
+                         old-routes)))
+        *router (atom (try-routes (route/expand-routes #{})))]
     ;; TODO: Use watch-service
     (async/thread
       (loop []
         (let [wait (async/timeout 1000)]
-          (reset! *router (router/make-smart-router env))
+          (swap! *router try-routes)
           (async/<!! wait))
         (recur)))
     (-> {:env                     :prod
-         ::http/routes            (fn [] @*router)
+         ::http/routes            (fn []
+                                    @*router)
          ::http/type              :jetty
          ::http/join?             true
          ::http/container-options {:h2c?                 true
                                    :context-configurator context-configurator}
          ::http/port              (or (some-> (System/getenv "PORT")
-                                              Integer/parseInt)
-                                      8000)}
+                                        Integer/parseInt)
+                                    8000)}
         http/default-interceptors
         (update ::http/interceptors into [http/json-body])
         http/create-server

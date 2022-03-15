@@ -1,5 +1,6 @@
 (ns moclojer.handler
   (:require [clojure.data.json :as json]
+            [clojure.spec.alpha :as s]
             [clojure.string :as string]))
 
 (def home-endpoint
@@ -10,6 +11,21 @@
                             :body    (json/write-str {:body (str '(-> moclojer server))})
                             :status  200}}})
 
+(s/def ::path string?)
+(s/def ::method keyword?)
+(s/def ::status number?)
+(s/def ::headers map?)
+(s/def ::body any?)
+(s/def ::response (s/keys :req-un [::status
+                                   ::headers
+                                   ::body]))
+(s/def ::endpoint
+  (s/keys :req-un [::path
+                   ::method
+                   ::response]
+    :opt-un [::route-name]))
+(s/def ::endpoints
+  (s/coll-of (s/keys :req-un [::endpoint])))
 (defn moclojer->openapi
   [endpoints]
   {"openapi" "3.0.0"

@@ -1,12 +1,18 @@
 (ns moclojer.openapi
   (:require [clojure.java.io :as io]
+            [clojure.spec.alpha :as s]
             [clojure.string :as string]
+            [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as middlewares]
             [io.pedestal.http.route :as route]
-            [selmer.parser :as selmer]
-            [io.pedestal.http.body-params :as body-params])
+            [selmer.parser :as selmer])
   (:import (java.time Instant)))
 
+(s/def ::mocks
+  (s/map-of string?
+    (s/map-of string? any?)))
+(s/def ::openapi
+  (s/map-of string? any?))
 (def path-item->operation
   "Convert path item to http method"
   #{"get" "put" "post" "delete" "options" "head" "patch" "trace"})

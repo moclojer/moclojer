@@ -164,3 +164,44 @@
       (is (= [{"id"   0
                "name" "caramelo"}]
             (json/read-str body))))))
+
+
+
+(deftest wrong-file-format
+  (with-open [p (moclojer! {::env   {"CONFIG" "openapi.yaml"
+                                     "MOCKS"  "mocks.yaml"}
+                            ::files [{::name  "openapi.yaml"
+                                      ::as    :yaml
+                                      ::value {"openapi"    "3.0.0",
+                                               "paths"      {"/pets" {"get" {"summary"     "List all pets",
+                                                                             "operationId" "listPets",
+                                                                             "tags"        ["pets"],
+                                                                             "parameters"  [{"name"        "limit",
+                                                                                             "in"          "query",
+                                                                                             "description" "How many items to return at one time (max 100)",
+                                                                                             "required"    false,
+                                                                                             "schema"      {"type" "integer", "format" "int32"}}],
+                                                                             "responses"   {"200"     {"description" "A paged array of pets",
+                                                                                                       "headers"     {"x-next" {"description" "A link to the next page of responses",
+                                                                                                                                "schema"      {"type" "string"}}},
+                                                                                                       "content"     {"application/json" {"schema" {"$ref" "#/components/schemas/Pets"}}}},
+                                                                                            "default" {"description" "unexpected error",
+                                                                                                       "content"     {"application/json" {"schema" {"$ref" "#/components/schemas/Error"}}}}}},},},
+                                               "components" {"schemas" {"Pets"  {"type" "array", "items" {"$ref" "#/components/schemas/Pet"}},
+                                                                        "Error" {"type"       "object",
+                                                                                 "required"   ["code" "message"],
+                                                                                 "properties" {"code"    {"type" "integer", "format" "int32"},
+                                                                                               "message" {"type" "string"}}}}}}}
+                                     {::name  "mocks.yaml"
+                                      ::as    :yaml
+                                      ;; Wrong definition
+                                      ::value [{:endpoint {:method   "GET"
+                                                           :path     "/hello/:username"
+                                                           :response {:status  200
+                                                                      :headers {:Content-Type "application/json"}
+                                                                      :body    (json/write-str {:hello "{{path-params.username}}!"})}}}]}]})]
+    (wait-for-log p #"Started")
+    (let [{:keys [body status]} (request {:server-port 8000
+                                          :uri         "/pets"
+                                          :server-name "moclojer.localhost"})]
+      (is (= 404 status)))))
