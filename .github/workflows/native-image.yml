@@ -2,6 +2,8 @@ name: native-image
 
 on:
   push:
+    branches:
+      - '!main'
   pull_request:
 
 jobs:
@@ -24,28 +26,26 @@ jobs:
           CI_COMMIT_SHA: "${{ github.sha }}"
       - uses: "actions/upload-artifact@v2"
         with:
-          name: "moclojer_jar"
-          path: |
-            target/*.jar
-            target/native
+          name: moclojer_target
+          path: target
   native-image:
     needs: "build-jar"
     runs-on: "ubuntu-20.04"
     name: "Build native image"
     steps:
+      - uses: "actions/checkout@v2"
       - uses: "graalvm/setup-graalvm@v1"
         with:
           version: "22.0.0.2"
           java-version: "17"
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: "actions/checkout@v2"
       - uses: "actions/download-artifact@v2"
         with:
-          name: "moclojer_jar"
-          path: "target"
-      - name: "Gen reflect.config.json"
-        working-directory: "target/native"
+          name: moclojer_target
+          path: target
+      - name: Gen reflect.config.json
+        working-directory: target/native
         run: |
           echo [] > moclojer.yml
           java -agentlib:native-image-agent=caller-filter-file=filter.json,config-output-dir=. \
@@ -55,7 +55,8 @@ jobs:
           while ! curl -s localhost:8000 -o /dev/null; do echo waiting; sleep 3; done
           curl -s localhost:8000 -D -
           kill $PID
-      - working-directory: "target/native"
+      - name: GraalVM native image build moclojer binary
+        working-directory: target/native
         run: |
           native-image @native-image-args \
             -H:DashboardDump=report/moclojer \
