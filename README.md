@@ -3,6 +3,7 @@
 Simple and efficient HTTP mock server with specification in `yaml` or `edn`.
 
 > **Hot Reload** support, when updating the configuration file (`yaml` or `edn`) the new settings are reloaded automatically
+
 > Download the binary with the latest version of moclojer to test on your computer [here](https://github.com/avelino/moclojer/releases/latest).
 
 [![tests](https://github.com/avelino/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/tests.yml)
