@@ -1,7 +1,6 @@
 (ns moclojer.core
   (:gen-class)
   (:require [clojure.core.async :as async]
-            [clojure.string :as string]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
             [moclojer.router :as router]

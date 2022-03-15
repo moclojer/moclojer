@@ -7,7 +7,9 @@
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
-(def moclojer-version (string/replace (slurp "META-INF/MOCLOJER_VERSION") "\n" ""))
+(def moclojer-version
+  (str (slurp "VERSION_PREFIX")
+    (b/git-count-revs {})))
 (set! *warn-on-reflection* true)
 (defn -main
   [& _]
