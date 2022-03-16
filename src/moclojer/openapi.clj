@@ -1,5 +1,6 @@
 (ns moclojer.openapi
   (:require [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as string]
             [io.pedestal.http.body-params :as body-params]
@@ -7,8 +8,7 @@
             [io.pedestal.http.route :as route]
             [io.pedestal.log :as log]
             [json-schema.core :as js]
-            [selmer.parser :as selmer]
-            [clojure.edn :as edn])
+            [selmer.parser :as selmer])
   (:import (java.time Instant)))
 
 (def path-item->operation
@@ -51,26 +51,26 @@
                 :keys  [request]
                 :as    ctx}]
             (assoc ctx :response
-                       (if-let [{:strs [status body headers]
-                                 :as   mock-response} (get operation "x-mockResponse")]
-                         (merge
-                           (when headers
-                             {:headers headers})
-                           (cond
-                             (string? body) {:body (selmer/render body request)}
+                   (if-let [{:strs [status body headers]
+                             :as   mock-response} (get operation "x-mockResponse")]
+                     (merge
+                       (when headers
+                         {:headers headers})
+                       (cond
+                         (string? body) {:body (selmer/render body request)}
 
-                             (contains? mock-response "body")
-                             {:body (if (string/starts-with?
-                                          (str (or
-                                                 (get headers "content-type")
-                                                 (get headers "Content-Type")))
-                                          "applicantion/json")
-                                      (json/generate-string body)
-                                      body)}
+                         (contains? mock-response "body")
+                         {:body (if (string/starts-with?
+                                      (str (or
+                                             (get headers "content-type")
+                                             (get headers "Content-Type")))
+                                      "applicantion/json")
+                                  (json/generate-string body)
+                                  body)}
 
-                             :else {})
-                           {:status status})
-                         {:status 501})))})
+                         :else {})
+                       {:status status})
+                     {:status 501})))})
 
 (defn with-mocks
   "Generate a mock response for a given operation"
@@ -96,9 +96,9 @@
   ;; https://github.com/OAI/OpenAPI-Specification/issues/291
   ;; https://datatracker.ietf.org/doc/html/rfc6570
   (string/replace path
-    #"\{([^}]+)\}"
-    (fn [x]
-      (str ":" (second x)))))
+                  #"\{([^}]+)\}"
+                  (fn [x]
+                    (str ":" (second x)))))
 
 (defn resolve-ref
   "Resolve a reference to a schema"
@@ -195,6 +195,7 @@
                                                          :data  (ex-data (ex-cause ex))})
                          :status  400}))})
 
+
 (defn save-all-multipart
   [dir]
   {:name  ::save-all-multipart
@@ -219,37 +220,38 @@
                     (spit target v)))))
             ctx)})
 
+
 (defn generate-pedestal-route
   "Generate a Pedestal route from an OpenAPI specification"
   [config]
   (sequence (mapcat
-              (fn [[path path-item]]
-                (sequence
-                  (mapcat (fn [[method operation]]
-                            (when (contains? path-item->operation method)
-                              (route/expand-routes
-                                #{[(openapi-path->pedestal-path path)
-                                   (keyword method)
-                                   (into []
-                                     cat
-                                     [[route-error-handler
-                                       {:name  ::add-operation
-                                        :enter (fn [ctx]
-                                                 (assoc ctx
-                                                   ::path path
-                                                   ::method method
-                                                   ::openapi config
-                                                   ::path-item path-item
-                                                   ::operation operation))}
-                                       (body-params/body-params)]
-                                      (when (get-in operation ["requestBody" "content" "multipart/form-data"])
-                                        [(middlewares/multipart-params)])
-                                      (when-let [dir (get-in operation ["x-mockResponse" "store"])]
-                                        (.mkdirs (io/file dir))
-                                        [(save-all-multipart dir)])
-                                      [schema-check
-                                       generate-response]])
-                                   :route-name (keyword (or (get operation "operationId")
-                                                          (json-path->pointer [path method])))]}))))
-                  (resolve-ref config path-item))))
-    (get config "paths")))
+             (fn [[path path-item]]
+               (sequence
+                (mapcat (fn [[method operation]]
+                          (when (contains? path-item->operation method)
+                            (route/expand-routes
+                             #{[(openapi-path->pedestal-path path)
+                                (keyword method)
+                                (into []
+                                      cat
+                                      [[route-error-handler
+                                        {:name  ::add-operation
+                                         :enter (fn [ctx]
+                                                  (assoc ctx
+                                                         ::path path
+                                                         ::method method
+                                                         ::openapi config
+                                                         ::path-item path-item
+                                                         ::operation operation))}
+                                        (body-params/body-params)]
+                                       (when (get-in operation ["requestBody" "content" "multipart/form-data"])
+                                         [(middlewares/multipart-params)])
+                                       (when-let [dir (get-in operation ["x-mockResponse" "store"])]
+                                         (.mkdirs (io/file dir))
+                                         [(save-all-multipart dir)])
+                                       [schema-check
+                                        generate-response]])
+                                :route-name (keyword (or (get operation "operationId")
+                                                         (json-path->pointer [path method])))]}))))
+                (resolve-ref config path-item))))
+            (get config "paths")))
