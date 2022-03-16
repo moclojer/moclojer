@@ -40,13 +40,18 @@
 (defn -main
   "start moclojer server"
   [& _]
-  (prn (str "(-> moclojer :start-server :version " helper/moclojer-version ")"))
-  (let [*router (atom (router/make-smart-router))]
+  (prn (list '-> 'moclojer :start-server :version helper/moclojer-version))
+  (let [config (System/getenv "CONFIG")
+        mocks (System/getenv "MOCKS")
+        env {::router/config (or config "moclojer.yml")
+             ::router/mocks  mocks}
+        *router (atom (router/make-smart-router
+                       env))]
     ;; TODO: Use watch-service
     (async/thread
       (loop []
         (let [wait (async/timeout 1000)]
-          (reset! *router (router/make-smart-router))
+          (reset! *router (router/make-smart-router env))
           (async/<!! wait))
         (recur)))
     (-> {:env                     :prod
