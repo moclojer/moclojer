@@ -46,7 +46,7 @@
         env {::router/config (or config "moclojer.yml")
              ::router/mocks  mocks}
         *router (atom (router/make-smart-router
-                        env))]
+                       env))]
     ;; TODO: Use watch-service
     (async/thread
       (loop []

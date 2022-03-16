@@ -19,8 +19,8 @@
         (do
           (log/info :mode "moclojer")
           (handler/moclojer->openapi
-            (if (string/ends-with? config ".edn")
-              (edn/read-string (str "[" (slurp config) "]"))
-              (cons handler/home-endpoint
-                (yaml/from-file config))))))
-    openapi/generate-pedestal-route))
+           (if (string/ends-with? config ".edn")
+             (edn/read-string (str "[" (slurp config) "]"))
+             (cons handler/home-endpoint
+                   (yaml/from-file config))))))
+      openapi/generate-pedestal-route))

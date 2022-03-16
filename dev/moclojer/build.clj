@@ -9,12 +9,13 @@
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
 (set! *warn-on-reflection* true)
+
 (defn -main
   [& _]
   (let [basis (b/create-basis {:project "deps.edn"})]
     (b/delete {:path "target"})
     (b/write-pom {:class-dir class-dir
-                  :lib lib
+                  :lib       lib
                   :version   helper/moclojer-version
                   :basis     basis
                   :src-dirs  (:paths basis)})
