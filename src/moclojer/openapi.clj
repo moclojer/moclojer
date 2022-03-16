@@ -65,9 +65,9 @@
                        (get openapi "paths"))]
     (reduce-kv (fn [openapi pointer-or-operation mock]
                  (let [path (or (op->path pointer-or-operation)
-                              (json-pointer->path pointer-or-operation))]
+                                (json-pointer->path pointer-or-operation))]
                    (assoc-in openapi (conj path "x-mockResponse")
-                     mock)))
+                             mock)))
                openapi mocks)))
 
 (defn openapi-path->pedestal-path

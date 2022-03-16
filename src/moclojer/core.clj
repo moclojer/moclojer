@@ -3,19 +3,10 @@
   (:require [clojure.core.async :as async]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
-            [moclojer.router :as router]
-            [clojure.java.io :as io])
+            [moclojer.helper :as helper]
+            [moclojer.router :as router])
   (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)
-           (java.util.jar Manifest)))
-
-(def moclojer-version
-  (some-> "META-INF/MANIFEST.MF"
-    io/resource
-    io/input-stream
-    Manifest.
-    .getMainAttributes
-    (.getValue "Implementation-Version")))
+           (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
   [^ServletContextHandler context]
@@ -49,7 +40,7 @@
 (defn -main
   "start moclojer server"
   [& _]
-  (prn (list '-> 'moclojer :start-server :version moclojer-version))
+  (prn (list '-> 'moclojer :start-server :version helper/moclojer-version))
   (let [config (System/getenv "CONFIG")
         mocks (System/getenv "MOCKS")
         env {::router/config (or config "moclojer.yml")

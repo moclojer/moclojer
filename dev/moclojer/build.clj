@@ -2,31 +2,26 @@
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
             [clojure.string :as string]
-            [clojure.tools.build.api :as b]))
+            [clojure.tools.build.api :as b]
+            [moclojer.helper :as helper]))
 
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
-(def moclojer-version
-  (str (slurp "VERSION_PREFIX")
-    (b/git-count-revs {})))
 (set! *warn-on-reflection* true)
 (defn -main
   [& _]
   (let [basis (b/create-basis {:project "deps.edn"})]
     (b/delete {:path "target"})
-
     (b/write-pom {:class-dir class-dir
-                  :lib       lib
-                  :scm       {:url "https://github.com/avelino/moclojer"}
-                  :version   moclojer-version
+                  :lib lib
+                  :version   helper/moclojer-version
                   :basis     basis
                   :src-dirs  (:paths basis)})
     (b/compile-clj {:basis     basis
                     :src-dirs  (:paths basis)
                     :class-dir class-dir})
     (b/uber {:class-dir class-dir
-             :manifest  {"Implementation-Version" moclojer-version}
              :main      'moclojer.core
              :uber-file uber-file
              :basis     basis})
@@ -45,4 +40,3 @@
                              "-H:+DashboardBgv"
                              "-H:+DashboardJson"
                              "--no-fallback"]))))
-
