@@ -1,0 +1,27 @@
+name: docker
+
+on: [push, pull_request]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: "ubuntu-20.04"
+    environment: release
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker build
+      run: docker build -t ghcr.io/avelino/moclojer:dev .
+    - name: ghcr.io login
+      if: github.ref_name == 'main'
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.RELEASE_TOKEN }}
+    - name: ghcr.io push moclojer:dev
+      if: github.ref_name == 'main'
+      run: |
+        docker build -t ghcr.io/avelino/moclojer:dev .
+        docker push ghcr.io/avelino/moclojer:dev
