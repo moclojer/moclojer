@@ -1,11 +1,15 @@
 (ns moclojer.core
   (:gen-class)
   (:require [clojure.core.async :as async]
+            [clojure.java.io :as io]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
+            [io.pedestal.log :as log]
             [moclojer.helper :as helper]
             [moclojer.router :as router])
-  (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
+  (:import (java.nio.file Files LinkOption)
+           (java.nio.file.attribute BasicFileAttributes)
+           (org.eclipse.jetty.server.handler.gzip GzipHandler)
            (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
@@ -37,6 +41,30 @@
           (catch Throwable ex
             (println ex))))))
 
+(defn check-changes
+  [file-state]
+  (let [file-state (for [[file-name last-modified-time] file-state
+                         :let [f (io/file file-name)]]
+                     (if (.exists f)
+                       [file-name
+                        (.toInstant (.lastModifiedTime (Files/readAttributes
+                                                         (.toPath f)
+                                                         BasicFileAttributes
+                                                         ^"[Ljava.nio.file.LinkOption;" (into-array LinkOption []))))
+                        last-modified-time]
+                       [file-name nil last-modified-time]))]
+
+    {::file-state (into {}
+                    (map (fn [kvs]
+                           (vec (take 2 kvs))))
+                    file-state)
+     ::changed?   (boolean (some (fn [[_ new old]]
+                                   (not= new old))
+                             file-state))}))
+
+
+
+
 (defn -main
   "start moclojer server"
   [& _]
@@ -49,11 +77,14 @@
                        env))]
     ;; TODO: Use watch-service
     (async/thread
-      (loop []
-        (let [wait (async/timeout 1000)]
-          (reset! *router (router/make-smart-router env))
-          (async/<!! wait))
-        (recur)))
+      (loop [file-state {(::router/config env) nil
+                         (::router/mocks env)  nil}]
+        (let [wait (async/timeout 1000)
+              {::keys [changed? file-state]} (check-changes file-state)]
+          (when changed?
+            (reset! *router (router/make-smart-router env)))
+          (async/<!! wait)
+          (recur file-state))))
     (-> {:env                     :prod
          ::http/routes            (fn [] @*router)
          ::http/type              :jetty
