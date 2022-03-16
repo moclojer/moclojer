@@ -1,14 +1,17 @@
 {:paths   ["src"]
- :deps    {org.clojure/clojure          {:mvn/version "1.10.2"}
-           org.clojure/core.async       {:mvn/version "1.5.648"}
-           io.forward/yaml              {:mvn/version "1.0.11"}
-           org.clojure/data.json        {:mvn/version "2.4.0"}
-           io.pedestal/pedestal.service {:mvn/version "0.5.10"}
-           io.pedestal/pedestal.route   {:mvn/version "0.5.10"}
-           io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}
-           selmer/selmer                {:mvn/version "1.12.50"}
-           slugify/slugify              {:mvn/version "0.0.1"}
-           org.slf4j/slf4j-simple       {:mvn/version "1.7.5"}}
+ :mvn/repos {"jitpack" {:url "https://jitpack.io"}}
+ :deps      {io.forward/yaml              {:mvn/version "1.0.11"}
+             io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}
+             io.pedestal/pedestal.route   {:mvn/version "0.5.10"}
+             io.pedestal/pedestal.service {:mvn/version "0.5.10"}
+             jinx/jinx                    {:mvn/version "0.1.6"}
+             luposlip/json-schema         {:mvn/version "0.3.3"}
+             org.clojure/clojure          {:mvn/version "1.10.3"}
+             org.clojure/core.async       {:mvn/version "1.5.648"}
+             org.clojure/data.json        {:mvn/version "2.4.0"}
+             org.slf4j/slf4j-simple       {:mvn/version "1.7.36"}
+             selmer/selmer                {:mvn/version "1.12.50"}
+             slugify/slugify              {:mvn/version "0.0.1"}}
  :aliases {;; Run project
            ;; clj -X:run
            :run       {:ns-default moclojer.core
@@ -16,14 +19,14 @@
                        :extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.10"}}}
            :dev      {:extra-paths ["dev"]
                       :extra-deps  {io.github.clojure/tools.build {:git/url    "https://github.com/clojure/tools.build.git"
-                                                                   :sha        "e3e353262072e95ccac314a9b935b1bc42412a40"
+                                                                   :sha        "7d40500863818c6f9a6e077b18db305d02149384"
                                                                    :exclusions [org.slf4j/slf4j-nop]}}}
            ;; Run all tests
            ;; clj -M:test
            :test      {:extra-paths ["test"]
                        :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner"
                                                                 :sha     "76568540e7f40268ad2b646110f237a60295fa3c"}
-                                     clj-kondo/clj-kondo       {:mvn/version "2022.02.09"}}
+                                     clj-kondo/clj-kondo       {:mvn/version "2022.03.04"}}
                        :main-opts   ["-m" "cognitect.test-runner" "-d" "test"]}
            ;; Lint the source
            ;; clj -M:lint

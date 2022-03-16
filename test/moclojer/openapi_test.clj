@@ -48,6 +48,62 @@
               :status))))))
 
 
+(deftest petstore-spec-wrong-response
+  (let [mocks {"listPets" {"status"  200
+                           "body"    (json/generate-string [{:id   0
+                                                             ;; in the spec, name is a string
+                                                             ;; not an array of string
+                                                             :name ["caramelo"]}])
+                           "headers" {"Content-Type" "application/json"}}}
+        service-fn (-> {::http/routes (router/make-smart-router
+                                        {::router/config (iou/write-config "yaml" petstore-spec)
+                                         ::router/mocks  (iou/write-config "yaml" mocks)})}
+                     http/default-interceptors
+                     http/dev-interceptors
+                     http/create-servlet
+                     ::http/service-fn)]
+    (testing
+     "Simple route"
+      (is (= [{:id   0
+               :name ["caramelo"]}]
+            (-> service-fn
+              (response-for :get "/pets")
+              :body
+              (json/parse-string true)))))))
+
+
+(deftest petstore-spec-wrong-parameter
+  (let [mocks {"listPets" {"status"  200
+                           "body"    (json/generate-string [{:id   0
+                                                             :name "caramelo"}])
+                           "headers" {"Content-Type" "application/json"}}}
+        service-fn (-> {::http/routes (router/make-smart-router
+                                        {::router/config (iou/write-config "yaml" petstore-spec)
+                                         ::router/mocks  (iou/write-config "yaml" mocks)})}
+                     http/default-interceptors
+                     http/dev-interceptors
+                     http/create-servlet
+                     ::http/service-fn)]
+    (testing
+     "Wrong query parameter"
+      (is (= {:data  {:errors ["#/limit: expected type: Integer, found: String"]}
+              :error "JSON Validation error:"}
+            (-> service-fn
+              (response-for :get "/pets?limit=abc")
+              :body
+              (json/parse-string true)))))
+    (testing
+     "Right query parameter"
+      (is (= [{:id   0
+               :name "caramelo"}]
+            (-> service-fn
+              (response-for :get "/pets?limit=1")
+              :body
+              (json/parse-string true)))))))
+
+
+
+
 (deftest multipart-form
   (run! #(.delete ^File %)
     (reverse (file-seq (io/file "upload-filesystem"))))

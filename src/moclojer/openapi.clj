@@ -1,10 +1,14 @@
 (ns moclojer.openapi
-  (:require [clojure.java.io :as io]
+  (:require [cheshire.core :as json]
+            [clojure.java.io :as io]
             [clojure.string :as string]
+            [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as middlewares]
             [io.pedestal.http.route :as route]
+            [io.pedestal.log :as log]
+            [json-schema.core :as js]
             [selmer.parser :as selmer]
-            [io.pedestal.http.body-params :as body-params])
+            [clojure.edn :as edn])
   (:import (java.time Instant)))
 
 (def path-item->operation
@@ -47,10 +51,25 @@
                 :keys  [request]
                 :as    ctx}]
             (assoc ctx :response
-                       (if-let [{:strs [status body headers]} (get operation "x-mockResponse")]
-                         {:body    (selmer/render body request)
-                          :headers headers
-                          :status  status}
+                       (if-let [{:strs [status body headers]
+                                 :as   mock-response} (get operation "x-mockResponse")]
+                         (merge
+                           (when headers
+                             {:headers headers})
+                           (cond
+                             (string? body) {:body (selmer/render body request)}
+
+                             (contains? mock-response "body")
+                             {:body (if (string/starts-with?
+                                          (str (or
+                                                 (get headers "content-type")
+                                                 (get headers "Content-Type")))
+                                          "applicantion/json")
+                                      (json/generate-string body)
+                                      body)}
+
+                             :else {})
+                           {:status status})
                          {:status 501})))})
 
 (defn with-mocks
@@ -89,6 +108,117 @@
     (get-in root (json-pointer->path $ref))
     object))
 
+(def openapi-in->pedestal
+  {"query"  :query-params
+   "header" :headers
+   "path"   :path-params
+   ;; TODO
+   #_#_"cookie" :cookie-params})
+
+(defn try-number
+  [s]
+  (if (string? s)
+    (try
+      (let [n (edn/read-string s)]
+        (if (number? n)
+          n
+          s))
+      (catch Throwable ex
+        s))
+    s))
+
+(def schema-check
+  {:name  ::schema-check
+   :enter (fn [{:keys  [request]
+                ::keys [operation openapi path-item]
+                :as    ctx}]
+            (doseq [{:strs [name in required schema]} (concat
+                                                        ;; TODO: If a parameter is already defined at the Path Item
+                                                        ;; the new definition will override it but can never remove it.
+                                                        (get path-item "parameters")
+                                                        (get operation "parameters"))
+                    :let [ident (get openapi-in->pedestal in)
+                          kname (keyword name)
+                          params (get request ident)
+                          exists? (contains? params kname)]]
+              (cond
+                (and required
+                  (not exists?))
+                (throw (ex-info (str "Missing " (pr-str name) " parameter in " (pr-str in))
+                         {:name   name
+                          :in     in
+                          :params params}))
+                exists? (let [v (get params kname)
+                              v (if (contains? #{"number" "integer"}
+                                      (get schema "type"))
+                                  (try-number v)
+                                  v)]
+                          (js/validate {"type"       "object"
+                                        "properties" {name schema}}
+                            {name v}))
+                :else :ignore))
+            ctx)
+   :leave (fn [{:keys  [response]
+                ::keys [operation openapi]
+                :as    ctx}]
+            (if-let [schema (get-in operation ["responses"
+                                               (str (:status response))
+                                               "content"
+                                               (or (get (:headers response)
+                                                     "Content-Type")
+                                                 (get (:headers response)
+                                                   "content-type"))
+                                               "schema"])]
+              (let [schema (merge schema
+                             (select-keys openapi ["components"]))]
+                (try
+                  (js/validate schema
+                    (:body response))
+                  (catch Throwable ex
+                    (log/info :exception
+                      (doto ex
+                        ;; stacktrace do not matter for our user
+                        (.setStackTrace (into-array StackTraceElement []))))))
+                ctx)
+              ctx))})
+
+(def route-error-handler
+  {:name  ::route-error-handler
+   :error (fn [ctx ex]
+            ;; dev only
+            ;; TODO: configure log/info to be present in final app
+            ;; and log/error to be only dev-time
+            #_(log/error :exception (ex-cause ex))
+            (assoc ctx
+              :response {:headers {"Content-Type" "application/json"}
+                         :body    (json/generate-string {:error (ex-message (ex-cause ex))
+                                                         :data  (ex-data (ex-cause ex))})
+                         :status  400}))})
+
+(defn save-all-multipart
+  [dir]
+  {:name  ::save-all-multipart
+   :enter (fn [ctx]
+            (locking dir
+              (let [now-str (str (Instant/now))
+                    temp-dir (loop [n 19]
+                               (let [d (io/file dir (str "req"
+                                                      (string/replace
+                                                        (subs now-str
+                                                          0 n)
+                                                        #"[^0-9T-]"
+                                                        "_")))]
+                                 (if (.exists d)
+                                   (recur (inc n))
+                                   (doto d
+                                     (.mkdirs)))))]
+                (doseq [[k v] (-> ctx :request :multipart-params)
+                        :let [target (io/file temp-dir k)]]
+                  (if (:tempfile v)
+                    (io/copy (:tempfile v) target)
+                    (spit target v)))))
+            ctx)})
+
 (defn generate-pedestal-route
   "Generate a Pedestal route from an OpenAPI specification"
   [config]
@@ -102,7 +232,8 @@
                                    (keyword method)
                                    (into []
                                      cat
-                                     [[{:name  ::add-operation
+                                     [[route-error-handler
+                                       {:name  ::add-operation
                                         :enter (fn [ctx]
                                                  (assoc ctx
                                                    ::path path
@@ -115,28 +246,9 @@
                                         [(middlewares/multipart-params)])
                                       (when-let [dir (get-in operation ["x-mockResponse" "store"])]
                                         (.mkdirs (io/file dir))
-                                        [{:name  ::save-all-multipart
-                                          :enter (fn [ctx]
-                                                   (locking dir
-                                                     (let [now-str (str (Instant/now))
-                                                           temp-dir (loop [n 19]
-                                                                      (let [d (io/file dir (str "req"
-                                                                                             (string/replace
-                                                                                               (subs now-str
-                                                                                                 0 n)
-                                                                                               #"[^0-9T-]"
-                                                                                               "_")))]
-                                                                        (if (.exists d)
-                                                                          (recur (inc n))
-                                                                          (doto d
-                                                                            (.mkdirs)))))]
-                                                       (doseq [[k v] (-> ctx :request :multipart-params)
-                                                               :let [target (io/file temp-dir k)]]
-                                                         (if (:tempfile v)
-                                                           (io/copy (:tempfile v) target)
-                                                           (spit target v)))))
-                                                   ctx)}])
-                                      [generate-response]])
+                                        [(save-all-multipart dir)])
+                                      [schema-check
+                                       generate-response]])
                                    :route-name (keyword (or (get operation "operationId")
                                                           (json-path->pointer [path method])))]}))))
                   (resolve-ref config path-item))))

@@ -145,7 +145,13 @@
                                                                                                        "content"     {"application/json" {"schema" {"$ref" "#/components/schemas/Pets"}}}},
                                                                                             "default" {"description" "unexpected error",
                                                                                                        "content"     {"application/json" {"schema" {"$ref" "#/components/schemas/Error"}}}}}},},},
-                                               "components" {"schemas" {"Pets"  {"type" "array", "items" {"$ref" "#/components/schemas/Pet"}},
+                                               "components" {"schemas" {"Pet"   {"type"       "object"
+                                                                                 "required"   ["id" "name"]
+                                                                                 "properties" {"id"   {"type"   "integer"
+                                                                                                       "format" "int64"}
+                                                                                               "name" {"type" "string"}
+                                                                                               "tag"  {"type" "string"}}}
+                                                                        "Pets"  {"type" "array", "items" {"$ref" "#/components/schemas/Pet"}},
                                                                         "Error" {"type"       "object",
                                                                                  "required"   ["code" "message"],
                                                                                  "properties" {"code"    {"type" "integer", "format" "int32"},
