@@ -19,5 +19,7 @@ pom.xml.asc
 ## moclojer
 /moclojer
 !moclojer.[yml, edn]
-*.[yaml, yml, edn]*
+*.yaml
+*.yml
+*.edn
 .socket-repl-port
