@@ -1,0 +1,8 @@
+moclojer.yml
+moclojer.edn
+test/
+.git
+.gitignore
+.dockerignore
+README.md
+Dockerfile
