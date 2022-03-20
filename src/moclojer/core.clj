@@ -4,7 +4,6 @@
             [clojure.java.io :as io]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
-            [io.pedestal.log :as log]
             [moclojer.helper :as helper]
             [moclojer.router :as router])
   (:import (java.nio.file Files LinkOption)
@@ -49,22 +48,19 @@
                      (if (.exists f)
                        [file-name
                         (.toInstant (.lastModifiedTime (Files/readAttributes
-                                                         (.toPath f)
-                                                         BasicFileAttributes
-                                                         ^"[Ljava.nio.file.LinkOption;" (into-array LinkOption []))))
+                                                        (.toPath f)
+                                                        BasicFileAttributes
+                                                        ^"[Ljava.nio.file.LinkOption;" (into-array LinkOption []))))
                         last-modified-time]
                        [file-name nil last-modified-time]))]
 
     {::file-state (into {}
-                    (map (fn [kvs]
-                           (vec (take 2 kvs))))
-                    file-state)
+                        (map (fn [kvs]
+                               (vec (take 2 kvs))))
+                        file-state)
      ::changed?   (boolean (some (fn [[_ new old]]
                                    (not= new old))
-                             file-state))}))
-
-
-
+                                 file-state))}))
 
 (defn -main
   "start moclojer server"

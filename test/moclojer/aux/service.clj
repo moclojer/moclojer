@@ -1,6 +1,6 @@
 (ns moclojer.aux.service
-  (:require [moclojer.router :as router]
-            [io.pedestal.http :as http]))
+  (:require [io.pedestal.http :as http]
+            [moclojer.router :as router]))
 
 (defn service-fn
   [config]

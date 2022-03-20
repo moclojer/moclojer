@@ -8,11 +8,11 @@
 
 (deftest dynamic-endpoint-edn
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                        {::router/config "moclojer.edn"})}
-                     http/default-interceptors
-                     http/dev-interceptors
-                     http/create-servlet
-                     ::http/service-fn)]
+                                       {::router/config "moclojer.edn"})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
     (testing "get all pets"
       (is (= {:pets [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
              (-> service-fn

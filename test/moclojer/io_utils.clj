@@ -8,14 +8,14 @@
 (defn write-config
   [extension values]
   (let [dir (.toFile (Files/createTempDirectory "moclojer"
-                       ^"[Ljava.nio.file.attribute.FileAttribute;" (into-array FileAttribute [])))
+                                                ^"[Ljava.nio.file.attribute.FileAttribute;" (into-array FileAttribute [])))
         file (File/createTempFile "config" (str "." extension)
-               dir)]
+                                  dir)]
     (spit file
-      (case extension
-        "edn" (string/join (System/getProperty "line.separator")
-                (map str values))
-        "yaml" (yaml/generate-string values)
-        "yml" (yaml/generate-string values)))
+          (case extension
+            "edn" (string/join (System/getProperty "line.separator")
+                               (map str values))
+            "yaml" (yaml/generate-string values)
+            "yml" (yaml/generate-string values)))
     (.deleteOnExit file)
     (.getCanonicalPath file)))

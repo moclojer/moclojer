@@ -1,10 +1,10 @@
 (ns moclojer.openapi
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
+            [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as middlewares]
             [io.pedestal.http.route :as route]
-            [selmer.parser :as selmer]
-            [io.pedestal.http.body-params :as body-params])
+            [selmer.parser :as selmer])
   (:import (java.time Instant)))
 
 (def path-item->operation

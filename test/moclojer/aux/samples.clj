@@ -36,12 +36,12 @@
   (let [routes #{["/" :get (fn [_]
                              {:headers {"Content-Type" (mime/default-mime-types "html")}
                               :body    (str
-                                         "<form method='post' enctype='multipart/form-data'>"
-                                         "<input type='file' name='name'>"
-                                         "<input name='tag'>"
-                                         "<input type='submit'>"
-                                         "</form>"
-                                         "")
+                                        "<form method='post' enctype='multipart/form-data'>"
+                                        "<input type='file' name='name'>"
+                                        "<input name='tag'>"
+                                        "<input type='submit'>"
+                                        "</form>"
+                                        "")
                               :status  200})
                   :route-name ::html-form]
                  ["/" :post [(middlewares/multipart-params)
@@ -49,19 +49,19 @@
                                (doseq [[k v] multipart-params]
                                  (prn [(keyword k)
                                        (or (some-> v :tempfile slurp)
-                                         v)]))
+                                           v)]))
                                {:headers {"Location" "/"}
                                 :status  303})]
                   :route-name ::post-handler]}]
     (swap! *http-state
-      (fn [st]
-        (some-> st http/stop)
-        (-> {::http/routes routes
-             ::http/type   :jetty
-             ::http/join?  false
-             ::http/port   8080}
-          http/default-interceptors
-          http/create-server
-          http/start)))))
+           (fn [st]
+             (some-> st http/stop)
+             (-> {::http/routes routes
+                  ::http/type   :jetty
+                  ::http/join?  false
+                  ::http/port   8080}
+                 http/default-interceptors
+                 http/create-server
+                 http/start)))))
 (comment
   (sample-upload-server))

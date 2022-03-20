@@ -7,11 +7,11 @@
 
 (deftest hello-world
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                        {::router/config "moclojer.yml"})}
-                     http/default-interceptors
-                     http/dev-interceptors
-                     http/create-servlet
-                     ::http/service-fn)]
+                                       {::router/config "moclojer.yml"})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
     (is (= {:hello "Hello, World!"}
            (-> service-fn
                (response-for :get "/hello-world")
@@ -20,11 +20,11 @@
 
 (deftest dyanamic-endpoint
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                        {::router/config "moclojer.yml"})}
-                     http/default-interceptors
-                     http/dev-interceptors
-                     http/create-servlet
-                     ::http/service-fn)]
+                                       {::router/config "moclojer.yml"})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
     (is (= {:hello "moclojer!"}
            (-> service-fn
                (response-for :get "/hello/moclojer")
@@ -33,11 +33,11 @@
 
 (deftest with-params
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                        {::router/config "moclojer.yml"})}
-                     http/default-interceptors
-                     http/dev-interceptors
-                     http/create-servlet
-                     ::http/service-fn)]
+                                       {::router/config "moclojer.yml"})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
     (is (= {:path-params "moclojer" :query-params "moclojer"}
            (-> service-fn
                (response-for :get "/with-params/moclojer?param1=moclojer")
@@ -46,11 +46,11 @@
 
 (deftest first-post-route
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                        {::router/config "moclojer.yml"})}
-                     http/default-interceptors
-                     http/dev-interceptors
-                     http/create-servlet
-                     ::http/service-fn)]
+                                       {::router/config "moclojer.yml"})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
     (is (= {:project "moclojer"}
            (-> service-fn
                (response-for :post "/first-post-route"
