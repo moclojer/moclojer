@@ -1,4 +1,4 @@
-FROM docker.io/clojure:openjdk-11-tools-deps-slim-buster AS jar
+FROM docker.io/clojure:openjdk-19-tools-deps-slim-bullseye
 WORKDIR /app
 COPY . .
 RUN clojure -A:dev -M --report stderr -m moclojer.build
