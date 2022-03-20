@@ -6,7 +6,6 @@
             [moclojer.openapi :as openapi]
             [yaml.core :as yaml]))
 
-
 (defn make-smart-router
   "Returns a pedestal routes"
   [{::keys [config mocks]}]

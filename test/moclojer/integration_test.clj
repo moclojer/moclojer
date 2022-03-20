@@ -20,23 +20,23 @@
   (.delete (io/file "target" "moclojer.jar")))
 (def *jar
   (delay
-    (when-not (.exists (io/file "target" "moclojer.jar"))
-      (apply (requiring-resolve `moclojer.build/-main) []))
-    (.getAbsolutePath (io/file "target" "moclojer.jar"))))
+   (when-not (.exists (io/file "target" "moclojer.jar"))
+     (apply (requiring-resolve `moclojer.build/-main) []))
+   (.getAbsolutePath (io/file "target" "moclojer.jar"))))
 
 (defn ^Closeable moclojer!
   [{::keys [files env]}]
   (let [dir (.toFile (Files/createTempDirectory "moclojer"
-                       ^"[Ljava.nio.file.attribute.FileAttribute;" (into-array FileAttribute [])))
+                                                ^"[Ljava.nio.file.attribute.FileAttribute;" (into-array FileAttribute [])))
         _ (doseq [{::keys [name as value]} files]
             (spit (io/file dir name)
-              (case as
-                :json (json/write-str value)
-                :yaml (yaml/generate-string value)
-                (str value))))
+                  (case as
+                    :json (json/write-str value)
+                    :yaml (yaml/generate-string value)
+                    (str value))))
         pb (-> (ProcessBuilder. ^List (mapv str ["java" "-jar" @*jar]))
-             (doto
-               (.directory dir)))
+               (doto
+                (.directory dir)))
         _ (doto (.environment pb)
             (.putAll (into {} env)))
         p (.start pb)
@@ -72,7 +72,7 @@
   [p re]
   (loop []
     (when-not (some (partial re-find re)
-                (map second @p))
+                    (map second @p))
       (Thread/sleep 100)
       (recur))))
 
@@ -86,24 +86,24 @@
            uri            "/"
            protocol       "HTTP/1.1"}}]
   (let [res (.send ^HttpClient @*client
-              (-> (HttpRequest/newBuilder (URI. (name scheme) nil
-                                            server-name
-                                            server-port
-                                            uri query-string nil))
-                (.method (string/upper-case (name request-method))
-                  (HttpRequest$BodyPublishers/ofString ""))
-                (.version (case protocol
-                            "HTTP/1.1" HttpClient$Version/HTTP_1_1))
-                (.build))
-              (HttpResponse$BodyHandlers/ofString))]
+                   (-> (HttpRequest/newBuilder (URI. (name scheme) nil
+                                                     server-name
+                                                     server-port
+                                                     uri query-string nil))
+                       (.method (string/upper-case (name request-method))
+                                (HttpRequest$BodyPublishers/ofString ""))
+                       (.version (case protocol
+                                   "HTTP/1.1" HttpClient$Version/HTTP_1_1))
+                       (.build))
+                   (HttpResponse$BodyHandlers/ofString))]
     {:status  (.statusCode res)
      :body    (.body res)
      :headers (into (sorted-map)
-                (map (fn [[k v]]
-                       [k (if (== 1 (count v))
-                            (first v)
-                            (vec v))]))
-                (.map (.headers res)))}))
+                    (map (fn [[k v]]
+                           [k (if (== 1 (count v))
+                                (first v)
+                                (vec v))]))
+                    (.map (.headers res)))}))
 
 (deftest hello-simple-yaml
   (with-open [p (moclojer! {::files [{::name  "moclojer.yml"
@@ -122,7 +122,7 @@
                                           :server-name "moclojer.localhost"})]
       (is (= 200 status))
       (is (= {"hello" "moclojer!"}
-            (json/read-str body))))))
+             (json/read-str body))))))
 
 
 (deftest hello-simple-openapi
@@ -144,7 +144,7 @@
                                                                                                                                 "schema"      {"type" "string"}}},
                                                                                                        "content"     {"application/json" {"schema" {"$ref" "#/components/schemas/Pets"}}}},
                                                                                             "default" {"description" "unexpected error",
-                                                                                                       "content"     {"application/json" {"schema" {"$ref" "#/components/schemas/Error"}}}}}},},},
+                                                                                                       "content"     {"application/json" {"schema" {"$ref" "#/components/schemas/Error"}}}}}}}},
                                                "components" {"schemas" {"Pets"  {"type" "array", "items" {"$ref" "#/components/schemas/Pet"}},
                                                                         "Error" {"type"       "object",
                                                                                  "required"   ["code" "message"],
@@ -163,4 +163,4 @@
       (is (= 200 status))
       (is (= [{"id"   0
                "name" "caramelo"}]
-            (json/read-str body))))))
+             (json/read-str body))))))
