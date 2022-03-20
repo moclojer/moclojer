@@ -7,7 +7,6 @@
            io.pedestal/pedestal.route   {:mvn/version "0.5.10"}
            io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}
            selmer/selmer                {:mvn/version "1.12.50"}
-           slugify/slugify              {:mvn/version "0.0.1"}
            org.slf4j/slf4j-simple       {:mvn/version "1.7.5"}}
  :aliases {;; Run project
            ;; clj -X:run
