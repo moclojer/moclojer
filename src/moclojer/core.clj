@@ -72,7 +72,7 @@
              ::router/mocks  mocks}
         *router (atom (router/make-smart-router
                        env))]
-    ;; TODO: Use watch-service
+    ;; TODO: Use (watch-service)
     (async/thread
       (loop [file-state {(::router/config env) nil
                          (::router/mocks env)  nil}]
