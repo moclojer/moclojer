@@ -44,7 +44,8 @@
 (defn check-changes
   [file-state]
   (let [file-state (for [[file-name last-modified-time] file-state
-                         :let [f (io/file file-name)]]
+                         :let [f (io/file file-name)]
+                         :when f]
                      (if (.exists f)
                        [file-name
                         (.toInstant (.lastModifiedTime (Files/readAttributes
