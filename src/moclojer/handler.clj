@@ -20,7 +20,7 @@
                                     (fn [[v]]
                                       (str "{" (subs v 1) "}")))
                     (into {}
-                          (for [{:keys [method response router-name ]} ops
+                          (for [{:keys [host method response router-name]} ops
                                 :let [{:keys [status headers body store]} response]]
                             [(string/lower-case (name method))
                              (merge {"x-mockResponse" (merge  {"body"    body
@@ -29,7 +29,9 @@
                                                                                (map (fn [[k v]]
                                                                                       [(name k) (str v)]))
                                                                                headers)}
-                                                        (when store
-                                                          {"store" store}))}
+                                                              (when store
+                                                                {"store" store}))}
+                                    (when host
+                                      {"host" host})
                                     (when router-name
                                       {"operationId" (name router-name)}))]))]))})
