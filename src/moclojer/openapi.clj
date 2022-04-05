@@ -98,7 +98,9 @@
                 (mapcat (fn [[method operation]]
                           (when (contains? path-item->operation method)
                             (route/expand-routes
-                             #{[(openapi-path->pedestal-path path)
+                             #{;; use the `host` declared in the configuration file
+                               {:host (get operation "host" nil)}
+                               [(openapi-path->pedestal-path path)
                                 (keyword method)
                                 (into []
                                       cat
