@@ -58,3 +58,22 @@
                              :body (json/encode {:project "moclojer"}))
                :body
                (json/parse-string true))))))
+
+(deftest multi-host
+  (let [service-fn (-> {::http/routes (router/make-smart-router
+                                       {::router/config "multi-host.yml"})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
+
+    (is (= {:hello "moclojer.com"}
+           (-> service-fn
+               (response-for :get "moclojer.com/")
+               :body
+               (json/parse-string true))))
+    (is (= {:hello "sub.moclojer.com"}
+           (-> service-fn
+               (response-for :get "sub.moclojer.com/")
+               :body
+               (json/parse-string true))))))
