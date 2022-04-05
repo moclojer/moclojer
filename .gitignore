@@ -18,8 +18,11 @@ pom.xml.asc
 
 ## moclojer
 /moclojer
-!moclojer.[yml, edn]
+!test/moclojer/resources/
 *.yaml
 *.yml
 *.edn
+*.json
+*.org
 .socket-repl-port
+upload-filesystem/

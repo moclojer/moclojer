@@ -1,0 +1,24 @@
+- endpoint:
+    host: moclojer.com
+    method: GET
+    path: /
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "domain": "moclojer.com"
+        }
+- endpoint:
+    host: sub.moclojer.com
+    method: GET
+    path: /
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "domain": "sub.moclojer.com"
+        }
