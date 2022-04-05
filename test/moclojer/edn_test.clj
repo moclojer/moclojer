@@ -8,7 +8,7 @@
 
 (deftest dynamic-endpoint-edn
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.edn"})}
+                                       {::router/config "test/moclojer/resources/moclojer.edn"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet

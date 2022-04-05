@@ -7,7 +7,7 @@
 
 (deftest hello-world
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.yml"})}
+                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -20,7 +20,7 @@
 
 (deftest dyanamic-endpoint
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.yml"})}
+                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -33,7 +33,7 @@
 
 (deftest with-params
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.yml"})}
+                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -46,7 +46,7 @@
 
 (deftest first-post-route
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.yml"})}
+                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -61,7 +61,7 @@
 
 (deftest multi-host
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "multi-host.yml"})}
+                                       {::router/config "test/moclojer/resources/multihost.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -69,11 +69,11 @@
 
     (is (= {:domain "moclojer.com"}
            (-> service-fn
-               (response-for :get "http://moclojer.com/multi-host")
+               (response-for :get "moclojer.com/multihost")
                :body
                (json/parse-string true))))
     (is (= {:domain "sub.moclojer.com"}
            (-> service-fn
-               (response-for :get "http://sub.moclojer.com/multi-host")
+               (response-for :get "sub.moclojer.com/multihost-sub")
                :body
                (json/parse-string true))))))
