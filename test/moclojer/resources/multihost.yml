@@ -1,7 +1,7 @@
 - endpoint:
     host: moclojer.com
     method: GET
-    path: /multi-host
+    path: /multihost
     response:
       status: 200
       headers:
@@ -14,7 +14,7 @@
 - endpoint:
     host: sub.moclojer.com
     method: GET
-    path: /multi-host
+    path: /multihost-sub
     response:
       status: 200
       headers:
