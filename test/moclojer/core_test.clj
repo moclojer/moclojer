@@ -67,13 +67,13 @@
                        http/create-servlet
                        ::http/service-fn)]
 
-    (is (= {:hello "moclojer.com"}
+    (is (= {:domain "moclojer.com"}
            (-> service-fn
-               (response-for :get "moclojer.com/")
+               (response-for :get "http://moclojer.com/multi-host")
                :body
                (json/parse-string true))))
-    (is (= {:hello "sub.moclojer.com"}
+    (is (= {:domain "sub.moclojer.com"}
            (-> service-fn
-               (response-for :get "sub.moclojer.com/")
+               (response-for :get "http://sub.moclojer.com/multi-host")
                :body
                (json/parse-string true))))))
