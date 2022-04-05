@@ -139,7 +139,9 @@
                                                             (spit target v)))))
                                                     ctx)}])
                                        [generate-response]])
-                                :route-name (keyword (or (get operation "operationId")
-                                                         (json-path->pointer [path method])))]}))))
+                                :route-name (keyword
+                                             (str (get operation "host" "") "-"
+                                                  (or (get operation "operationId")
+                                                      (json-path->pointer [path method]))))]}))))
                 (resolve-ref config path-item))))
             (get config "paths")))
