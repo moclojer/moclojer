@@ -1,4 +1,6 @@
-[![moclojer logo](doc/assets/logo.png)](https://github.com/avelino/moclojer)
+# moclojer
+
+<a href="https://github.com/avelino/moclojer"><img align="right" src="https://github.com/avelino/moclojer/raw/main/doc/assets/logo.png" alt="moclojer" title="moclojer" /></a>
 
 Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `OpenAPI`.
 
