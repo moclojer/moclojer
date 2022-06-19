@@ -26,7 +26,7 @@ FROM container-registry.oracle.com/os/oraclelinux:8-slim
 LABEL org.opencontainers.image.source https://github.com/avelino/moclojer
 COPY --from=native-image-build --chown=root /home/moclojer/target/native/moclojer /usr/bin
 RUN chmod +x /usr/bin/moclojer && chmod 0755 /usr/bin/moclojer
-RUN adduser -D moclojer
+RUN adduser moclojer
 USER moclojer
 WORKDIR /home/moclojer
 
