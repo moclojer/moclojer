@@ -2,12 +2,15 @@
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
             [clojure.string :as string]
-            [clojure.tools.build.api :as b]
-            [moclojer.helper :as helper]))
+            [clojure.tools.build.api :as b]))
 
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
+(def moclojer-version
+  "moclojer version rendering constant"
+  "0.1")
+
 (set! *warn-on-reflection* true)
 
 (defn -main
@@ -16,7 +19,7 @@
     (b/delete {:path "target"})
     (b/write-pom {:class-dir class-dir
                   :lib       lib
-                  :version   helper/moclojer-version
+                  :version   moclojer-version
                   :basis     basis
                   :src-dirs  (:paths basis)})
     (b/compile-clj {:basis     basis
