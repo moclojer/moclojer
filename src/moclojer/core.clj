@@ -4,12 +4,12 @@
             [clojure.java.io :as io]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
-            [moclojer.helper :as helper]
             [moclojer.router :as router])
   (:import (java.nio.file Files LinkOption)
            (java.nio.file.attribute BasicFileAttributes)
            (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)))
+           (org.eclipse.jetty.servlet ServletContextHandler)
+           (java.util Properties)))
 
 (defn context-configurator
   [^ServletContextHandler context]
@@ -62,10 +62,19 @@
                                    (not= new old))
                                  file-state))}))
 
+(def *pom-info
+  (delay
+    (let [p (Properties.)]
+      (some-> "META-INF/maven/moclojer/moclojer/pom.properties"
+        io/resource
+        io/reader
+        (->> (.load p)))
+      p)))
+
 (defn -main
   "start moclojer server"
   [& _]
-  (prn (list '-> 'moclojer :start-server :version helper/moclojer-version))
+  (prn (list '-> 'moclojer :start-server :version (get @*pom-info "version")))
   (let [config (System/getenv "CONFIG")
         mocks (System/getenv "MOCKS")
         env {::router/config (or config "moclojer.yml")
