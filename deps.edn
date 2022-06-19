@@ -7,24 +7,29 @@
            io.pedestal/pedestal.route   {:mvn/version "0.5.10"}
            io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}
            selmer/selmer                {:mvn/version "1.12.50"}
-           org.slf4j/slf4j-simple       {:mvn/version "1.7.5"}}
+           org.slf4j/slf4j-simple       {:mvn/version "1.7.5"}
+           cheshire/cheshire            {:mvn/version "5.10.2"}}
  :aliases {;; Run project
            ;; clj -X:run
            :run       {:ns-default moclojer.core
-                       :exec-fn    moclojer.core/-main
-                       :extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.10"}}}
+                       :exec-fn    moclojer.core/-main}
+           ;; clj -A:dev -m moclojer.core
            :dev      {:extra-paths ["dev"]
                       :extra-deps  {io.github.clojure/tools.build {:git/url    "https://github.com/clojure/tools.build.git"
                                                                    :sha        "e3e353262072e95ccac314a9b935b1bc42412a40"
                                                                    :exclusions [org.slf4j/slf4j-nop]}}}
            ;; Run all tests
            ;; clj -M:test
+           ;; Run specific test
+           ;; clj -M:test -n moclojer.core-test
            :test      {:extra-paths ["test"]
-                       :extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner"
-                                                                :sha     "76568540e7f40268ad2b646110f237a60295fa3c"}
+                       :resource-paths ["test/moclojer/resources"]
+                       :extra-deps  {io.github.cognitect-labs/test-runner
+                                     {:git/tag "v0.5.0" :git/sha "b3fd0d2"}
                                      clj-kondo/clj-kondo       {:mvn/version "2022.02.09"}}
-                       :main-opts   ["-m" "cognitect.test-runner" "-d" "test"]}
+                       :main-opts   ["-m" "cognitect.test-runner"]
+                       :exec-fn cognitect.test-runner.api/test}
            ;; Lint the source
            ;; clj -M:lint
-           :lint      {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2022.01.13"}}
+           :lint      {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2022.02.09"}}
                        :main-opts    ["-m" "clj-kondo.main" "--lint" "src"]}}}

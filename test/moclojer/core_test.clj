@@ -7,7 +7,7 @@
 
 (deftest hello-world
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.yml"})}
+                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -20,7 +20,7 @@
 
 (deftest dyanamic-endpoint
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.yml"})}
+                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -33,7 +33,7 @@
 
 (deftest with-params
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.yml"})}
+                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -46,7 +46,7 @@
 
 (deftest first-post-route
   (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "moclojer.yml"})}
+                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -56,5 +56,24 @@
                (response-for :post "/first-post-route"
                              :headers {"Content-Type" "application/json"}
                              :body (json/encode {:project "moclojer"}))
+               :body
+               (json/parse-string true))))))
+
+(deftest multi-host
+  (let [service-fn (-> {::http/routes (router/make-smart-router
+                                       {::router/config "test/moclojer/resources/multihost.yml"})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
+
+    (is (= {:domain "moclojer.com"}
+           (-> service-fn
+               (response-for :get "moclojer.com/multihost")
+               :body
+               (json/parse-string true))))
+    (is (= {:domain "sub.moclojer.com"}
+           (-> service-fn
+               (response-for :get "sub.moclojer.com/multihost-sub")
                :body
                (json/parse-string true))))))

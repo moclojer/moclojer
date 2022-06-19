@@ -5,13 +5,13 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
             [io.pedestal.log :as log]
-            [moclojer.helper :as helper]
             [moclojer.router :as router])
   (:import (java.nio.file FileSystems Path StandardWatchEventKinds WatchEvent)
+           (java.util Properties)
            (java.util.concurrent TimeUnit)
            (org.eclipse.jetty.server.handler.gzip GzipHandler)
            (org.eclipse.jetty.servlet ServletContextHandler)))
-(set! *warn-on-reflection* true)
+
 (defn context-configurator
   [^ServletContextHandler context]
   (let [gzip-handler (GzipHandler.)]
@@ -54,10 +54,19 @@
           (.reset watch-key))
         (recur)))))
 
+(def *pom-info
+  (delay
+    (let [p (Properties.)]
+      (some-> "META-INF/maven/moclojer/moclojer/pom.properties"
+        io/resource
+        io/reader
+        (->> (.load p)))
+      p)))
+
 (defn -main
   "start moclojer server"
   [& _]
-  (prn (list '-> 'moclojer :start-server :version helper/moclojer-version))
+  (prn (list '-> 'moclojer :start-server :version (get @*pom-info "version")))
   (let [config (System/getenv "CONFIG")
         mocks (System/getenv "MOCKS")
         env {::router/config (or config "moclojer.yml")
@@ -75,9 +84,9 @@
          ::http/container-options {:h2c?                 true
                                    :context-configurator context-configurator}
          ::http/port              (or (some-> (System/getenv "PORT")
-                                        Integer/parseInt)
-                                    8000)}
-      http/default-interceptors
-      (update ::http/interceptors into [http/json-body])
-      http/create-server
-      http/start)))
+                                              Integer/parseInt)
+                                      8000)}
+        http/default-interceptors
+        (update ::http/interceptors into [http/json-body])
+        http/create-server
+        http/start)))

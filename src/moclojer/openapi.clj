@@ -1,5 +1,6 @@
 (ns moclojer.openapi
-  (:require [clojure.java.io :as io]
+  (:require [cheshire.core :as cheshire]
+            [clojure.java.io :as io]
             [clojure.string :as string]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as middlewares]
@@ -40,6 +41,14 @@
   (string/join "/"
                (cons "" (map json-pointer-escape-token coll))))
 
+(defn body->str
+  "Convert body to string, if it is edn it will be converted to json->str"
+  [body]
+  (if (string? body)
+    body
+    (-> body
+        (cheshire/generate-string))))
+
 (def generate-response
   "Generate a response object from a response object in the OpenAPI spec"
   {:name  ::generate-response
@@ -48,7 +57,7 @@
                 :as    ctx}]
             (assoc ctx :response
                    (if-let [{:strs [status body headers]} (get operation "x-mockResponse")]
-                     {:body    (selmer/render body request)
+                     {:body    (selmer/render (body->str body) request)
                       :headers headers
                       :status  status}
                      {:status 501})))})
@@ -98,7 +107,9 @@
                 (mapcat (fn [[method operation]]
                           (when (contains? path-item->operation method)
                             (route/expand-routes
-                             #{[(openapi-path->pedestal-path path)
+                             #{;; use the `host` declared in the configuration file
+                               {:host (get operation "host" nil)}
+                               [(openapi-path->pedestal-path path)
                                 (keyword method)
                                 (into []
                                       cat
@@ -137,7 +148,9 @@
                                                             (spit target v)))))
                                                     ctx)}])
                                        [generate-response]])
-                                :route-name (keyword (or (get operation "operationId")
-                                                         (json-path->pointer [path method])))]}))))
+                                :route-name (keyword
+                                             (string/join "-" [(get operation "host" "nil")
+                                                               (or (get operation "operationId")
+                                                                   (json-path->pointer [path method]))]))]}))))
                 (resolve-ref config path-item))))
             (get config "paths")))
