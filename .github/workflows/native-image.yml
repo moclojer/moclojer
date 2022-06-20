@@ -24,7 +24,7 @@ jobs:
       - run: "clojure -A:dev -M --report stderr -m moclojer.build"
         env:
           CI_COMMIT_SHA: "${{ github.sha }}"
-      - uses: "actions/upload-artifact@v3.0.1"
+      - uses: "actions/upload-artifact@v3.1.0"
         with:
           name: moclojer_target
           path: target
