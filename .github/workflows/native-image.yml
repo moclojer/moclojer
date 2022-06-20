@@ -10,21 +10,21 @@ jobs:
   build-jar:
     runs-on: "ubuntu-20.04"
     steps:
-      - uses: "actions/checkout@v2"
-      - uses: "actions/cache@v2"
+      - uses: "actions/checkout@v3.0.2"
+      - uses: "actions/cache@v3.0.4"
         with:
           path: |
             ~/.m2/repository
             ~/.gitlibs
           key: "deps-${{ hashFiles('deps.edn') }}"
-      - uses: "DeLaGuardo/setup-clojure@4.0"
+      - uses: "DeLaGuardo/setup-clojure@7.0"
         with:
-          cli: "1.10.3.1075"
+          cli: "1.11.1.1139"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - run: "clojure -A:dev -M --report stderr -m moclojer.build"
         env:
           CI_COMMIT_SHA: "${{ github.sha }}"
-      - uses: "actions/upload-artifact@v2"
+      - uses: "actions/upload-artifact@v3.0.1"
         with:
           name: moclojer_target
           path: target
@@ -33,14 +33,14 @@ jobs:
     runs-on: "ubuntu-20.04"
     name: "Build native image"
     steps:
-      - uses: "actions/checkout@v2"
-      - uses: "graalvm/setup-graalvm@v1"
+      - uses: "actions/checkout@v3.0.2"
+      - uses: "graalvm/setup-graalvm@v1.0.6"
         with:
-          version: "22.0.0.2"
+          version: "22.1.0"
           java-version: "17"
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: "actions/download-artifact@v2"
+      - uses: "actions/download-artifact@v3"
         with:
           name: moclojer_target
           path: target
