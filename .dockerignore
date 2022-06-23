@@ -1,8 +1,13 @@
-moclojer.yml
-moclojer.edn
 test/
-.git
+.idea/
+.git/
+OpenAPI-Specification/
+target/
+.cpcache/
+doc/
 .gitignore
 .dockerignore
 README.md
 Dockerfile
+.nrepl-port
+*.iml
