@@ -4,12 +4,13 @@
             [clojure.java.io :as io]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
+            [io.pedestal.log :as log]
             [moclojer.router :as router])
-  (:import (java.nio.file Files LinkOption)
-           (java.nio.file.attribute BasicFileAttributes)
+  (:import (java.nio.file FileSystems Path StandardWatchEventKinds WatchEvent)
+           (java.util Properties)
+           (java.util.concurrent TimeUnit)
            (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)
-           (java.util Properties)))
+           (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
   [^ServletContextHandler context]
@@ -19,48 +20,39 @@
     (.setGzipHandler context gzip-handler))
   context)
 
-#_(defn watch-service
-    []
-    ;; TODO: Not working. Firing only once.
-    (let [*router (atom (router/make-smart-router))
-          p (java.nio.file.Paths/get "." (into-array String []))
-          ws (.newWatchService (java.nio.file.FileSystems/getDefault))]
-      (.register p ws (into-array [java.nio.file.StandardWatchEventKinds/ENTRY_MODIFY
-                                   java.nio.file.StandardWatchEventKinds/ENTRY_CREATE]))
-      (async/thread
-        (try
-          (loop []
-            (prn :waiting)
-            (let [key (.take ws)]
-              (prn :refresh)
-              (reset! *router (router/make-smart-router))
-              (log/info {:msg "refresh routes"})
-              (prn :ok))
-            (recur))
-          (catch Throwable ex
-            (println ex))))))
-
-(defn check-changes
-  [file-state]
-  (let [file-state (for [[file-name last-modified-time] file-state
-                         :let [f (io/file file-name)]
-                         :when f]
-                     (if (.exists f)
-                       [file-name
-                        (.toInstant (.lastModifiedTime (Files/readAttributes
-                                                        (.toPath f)
-                                                        BasicFileAttributes
-                                                        ^"[Ljava.nio.file.LinkOption;" (into-array LinkOption []))))
-                        last-modified-time]
-                       [file-name nil last-modified-time]))]
-
-    {::file-state (into {}
-                        (map (fn [kvs]
-                               (vec (take 2 kvs))))
-                        file-state)
-     ::changed?   (boolean (some (fn [[_ new old]]
-                                   (not= new old))
-                                 file-state))}))
+(defn watch-service
+  [files on-change]
+  (let [ws (.newWatchService (FileSystems/getDefault))
+        kv-paths (keep (fn [x]
+                         (when-let [path (some-> x
+                                           io/file
+                                           .toPath
+                                           .toAbsolutePath)]
+                           [x path]))
+                   files)
+        roots (into #{}
+                (keep (fn [[_ ^Path v]]
+                        (.getParent v)))
+                kv-paths)]
+    (doseq [path roots]
+      (.register ^Path path
+        ws (into-array [StandardWatchEventKinds/ENTRY_MODIFY
+                        StandardWatchEventKinds/OVERFLOW
+                        StandardWatchEventKinds/ENTRY_DELETE
+                        StandardWatchEventKinds/ENTRY_CREATE])))
+    (async/thread
+      (loop []
+        (when-let [watch-key (.poll ws 1 TimeUnit/SECONDS)]
+          (let [changed (keep (fn [^WatchEvent event]
+                                (let [^Path changed-path (.context event)]
+                                  (first (for [[k v] kv-paths
+                                               :when (= v (.toAbsolutePath changed-path))]
+                                           k))))
+                          (.pollEvents watch-key))]
+            (when (seq changed)
+              (on-change (set changed))))
+          (.reset watch-key))
+        (recur)))))
 
 (def *pom-info
   (delay
@@ -80,17 +72,11 @@
         env {::router/config (or config "moclojer.yml")
              ::router/mocks  mocks}
         *router (atom (router/make-smart-router
-                       env))]
-    ;; TODO: Use (watch-service)
-    (async/thread
-      (loop [file-state {(::router/config env) nil
-                         (::router/mocks env)  nil}]
-        (let [wait (async/timeout 1000)
-              {::keys [changed? file-state]} (check-changes file-state)]
-          (when changed?
-            (reset! *router (router/make-smart-router env)))
-          (async/<!! wait)
-          (recur file-state))))
+                        env))]
+    (watch-service (vals env)
+      (fn [changed]
+        (log/info :changed changed)
+        (reset! *router (router/make-smart-router env))))
     (-> {:env                     :prod
          ::http/routes            (fn [] @*router)
          ::http/type              :jetty
