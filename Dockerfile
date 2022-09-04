@@ -6,7 +6,7 @@ COPY . .
 RUN clojure -A:dev -M --report stderr -m moclojer.build
 
 FROM docker.io/openjdk:19-jdk-alpine
-LABEL org.opencontainers.image.source https://github.com/avelino/moclojer
+LABEL org.opencontainers.image.source https://github.com/moclojer/moclojer
 WORKDIR /app
 COPY --from=build /app/target/moclojer.jar .
 ENV PORT="8000"
