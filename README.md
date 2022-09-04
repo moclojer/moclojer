@@ -34,13 +34,17 @@ Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `Op
 
 ## docker
 
-**image:** `ghcr.io/moclojer/moclojer:latest`
+**image:** `ghcr.io/moclojer/moclojer:dev`
 
 ```sh
 docker run -it \
   -v $(pwd)/moclojer.yml:/app/moclojer.yml \
-  ghcr.io/moclojer/moclojer:latest
+  ghcr.io/moclojer/moclojer:dev
 ```
+
+**we keep two versions:**
+`dev`: version of the main branch
+`latest`: latest stable version
 
 ## 💻 dev environment
 
