@@ -130,6 +130,6 @@ jobs:
     - name: ghcr.io push
       run: |
         docker build -t ghcr.io/moclojer/moclojer:latest .
-        docker tag ghcr.io/moclojer/moclojer:latest ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }} .
+        docker tag ghcr.io/moclojer/moclojer:latest ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }}
         docker push ghcr.io/moclojer/moclojer:latest
         docker push ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }}
