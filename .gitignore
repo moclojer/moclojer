@@ -26,3 +26,4 @@ pom.xml.asc
 *.org
 .socket-repl-port
 upload-filesystem/
+META-INF/*-native-image-args
