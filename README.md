@@ -34,8 +34,8 @@ Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `Op
 
 ## docker
 
-**image:** `ghcr.io/moclojer/moclojer:dev`
-**port _(default)_:** `8000`_, if you want to change the port set the environment variable `PORT`_
+- **image:** `ghcr.io/moclojer/moclojer:dev`
+- **port _(default)_:** `8000`_, if you want to change the port set the environment variable `PORT`_
 
 ```sh
 docker run -it \
