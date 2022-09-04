@@ -129,7 +129,7 @@ jobs:
         password: ${{ secrets.RELEASE_TOKEN }}
     - name: ghcr.io push
       run: |
-        docker build -t ghcr.io/avelino/moclojer:latest .
-        docker tag ghcr.io/avelino/moclojer:latest ghcr.io/avelino/moclojer:${{ env.RELEASE_NAME }} .
-        docker push ghcr.io/avelino/moclojer:latest
-        docker push ghcr.io/avelino/moclojer:${{ env.RELEASE_NAME }}
+        docker build -t ghcr.io/moclojer/moclojer:latest .
+        docker tag ghcr.io/moclojer/moclojer:latest ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }} .
+        docker push ghcr.io/moclojer/moclojer:latest
+        docker push ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }}
