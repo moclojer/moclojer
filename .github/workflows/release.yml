@@ -26,6 +26,8 @@ jobs:
       - run: "clojure -A:dev -M --report stderr -m moclojer.build"
         env:
           CI_COMMIT_SHA: "${{ github.sha }}"
+      - name: tar (pack) target folder
+        run: tar -cvf moclojer_target.tar target
       - uses: "actions/upload-artifact@v3.1.0"
         with:
           name: moclojer_target
@@ -51,8 +53,10 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: "actions/download-artifact@v3"
         with:
-          name: moclojer_target
-          path: target
+          name: moclojer_target.tar
+          path: target.tar
+      - name: tar (unpack) target folder
+        run: tar -xvf target.tar
       - name: Gen reflect.config.json to ${{ runner.os }}
         working-directory: target/native
         run: |
