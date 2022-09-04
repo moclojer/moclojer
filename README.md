@@ -1,13 +1,13 @@
 # moclojer
 
-<a href="https://github.com/avelino/moclojer"><img align="right" src="https://github.com/avelino/moclojer/raw/main/doc/assets/logo.png" alt="moclojer" title="moclojer" /></a>
+<a href="https://github.com/moclojer/moclojer"><img align="right" src="https://github.com/moclojer/moclojer/raw/main/doc/assets/logo.png" alt="moclojer" title="moclojer" /></a>
 
 Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `OpenAPI`.
 
-> 💾 Download the binary with the latest version of moclojer to test on your computer [here](https://github.com/avelino/moclojer/releases/latest).
+> 💾 Download the binary with the latest version of moclojer to test on your computer [here](https://github.com/moclojer/moclojer/releases/latest).
 
-[![tests](https://github.com/avelino/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/tests.yml)
-[![linter](https://github.com/avelino/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/avelino/moclojer/actions/workflows/linter.yml)
+[![tests](https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/tests.yml)
+[![linter](https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/linter.yml)
 
 **[📖 See the complete documentation for moclojer here](https://avelino.run/projects/moclojer/)**, if you want to contribute (or complement) the documentation, it is [here](https://github.com/avelino/avelino.run/blob/main/content/projects/moclojer.md).
 
@@ -34,12 +34,12 @@ Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `Op
 
 ## docker
 
-**image:** `ghcr.io/avelino/moclojer:latest`
+**image:** `ghcr.io/moclojer/moclojer:latest`
 
 ```sh
 docker run -it \
   -v $(pwd)/moclojer.yml:/app/moclojer.yml \
-  ghcr.io/avelino/moclojer:latest
+  ghcr.io/moclojer/moclojer:latest
 ```
 
 ## 💻 dev environment
