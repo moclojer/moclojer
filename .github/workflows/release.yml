@@ -54,7 +54,7 @@ jobs:
       - uses: "actions/download-artifact@v3"
         with:
           name: moclojer_target.tar.gz
-          path: target.tar
+          path: target.tar.gz
       - name: tar (unpack) target folder
         run: tar -xzvf target.tar.gz
       - name: Gen reflect.config.json to ${{ runner.os }}
