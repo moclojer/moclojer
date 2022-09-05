@@ -27,11 +27,11 @@ jobs:
         env:
           CI_COMMIT_SHA: "${{ github.sha }}"
       - name: tar (pack) target folder
-        run: tar -czvf moclojer_target.tar.gz target
+        run: tar -cjvf moclojer_target.tar.bz2 target
       - uses: "actions/upload-artifact@v3.1.0"
         with:
-          name: moclojer_target.tar.gz
-          path: moclojer_target.tar.gz
+          name: moclojer_target.tar.bz2
+          path: moclojer_target.tar.bz2
       - uses: "actions/upload-artifact@v3.1.0"
         with:
           name: moclojer_jar
@@ -53,10 +53,10 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: "actions/download-artifact@v3"
         with:
-          name: moclojer_target.tar.gz
-          path: moclojer_target.tar.gz
+          name: moclojer_target.tar.bz2
+          path: moclojer_target.tar.bz2
       - name: tar (unpack) target folder
-        run: tar -xzvf moclojer_target.tar.gz
+        run: tar -xjvf moclojer_target.tar.bz2
       - name: Gen reflect.config.json to ${{ runner.os }}
         working-directory: target/native
         run: |
