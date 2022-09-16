@@ -21,7 +21,7 @@ RUN wget https://github.com/candid82/joker/releases/download/v${JOKER_VERSION}/j
     && chmod a+x joker && mv joker /usr/bin
 
 # A Language Server for Clojure(script). Taking a Cursive-like approach of statically analyzing code
-RUN sudo bash < <(curl -s https://raw.githubusercontent.com/clojure-lsp/clojure-lsp/master/install)
+RUN bash < <(curl -s https://raw.githubusercontent.com/clojure-lsp/clojure-lsp/master/install)
 
 # Set the default shell to bash rather than sh
 ENV SHELL /bin/bash
