@@ -5,7 +5,7 @@ COPY bashrc /root/.bashrc
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get -yq install --no-install-recommends \
-    apt-utils git procps lsb-release netcat && \
+    apt-utils git procps lsb-release netcat sudo && \
 	apt-get autoremove -y && apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
@@ -21,7 +21,9 @@ RUN wget https://github.com/candid82/joker/releases/download/v${JOKER_VERSION}/j
     && chmod a+x joker && mv joker /usr/bin
 
 # A Language Server for Clojure(script). Taking a Cursive-like approach of statically analyzing code
-RUN bash < <(curl -s https://raw.githubusercontent.com/clojure-lsp/clojure-lsp/master/install)
+RUN curl -O https://raw.githubusercontent.com/clojure-lsp/clojure-lsp/master/install && \
+    chmod a+x ./install && \
+    sudo ./install && rm ./install
 
 # Set the default shell to bash rather than sh
 ENV SHELL /bin/bash
