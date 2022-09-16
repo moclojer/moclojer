@@ -3,7 +3,6 @@
 	"dockerFile": "Dockerfile",
 	"extensions": [
 		"betterthantomorrow.calva",
-		"tonsky.clojure-warrior",
 		"borkdude.clj-kondo"
 	],
 	"settings":{
