@@ -3,7 +3,9 @@
 	"dockerFile": "Dockerfile",
 	"extensions": [
 		"betterthantomorrow.calva",
-		"borkdude.clj-kondo"
+		"borkdude.clj-kondo",
+        "redhat.vscode-yaml",
+        "yzhang.markdown-all-in-one"
 	],
 	"settings":{
 		"calva.jokerPath": "/usr/bin"
