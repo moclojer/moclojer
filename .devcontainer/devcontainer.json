@@ -1,0 +1,12 @@
+{
+	"name": "moclojer",
+	"dockerFile": "Dockerfile",
+	"extensions": [
+		"betterthantomorrow.calva",
+		"tonsky.clojure-warrior",
+		"borkdude.clj-kondo"
+	],
+	"settings":{
+		"calva.jokerPath": "/usr/bin"
+	}
+}
