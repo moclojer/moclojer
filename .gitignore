@@ -19,6 +19,7 @@ pom.xml.asc
 ## moclojer
 /moclojer
 !test/moclojer/resources/
+!.devcontainer
 *.yaml
 *.yml
 *.edn
