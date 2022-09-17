@@ -10,6 +10,11 @@
 (defn make-smart-router
   "returns a pedestal routes"
   [{::keys [config mocks]}]
+  ;; TODO: this implementation is not legal
+  ;; we need to have a function that takes a moclojer configuration structure
+  ;; and loads the endpoints
+  ;; any incoming file format must be converted to the moclojer structure and
+  ;; loaded with the main function
   (-> (if mocks
         (do
           (log/info :mode "openapi")

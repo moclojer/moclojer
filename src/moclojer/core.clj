@@ -23,7 +23,7 @@
 
 (defn watch-service
   "watch spec file change to server reload
-   used async/thread for doent's server down time"
+   used async/thread to not have time for server shutdown"
   [files on-change]
   (let [ws (.newWatchService (FileSystems/getDefault))
         kv-paths (keep (fn [x]
