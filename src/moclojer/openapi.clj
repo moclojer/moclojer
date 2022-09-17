@@ -99,9 +99,9 @@
     object))
 
 (defn generate-pedestal-route
-  "generate a Pedestal route from an OpenAPI specification"
-  ;; TODO: this function is very hard logic, need refactoring,  split
-  ;; in any easy functions and this function call anothers functions
+  "generate a pedestal route from an openapi spec"
+  ;; TODO: this function is too complex, we need to rewrite simplifying the 
+  ;; logic and splitting the implementation into smaller functions
   [config]
   (sequence (mapcat
              (fn [[path path-item]]
