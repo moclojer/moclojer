@@ -10,7 +10,8 @@
   (:import (java.io File)))
 
 (def openapi-examples
-  (io/file "OpenAPI-Specification" "examples"))
+  ;; TODO: remove git submodule, get all openapi spec examples
+  (io/file "META-INF" "OpenAPI-Specification" "examples"))
 
 (def petstore-spec
   (yaml/parse-string (slurp (io/file openapi-examples "v3.0" "petstore.yaml"))
