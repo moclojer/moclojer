@@ -3,6 +3,7 @@
             [clojure.string :as string]))
 
 (def home-endpoint
+  "initial/home endpoint URI: /"
   {:endpoint {:method      :get
               :path        "/"
               :router-name ::moclojer
@@ -11,6 +12,7 @@
                             :status  200}}})
 
 (defn moclojer->openapi
+  "convert moclojer config to openapi spec"
   [endpoints]
   {"openapi" "3.0.0"
    "paths" (into {}

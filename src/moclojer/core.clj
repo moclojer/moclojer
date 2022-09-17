@@ -13,6 +13,7 @@
            (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
+  "http container options, active gzip"
   [^ServletContextHandler context]
   (let [gzip-handler (GzipHandler.)]
     (.addIncludedMethods gzip-handler (make-array String 0))
@@ -21,6 +22,8 @@
   context)
 
 (defn watch-service
+  "watch spec file change to server reload
+   used async/thread for doent's server down time"
   [files on-change]
   (let [ws (.newWatchService (FileSystems/getDefault))
         kv-paths (keep (fn [x]
@@ -55,6 +58,7 @@
         (recur)))))
 
 (def *pom-info
+  "pom file info load"
   (delay
     (let [p (Properties.)]
       (some-> "META-INF/maven/moclojer/moclojer/pom.properties"

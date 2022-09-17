@@ -9,7 +9,7 @@
   (:import (java.time Instant)))
 
 (def path-item->operation
-  "Convert path item to http method"
+  "convert path item to http method"
   #{"get" "put" "post" "delete" "options" "head" "patch" "trace"})
 
 ;; TODO: JSON Pointer library
@@ -28,21 +28,21 @@
       (string/replace #"~0" "~")))
 
 (defn json-pointer->path
-  "Turns JSON Ponter reprsentation into clojure 'path'.
-  Example:
+  "turns JSON Ponter reprsentation into clojure 'path'.
+  example:
   (get-in {\"a\" {\"b\" 42}} (json-pointer->path \"/a/b\"))
   => 42"
   [pointer]
   (mapv json-pointer-unescape-token (rest (string/split pointer #"/"))))
 
 (defn json-path->pointer
-  "Turn a clojure sequence of strings into a JSON pointer"
+  "turn a clojure sequence of strings into a JSON pointer"
   [coll]
   (string/join "/"
                (cons "" (map json-pointer-escape-token coll))))
 
 (defn body->str
-  "Convert body to string, if it is edn it will be converted to json->str"
+  "convert body to string, if it is edn it will be converted to json->str"
   [body]
   (if (string? body)
     body
@@ -50,7 +50,7 @@
         (cheshire/generate-string))))
 
 (def generate-response
-  "Generate a response object from a response object in the OpenAPI spec"
+  "generate a response object from a response object in the OpenAPI spec"
   {:name  ::generate-response
    :enter (fn [{::keys [operation]
                 :keys  [request]
@@ -63,7 +63,7 @@
                      {:status 501})))})
 
 (defn with-mocks
-  "Generate a mock response for a given operation"
+  "generate a mock response for a given operation"
   [openapi mocks]
   (let [op->path (into {}
                        (mapcat (fn [[path path-item]]
@@ -80,7 +80,7 @@
                openapi mocks)))
 
 (defn openapi-path->pedestal-path
-  "Convert a path from openapi to pedestal"
+  "convert a path from openapi to pedestal"
   [path]
   ;; TODO: Handle wildcards
   ;; https://github.com/OAI/OpenAPI-Specification/issues/291
@@ -91,7 +91,7 @@
                     (str ":" (second x)))))
 
 (defn resolve-ref
-  "Resolve a reference to a schema"
+  "resolve a reference to a schema"
   [root {:strs [$ref]
          :as   object}]
   (if $ref
@@ -99,7 +99,9 @@
     object))
 
 (defn generate-pedestal-route
-  "Generate a Pedestal route from an OpenAPI specification"
+  "generate a Pedestal route from an OpenAPI specification"
+  ;; TODO: this function is very hard logic, need refactoring,  split
+  ;; in any easy functions and this function call anothers functions
   [config]
   (sequence (mapcat
              (fn [[path path-item]]
