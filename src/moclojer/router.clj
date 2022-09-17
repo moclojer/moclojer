@@ -8,7 +8,7 @@
   (:import (java.io FileNotFoundException)))
 
 (defn make-smart-router
-  "Returns a pedestal routes"
+  "returns a pedestal routes"
   [{::keys [config mocks]}]
   (-> (if mocks
         (do
