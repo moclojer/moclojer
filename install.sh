@@ -10,7 +10,7 @@ VERSION=''
 
 # Args
 print_help() {
-    echo "Installs latest (or specific) version of paro. Installation directory defaults to /usr/local/bin."
+    echo "Installs latest (or specific) version of ${BIN}. Installation directory defaults to /usr/local/bin."
     echo -e
     echo "Usage:"
     echo "install [--dir <dir>] [--download-dir <download-dir>] [--version <version>]"
