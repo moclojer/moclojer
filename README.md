@@ -47,6 +47,13 @@ docker run -it \
 - `dev`: version of the main branch
 - `latest`: latest stable version
 
+## manual (Linux & macOS)
+
+```sh
+bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/install.sh)
+```
+> If you are using Linux you maybe need `sudo`.
+
 ## 💻 dev environment
 
 We use git submodule for integration with the [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), you need to update the git submodule code.
