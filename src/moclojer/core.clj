@@ -98,11 +98,11 @@
         http/start)))
 
 (def spec {:config {:ref          "<file>"
-                    :desc         "Config path <file> or the CONFIG enviroment variable."
+                    :desc         "Config path <file> or the CONFIG environment variable."
                     :alias        :c
                     :default      "moclojer.yml"}
            :mocks  {:ref          "<file>"
-                    :desc         "OpenAPI v3 mocks path <file> or the MOCKS enviroment variable."
+                    :desc         "OpenAPI v3 mocks path <file> or the MOCKS environment variable."
                     :alias        :m}
            :version {:desc        "Show version."
                      :alias       :v}
