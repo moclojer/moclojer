@@ -20,10 +20,10 @@ pom.xml.asc
 /moclojer
 !test/moclojer/resources/
 !.devcontainer
-*.yaml
-*.yml
-*.edn
-*.json
+moclojer.yaml
+moclojer.yml
+moclojer.edn
+moclojer.json
 *.org
 .socket-repl-port
 upload-filesystem/
