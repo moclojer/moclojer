@@ -111,16 +111,16 @@
 
 (defn -main
   "start moclojer server"
-  {:org.babashka/cli {:collect {:args []}}}
-  [& args]
+  {:org.babashka/cli {}}
+  [& main-args]
   (let [current-version (or (get @*pom-info "version") "dev")
-        {:keys [args opts]} (cli/parse-args args {:spec spec})
+        {:keys [args opts]} (cli/parse-args main-args {:spec spec})
         {:keys [c config m mocks v version h help]} (first args)
         args-map {:current-version current-version
                   :config (or c config (System/getenv "CONFIG") (:config opts))
                   :mocks (or m mocks (System/getenv "MOCKS") (:mocks opts))
-                  :version (or v version)
-                  :help (or h help)}]
+                  :version (or v version (:version opts))
+                  :help (or h help (:help opts))}]
 
     (when (:version args-map)
       (println "moclojer" current-version)
@@ -128,7 +128,7 @@
 
     (when (:help args-map)
       (println
-        (str "Moclojer (" current-version "), simple and efficient HTTP mock server.\n\r"
+        (str "Moclojer (" current-version "), simple and efficient HTTP mock server.\r\n"
              (cli/format-opts {:spec spec :order [:config :mocks :version :help]})))
       (System/exit 0))
 
