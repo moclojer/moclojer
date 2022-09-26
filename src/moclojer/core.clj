@@ -1,6 +1,7 @@
 (ns moclojer.core
   (:gen-class)
-  (:require [clojure.core.async :as async]
+  (:require [babashka.cli :as cli]
+            [clojure.core.async :as async]
             [clojure.java.io :as io]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
@@ -67,13 +68,14 @@
         (->> (.load p)))
       p)))
 
-(defn -main
+(defn start
   "start moclojer server"
-  [& _]
-  (prn (list '-> 'moclojer :start-server :version (get @*pom-info "version")))
-  (let [config (System/getenv "CONFIG")
-        mocks (System/getenv "MOCKS")
-        env {::router/config (or config "moclojer.yml")
+  [{:keys [current-version config mocks]}]
+  (prn (list '-> 'moclojer :start-server
+             :version current-version
+             :config config
+             :mocks mocks))
+  (let [env {::router/config config
              ::router/mocks  mocks}
         *router (atom (router/make-smart-router
                         env))]
@@ -94,3 +96,40 @@
         (update ::http/interceptors into [http/json-body])
         http/create-server
         http/start)))
+
+(def spec {:config {:ref          "<file>"
+                    :desc         "Config path <file> or the CONFIG enviroment variable."
+                    :alias        :c
+                    :default      "moclojer.yml"}
+           :mocks  {:ref          "<file>"
+                    :desc         "OpenAPI v3 mocks path <file> or the MOCKS enviroment variable."
+                    :alias        :m}
+           :version {:desc        "Show version."
+                     :alias       :v}
+           :help    {:desc        "Show this Help."
+                     :alias       :h}})
+
+(defn -main
+  "start moclojer server"
+  {:org.babashka/cli {:collect {:args []}}}
+  [& args]
+  (let [current-version (or (get @*pom-info "version") "dev")
+        {:keys [args opts]} (cli/parse-args args {:spec spec})
+        {:keys [c config m mocks v version h help]} (first args)
+        args-map {:current-version current-version
+                  :config (or c config (System/getenv "CONFIG") (:config opts))
+                  :mocks (or m mocks (System/getenv "MOCKS") (:mocks opts))
+                  :version (or v version)
+                  :help (or h help)}]
+
+    (when (:version args-map)
+      (println "moclojer" current-version)
+      (System/exit 0))
+
+    (when (:help args-map)
+      (println
+        (str "Moclojer (" current-version "), simple and efficient HTTP mock server.\n\r"
+             (cli/format-opts {:spec spec :order [:config :mocks :version :help]})))
+      (System/exit 0))
+
+    (start args-map)))
