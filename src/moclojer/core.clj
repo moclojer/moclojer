@@ -6,8 +6,13 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
             [io.pedestal.log :as log]
+            [moclojer.adapters :as adapters]
             [moclojer.router :as router])
-  (:import (java.nio.file FileSystems Path StandardWatchEventKinds WatchEvent)
+  (:import (java.nio.file
+            FileSystems
+            Path
+            StandardWatchEventKinds
+            WatchEvent)
            (java.util Properties)
            (java.util.concurrent TimeUnit)
            (org.eclipse.jetty.server.handler.gzip GzipHandler)
@@ -97,39 +102,35 @@
         http/create-server
         http/start)))
 
-(def spec {:config {:ref          "<file>"
-                    :desc         "Config path <file> or the CONFIG environment variable."
-                    :alias        :c
-                    :default      "moclojer.yml"}
-           :mocks  {:ref          "<file>"
-                    :desc         "OpenAPI v3 mocks path <file> or the MOCKS environment variable."
-                    :alias        :m}
-           :version {:desc        "Show version."
-                     :alias       :v}
-           :help    {:desc        "Show this Help."
-                     :alias       :h}})
+(def spec {:config {:ref     "<file>"
+                    :desc    "Config path <file> or the CONFIG enviroment variable."
+                    :alias   :c
+                    :default "moclojer.yml"}
+           :mocks  {:ref     "<file>"
+                    :desc    "OpenAPI v3 mocks path <file> or the MOCKS enviroment variable."
+                    :alias   :m}
+           :version {:desc   "Show version."
+                     :alias  :v}
+           :help    {:desc   "Show this Help."
+                     :alias  :h}})
 
 (defn -main
-  "start moclojer server"
-  {:org.babashka/cli {}}
-  [& main-args]
-  (let [current-version (or (get @*pom-info "version") "dev")
-        {:keys [args opts]} (cli/parse-args main-args {:spec spec})
-        {:keys [c config m mocks v version h help]} (first args)
-        args-map {:current-version current-version
-                  :config (or c config (System/getenv "CONFIG") (:config opts))
-                  :mocks (or m mocks (System/getenv "MOCKS") (:mocks opts))
-                  :version (or v version (:version opts))
-                  :help (or h help (:help opts))}]
+  {:org.babashka/cli {:collect {:args []}}}
+  [& args]
+  (let [args-opts (cli/parse-args args {:spec spec})
+        envs {:config (System/getenv "CONFIG")
+              :mocks (System/getenv "MOCKS")}
+        current-version (or (get @*pom-info "version") "dev")
+        config (adapters/inputs->config args-opts envs current-version)]
 
-    (when (:version args-map)
+    (when (:version config)
       (println "moclojer" current-version)
       (System/exit 0))
 
-    (when (:help args-map)
+    (when (:help config)
       (println
         (str "Moclojer (" current-version "), simple and efficient HTTP mock server.\r\n"
              (cli/format-opts {:spec spec :order [:config :mocks :version :help]})))
       (System/exit 0))
 
-    (start args-map)))
+    (start config)))
