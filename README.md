@@ -54,6 +54,23 @@ bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/instal
 ```
 > If you are using Linux you maybe need `sudo`.
 
+## CLI Usage
+`clj -M:run [OPTIONS]`, `java -jar moclojer.jar [OPTIONS]` and `moclojer_Linux [OPTIONS]`
+
+### Options
+
+#### -c, --config <file>
+Config path <file> or the CONFIG environment variable. [Default: moclojer.yml]
+
+#### -m, --mocks <file>
+OpenAPI v3 mocks path <file> or the MOCKS environment variable.
+
+#### -h, --help
+Show help information
+
+#### -v, --version
+Show version information
+
 ## 💻 dev environment
 
 We use git submodule for integration with the [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), you need to update the git submodule code.
@@ -65,7 +82,7 @@ git submodule update -f --init
 ### run
 
 ```sh
-clj -X:run
+clj -M:run
 ```
 
 ### test
