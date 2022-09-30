@@ -1,15 +1,14 @@
 # moclojer
 
-<a href="https://github.com/moclojer/moclojer"><img align="right" src="https://github.com/moclojer/moclojer/raw/main/doc/assets/logo.png" alt="moclojer" title="moclojer" /></a>
+[![moclojer](https://github.com/moclojer/moclojer/raw/main/doc/assets/logo.png)](https://github.com/moclojer/moclojer)
 
 Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `OpenAPI`.
 
 > 💾 Download the binary with the latest version of moclojer to test on your computer [here](https://github.com/moclojer/moclojer/releases/latest).
 
-[![tests](https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/tests.yml)
-[![linter](https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/linter.yml)
+[![tests](https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/tests.yml) [![linter](https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/linter.yml)
 
-**[📖 See the complete documentation for moclojer here](https://avelino.run/projects/moclojer/)**, if you want to contribute (or complement) the documentation, it is [here](https://github.com/avelino/avelino.run/blob/main/content/projects/moclojer.md).
+[**📖 See the complete documentation for moclojer here**](https://avelino.run/projects/moclojer/), if you want to contribute (or complement) the documentation, it is [here](https://github.com/avelino/avelino.run/blob/main/content/projects/moclojer.md).
 
 **`YAML` example**
 
@@ -34,65 +33,74 @@ Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `Op
 
 ## docker
 
-- **image:** `ghcr.io/moclojer/moclojer:dev`
-- **port _(default)_:** `8000`_, if you want to change the port set the environment variable `PORT`_
+* **image:** `ghcr.io/moclojer/moclojer:dev`
+* **port **_**(default)**_**:** `8000`_, if you want to change the port set the environment variable `PORT`_
 
-```sh
+```
 docker run -it \
   -v $(pwd)/moclojer.yml:/app/moclojer.yml \
   ghcr.io/moclojer/moclojer:dev
 ```
 
 **we keep two versions:**
-- `dev`: version of the main branch
-- `latest`: latest stable version
+
+* `dev`: version of the main branch
+* `latest`: latest stable version
 
 ## manual (Linux & macOS)
 
-```sh
+```
 bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/install.sh)
 ```
+
 > If you are using Linux you maybe need `sudo`.
 
 ## CLI Usage
-`clj -M:run [OPTIONS]`, `java -jar moclojer.jar [OPTIONS]` and `moclojer_Linux [OPTIONS]`
+
+* `clj -M:run [OPTIONS]`
+* `java -jar moclojer.jar [OPTIONS]`
+* `moclojer_Linux [OPTIONS]`
 
 ### Options
 
-#### -c, --config <file>
-Config path <file> or the CONFIG environment variable. [Default: moclojer.yml]
+#### -c, --config
 
-#### -m, --mocks <file>
-OpenAPI v3 mocks path <file> or the MOCKS environment variable.
+Config path or the CONFIG environment variable. \[Default: moclojer.yml]
+
+#### -m, --mocks
+
+OpenAPI v3 mocks path or the MOCKS environment variable.
 
 #### -h, --help
+
 Show help information
 
 #### -v, --version
+
 Show version information
 
 ## 💻 dev environment
 
 We use git submodule for integration with the [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), you need to update the git submodule code.
 
-```sh
+```
 git submodule update -f --init
 ```
 
 ### run
 
-```sh
+```
 clj -M:run
 ```
 
 ### test
 
-```sh
+```
 clj -M:test
 ```
 
 ### `moclojer.jar` generate
 
-```sh
+```
 clj -A:dev -M --report stderr -m moclojer.build
 ```
