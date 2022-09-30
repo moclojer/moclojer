@@ -1,6 +1,6 @@
 # moclojer
 
-[![moclojer](https://github.com/moclojer/moclojer/raw/main/doc/assets/logo.png)](https://github.com/moclojer/moclojer)
+[![moclojer](https://github.com/moclojer/moclojer/raw/main/docs/assets/logo.png)](https://github.com/moclojer/moclojer)
 
 Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `OpenAPI`.
 
