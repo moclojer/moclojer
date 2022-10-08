@@ -94,6 +94,7 @@
          ::http/join?             true
          ::http/container-options {:h2c?                 true
                                    :context-configurator context-configurator}
+         ::http/host              (or (System/getenv "HOST") "0.0.0.0")
          ::http/port              (or (some-> (System/getenv "PORT")
                                               Integer/parseInt)
                                       8000)}
