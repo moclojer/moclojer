@@ -28,3 +28,4 @@ moclojer.json
 .socket-repl-port
 upload-filesystem/
 META-INF/*-native-image-args
+.dccache
