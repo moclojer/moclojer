@@ -34,21 +34,21 @@
   (let [ws (.newWatchService (FileSystems/getDefault))
         kv-paths (keep (fn [x]
                          (when-let [path (some-> x
-                                           io/file
-                                           .toPath
-                                           .toAbsolutePath)]
+                                                 io/file
+                                                 .toPath
+                                                 .toAbsolutePath)]
                            [x path]))
-                   files)
+                       files)
         roots (into #{}
-                (keep (fn [[_ ^Path v]]
-                        (.getParent v)))
-                kv-paths)]
+                    (keep (fn [[_ ^Path v]]
+                            (.getParent v)))
+                    kv-paths)]
     (doseq [path roots]
       (.register ^Path path
-        ws (into-array [StandardWatchEventKinds/ENTRY_MODIFY
-                        StandardWatchEventKinds/OVERFLOW
-                        StandardWatchEventKinds/ENTRY_DELETE
-                        StandardWatchEventKinds/ENTRY_CREATE])))
+                 ws (into-array [StandardWatchEventKinds/ENTRY_MODIFY
+                                 StandardWatchEventKinds/OVERFLOW
+                                 StandardWatchEventKinds/ENTRY_DELETE
+                                 StandardWatchEventKinds/ENTRY_CREATE])))
     (async/thread
       (loop []
         (when-let [watch-key (.poll ws 1 TimeUnit/SECONDS)]
@@ -57,7 +57,7 @@
                                   (first (for [[k v] kv-paths
                                                :when (= v (.toAbsolutePath changed-path))]
                                            k))))
-                          (.pollEvents watch-key))]
+                              (.pollEvents watch-key))]
             (when (seq changed)
               (on-change (set changed))))
           (.reset watch-key))
@@ -68,9 +68,9 @@
   (delay
     (let [p (Properties.)]
       (some-> "META-INF/maven/moclojer/moclojer/pom.properties"
-        io/resource
-        io/reader
-        (->> (.load p)))
+              io/resource
+              io/reader
+              (->> (.load p)))
       p)))
 
 (defn start
@@ -83,11 +83,11 @@
   (let [env {::router/config config
              ::router/mocks  mocks}
         *router (atom (router/make-smart-router
-                        env))]
+                       env))]
     (watch-service (vals env)
-      (fn [changed]
-        (log/info :changed changed)
-        (reset! *router (router/make-smart-router env))))
+                   (fn [changed]
+                     (log/info :changed changed)
+                     (reset! *router (router/make-smart-router env))))
     (-> {:env                     :prod
          ::http/routes            (fn [] @*router)
          ::http/type              :jetty
@@ -129,8 +129,8 @@
 
     (when (:help config)
       (println
-        (str "Moclojer (" current-version "), simple and efficient HTTP mock server.\r\n"
-             (cli/format-opts {:spec spec :order [:config :mocks :version :help]})))
+       (str "Moclojer (" current-version "), simple and efficient HTTP mock server.\r\n"
+            (cli/format-opts {:spec spec :order [:config :mocks :version :help]})))
       (System/exit 0))
 
     (start config)))
