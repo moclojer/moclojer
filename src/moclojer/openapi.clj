@@ -98,61 +98,66 @@
     (get-in root (json-pointer->path $ref))
     object))
 
+(defn build-routes
+  "dynamically build pedestal routes"
+  [config path path-item method operation]
+  ;; TODO: this function is too complex, we need to rewrite simplifying the
+  ;; logic and splitting the implementation into smaller functions
+  (route/expand-routes
+    #{;; use the `host` declared in the configuration file
+      {:host (get operation "host" nil)}
+      [(openapi-path->pedestal-path path)
+       ;; used method in keyword format, ex: `:get`
+       (keyword method)
+       (into []
+             cat
+             [[{:name  ::add-operation
+                :enter (fn [ctx]
+                         (assoc ctx
+                                ::path path
+                                ::method method
+                                ::openapi config
+                                ::path-item path-item
+                                ::operation operation))}
+               (body-params/body-params)]
+              (when (get-in operation ["requestBody" "content" "multipart/form-data"])
+                [(middlewares/multipart-params)])
+              (when-let [dir (get-in operation ["x-mockResponse" "store"])]
+                (.mkdirs (io/file dir))
+                [{:name  ::save-all-multipart
+                  :enter (fn [ctx]
+                           (locking dir
+                             (let [now-str  (str (Instant/now))
+                                   temp-dir (loop [n 19]
+                                              (let [d (io/file dir
+                                                               (str "req"
+                                                                    (string/replace
+                                                                      (subs now-str 0 n)
+                                                                      #"[^0-9T-]"
+                                                                      "_")))]
+                                                (if (.exists d)
+                                                  (recur (inc n))
+                                                  (doto d (.mkdirs)))))]
+                               (doseq [[k v] (-> ctx :request :multipart-params)
+                                       :let  [target (io/file temp-dir k)]]
+                                 (if (:tempfile v)
+                                   (io/copy (:tempfile v) target)
+                                   (spit target v)))))
+                           ctx)}])
+              [generate-response]])
+       :route-name (keyword
+                     (string/join "-" [(get operation "host" "nil")
+                                       (or (get operation "operationId")
+                                           (json-path->pointer [path method]))]))]}))
+
 (defn generate-pedestal-route
   "generate a pedestal route from an openapi spec"
-  ;; TODO: this function is too complex, we need to rewrite simplifying the 
-  ;; logic and splitting the implementation into smaller functions
   [config]
   (sequence (mapcat
              (fn [[path path-item]]
                (sequence
                 (mapcat (fn [[method operation]]
                           (when (contains? path-item->operation method)
-                            (route/expand-routes
-                             #{;; use the `host` declared in the configuration file
-                               {:host (get operation "host" nil)}
-                               [(openapi-path->pedestal-path path)
-                                (keyword method)
-                                (into []
-                                      cat
-                                      [[{:name  ::add-operation
-                                         :enter (fn [ctx]
-                                                  (assoc ctx
-                                                         ::path path
-                                                         ::method method
-                                                         ::openapi config
-                                                         ::path-item path-item
-                                                         ::operation operation))}
-                                        (body-params/body-params)]
-                                       (when (get-in operation ["requestBody" "content" "multipart/form-data"])
-                                         [(middlewares/multipart-params)])
-                                       (when-let [dir (get-in operation ["x-mockResponse" "store"])]
-                                         (.mkdirs (io/file dir))
-                                         [{:name  ::save-all-multipart
-                                           :enter (fn [ctx]
-                                                    (locking dir
-                                                      (let [now-str (str (Instant/now))
-                                                            temp-dir (loop [n 19]
-                                                                       (let [d (io/file dir (str "req"
-                                                                                                 (string/replace
-                                                                                                  (subs now-str
-                                                                                                        0 n)
-                                                                                                  #"[^0-9T-]"
-                                                                                                  "_")))]
-                                                                         (if (.exists d)
-                                                                           (recur (inc n))
-                                                                           (doto d
-                                                                             (.mkdirs)))))]
-                                                        (doseq [[k v] (-> ctx :request :multipart-params)
-                                                                :let [target (io/file temp-dir k)]]
-                                                          (if (:tempfile v)
-                                                            (io/copy (:tempfile v) target)
-                                                            (spit target v)))))
-                                                    ctx)}])
-                                       [generate-response]])
-                                :route-name (keyword
-                                             (string/join "-" [(get operation "host" "nil")
-                                                               (or (get operation "operationId")
-                                                                   (json-path->pointer [path method]))]))]}))))
+                            (build-routes config path path-item method operation))))
                 (resolve-ref config path-item))))
             (get config "paths")))
