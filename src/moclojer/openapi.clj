@@ -85,8 +85,7 @@
   ;; TODO: Handle wildcards
   ;; https://github.com/OAI/OpenAPI-Specification/issues/291
   ;; https://datatracker.ietf.org/doc/html/rfc6570
-  (string/replace path
-                  #"\{([^}]+)\}"
+  (string/replace path #"\{([^}]+)\}"
                   (fn [x]
                     (str ":" (second x)))))
 
@@ -98,6 +97,40 @@
     (get-in root (json-pointer->path $ref))
     object))
 
+(defn mockresponse-store
+  "save local file when endpoint is multipart"
+  ;; TODO: support objetct store (cloud)
+  [dir]
+  (.mkdirs (io/file dir))
+  [{:name  ::save-all-multipart
+    :enter (fn [ctx]
+            (locking dir
+              (let [now-str  (str (Instant/now))
+                    temp-dir (loop [n 19]
+                               (let [d (io/file dir
+                                                (str "req"
+                                                     (string/replace
+                                                      (subs now-str 0 n)
+                                                      #"[^0-9T-]"
+                                                      "_")))]
+                                 (if (.exists d)
+                                   (recur (inc n))
+                                   (doto d (.mkdirs)))))]
+                (doseq [[k v] (-> ctx :request :multipart-params)
+                        :let  [target (io/file temp-dir k)]]
+                  (if (:tempfile v)
+                    (io/copy (:tempfile v) target)
+                    (spit target v)))))
+            ctx)}])
+
+(defn make-route-name
+  "declare the route name, must be a unique id and return :keyword"
+  [operation path method]
+  (keyword
+   (string/join "-" [(get operation "host" "nil")
+                     (or (get operation "operationId")
+                         (json-path->pointer [path method]))])))
+
 (defn build-routes
   "dynamically build pedestal routes"
   [config path path-item method operation]
@@ -107,7 +140,7 @@
     #{;; use the `host` declared in the configuration file
       {:host (get operation "host" nil)}
       [(openapi-path->pedestal-path path)
-       ;; used method in keyword format, ex: `:get`
+       ;; method ex: `:get`
        (keyword method)
        (into []
              cat
@@ -120,35 +153,14 @@
                                 ::path-item path-item
                                 ::operation operation))}
                (body-params/body-params)]
+              ;; validates if there is a need to accept multipart formularies, if yes add middleware
               (when (get-in operation ["requestBody" "content" "multipart/form-data"])
                 [(middlewares/multipart-params)])
+              ;; save local file when endpoint is multipart
               (when-let [dir (get-in operation ["x-mockResponse" "store"])]
-                (.mkdirs (io/file dir))
-                [{:name  ::save-all-multipart
-                  :enter (fn [ctx]
-                           (locking dir
-                             (let [now-str  (str (Instant/now))
-                                   temp-dir (loop [n 19]
-                                              (let [d (io/file dir
-                                                               (str "req"
-                                                                    (string/replace
-                                                                      (subs now-str 0 n)
-                                                                      #"[^0-9T-]"
-                                                                      "_")))]
-                                                (if (.exists d)
-                                                  (recur (inc n))
-                                                  (doto d (.mkdirs)))))]
-                               (doseq [[k v] (-> ctx :request :multipart-params)
-                                       :let  [target (io/file temp-dir k)]]
-                                 (if (:tempfile v)
-                                   (io/copy (:tempfile v) target)
-                                   (spit target v)))))
-                           ctx)}])
-              [generate-response]])
-       :route-name (keyword
-                     (string/join "-" [(get operation "host" "nil")
-                                       (or (get operation "operationId")
-                                           (json-path->pointer [path method]))]))]}))
+                (mockresponse-store dir))])
+       :route-name (make-route-name operation path method)]}))
+
 
 (defn generate-pedestal-route
   "generate a pedestal route from an openapi spec"
