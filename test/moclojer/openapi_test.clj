@@ -5,6 +5,7 @@
             [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
             [moclojer.io-utils :as iou]
+            [moclojer.openapi :as openapi]
             [moclojer.router :as router]
             [yaml.core :as yaml])
   (:import (java.io File)))
@@ -128,3 +129,14 @@
              (-> service-fn
                  (response-for :delete "/pets/0")
                  :status))))))
+
+(deftest make-route-name
+  (testing
+   "set host and get method"
+    (is (openapi/make-route-name {:host "abc"} "test" "get") "abc-test-get"))
+  (testing
+   "nil in host and get method"
+    (is (openapi/make-route-name {} "test" "get") "-test-get"))
+  (testing
+   "post method"
+    (is (openapi/make-route-name {} "test" "get") "-test-post")))
