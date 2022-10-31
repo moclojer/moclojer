@@ -126,10 +126,9 @@
 (defn make-route-name
   "declare the route name, must be a unique id and return :keyword"
   [operation path method]
-  (keyword
-   (string/join "-" [(get operation "host" "nil")
-                     (or (get operation "operationId")
-                         (json-path->pointer [path method]))])))
+  (keyword (str (get operation "host" "nil")
+                (or (get operation "operationId")
+                    (json-path->pointer [path method])))))
 
 (defn build-routes
   "dynamically build pedestal routes"
@@ -160,7 +159,6 @@
               (when-let [dir (get-in operation ["x-mockResponse" "store"])]
                 (mockresponse-store dir))])
        :route-name (make-route-name operation path method)]}))
-
 
 (defn generate-pedestal-route
   "generate a pedestal route from an openapi spec"
