@@ -133,10 +133,10 @@
 (deftest make-route-name
   (testing
    "set host and get method"
-    (is (openapi/make-route-name {:host "abc"} "test" "get") "abc-test-get"))
+    (is (openapi/make-route-name {"host" "abc"} "test" "get") (keyword "abc/test/get")))
   (testing
    "nil in host and get method"
-    (is (openapi/make-route-name {} "test" "get") "-test-get"))
+    (is (openapi/make-route-name {} "test" "get") (keyword "nil/test/get")))
   (testing
    "post method"
-    (is (openapi/make-route-name {} "test" "get") "-test-post")))
+    (is (openapi/make-route-name {} "test" "get") (keyword "nil/test/post"))))
