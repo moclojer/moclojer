@@ -157,7 +157,8 @@
                 [(middlewares/multipart-params)])
               ;; save local file when endpoint is multipart
               (when-let [dir (get-in operation ["x-mockResponse" "store"])]
-                (mockresponse-store dir))])
+                (mockresponse-store dir))
+            [generate-response]])
        :route-name (make-route-name operation path method)]}))
 
 (defn generate-pedestal-route
