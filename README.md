@@ -2,13 +2,13 @@
 
 [![moclojer](https://github.com/moclojer/moclojer/raw/main/docs/assets/logo.png)](https://github.com/moclojer/moclojer)
 
-Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `OpenAPI`.
+Simple and efficient HTTP mock server with specification written in `yaml`, `edn` or `OpenAPI`.
 
 > 💾 Download the binary with the latest version of moclojer to test on your computer [here](https://github.com/moclojer/moclojer/releases/latest).
 
 [![tests](https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/tests.yml) [![linter](https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/linter.yml)
 
-[**📖 See the complete documentation for moclojer here**](https://avelino.run/projects/moclojer/), if you want to contribute (or complement) the documentation, it is [here](https://github.com/avelino/avelino.run/blob/main/content/projects/moclojer.md).
+[**📖 See the complete documentation for moclojer here**](https://docs.moclojer.com/), if you want to contribute (or complement) the documentation, it is [here](https://github.com/avelino/avelino.run/blob/main/content/projects/moclojer.md).
 
 **`YAML` example**
 
@@ -38,14 +38,14 @@ Simple and efficient HTTP mock server with specification in `yaml`, `edn` or `Op
 
 ```
 docker run -it \
-  -v $(pwd)/moclojer.yml:/app/moclojer.yml \
+  -p 8000:8000 -v $(pwd)/moclojer.yml:/app/moclojer.yml \
   ghcr.io/moclojer/moclojer:dev
 ```
 
-**we keep two versions:**
+**we Two available versions:**
 
-* `dev`: version of the main branch
-* `latest`: latest stable version
+* `dev`: main branch docker image
+* `latest`: latest stable version image
 
 ## manual (Linux & macOS)
 
@@ -81,7 +81,7 @@ Show version information
 
 ## 💻 dev environment
 
-We use git submodule for integration with the [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), you need to update the git submodule code.
+We use git submodule to integrate with [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), if you want to use it, you will need to update the git submodule code.
 
 ```
 git submodule update -f --init
