@@ -10,7 +10,7 @@ jobs:
   build-jar:
     runs-on: "ubuntu-20.04"
     steps:
-      - uses: "actions/checkout@v3.0.2"
+      - uses: "actions/checkout@v3"
       - uses: "actions/cache@v3.0.4"
         with:
           path: |
@@ -33,7 +33,7 @@ jobs:
     runs-on: "ubuntu-20.04"
     name: "Build native image"
     steps:
-      - uses: "actions/checkout@v3.0.2"
+      - uses: "actions/checkout@v3"
       - uses: "graalvm/setup-graalvm@v1.0.9"
         with:
           version: "22.1.0"
