@@ -12,7 +12,7 @@ jobs:
   build-jar:
     runs-on: "ubuntu-20.04"
     steps:
-      - uses: "actions/checkout@v3.0.2"
+      - uses: "actions/checkout@v3"
       - uses: "actions/cache@v3.0.4"
         with:
           path: |
@@ -44,7 +44,7 @@ jobs:
       matrix:
         os: [ "macos-11", "ubuntu-20.04" ]
     steps:
-      - uses: "actions/checkout@v3.0.2"
+      - uses: "actions/checkout@v3"
       - uses: "graalvm/setup-graalvm@v1.0.9"
         with:
           version: "22.1.0"
@@ -103,7 +103,7 @@ jobs:
     runs-on: "ubuntu-20.04"
     environment: release
     steps:
-    - uses: actions/checkout@v3.0.2
+    - uses: actions/checkout@v3
     - uses: "actions/download-artifact@v3"
       with:
         name: moclojer_bin_Linux
