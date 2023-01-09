@@ -28,11 +28,11 @@ jobs:
           CI_COMMIT_SHA: "${{ github.sha }}"
       - name: tar (pack) target folder
         run: tar -cjvf moclojer_target.tar.bz2 target
-      - uses: "actions/upload-artifact@v3.1.1"
+      - uses: "actions/upload-artifact@v3.1.2"
         with:
           name: moclojer_target.tar.bz2
           path: moclojer_target.tar.bz2
-      - uses: "actions/upload-artifact@v3.1.1"
+      - uses: "actions/upload-artifact@v3.1.2"
         with:
           name: moclojer_jar
           path: target/moclojer.jar
@@ -94,7 +94,7 @@ jobs:
           else
             exit 1
           fi
-      - uses: "actions/upload-artifact@v3.1.1"
+      - uses: "actions/upload-artifact@v3.1.2"
         with:
           name: moclojer_bin_${{ runner.os }}
           path: target/native/moclojer_${{ runner.os }}
