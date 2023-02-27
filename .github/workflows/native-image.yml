@@ -17,7 +17,7 @@ jobs:
             ~/.m2/repository
             ~/.gitlibs
           key: "deps-${{ hashFiles('deps.edn') }}"
-      - uses: "DeLaGuardo/setup-clojure@10.1"
+      - uses: "DeLaGuardo/setup-clojure@10.2"
         with:
           cli: "1.11.1.1139"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
