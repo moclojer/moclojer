@@ -34,7 +34,7 @@ jobs:
     name: "Build native image"
     steps:
       - uses: "actions/checkout@v3"
-      - uses: "graalvm/setup-graalvm@v1.0.10"
+      - uses: "graalvm/setup-graalvm@v1.0.11"
         with:
           version: "22.1.0"
           java-version: "17"
