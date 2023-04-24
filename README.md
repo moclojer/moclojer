@@ -65,7 +65,9 @@ bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/instal
 
 #### -c, --config
 
-Config path or the CONFIG environment variable. \[Default: moclojer.yml]
+Config path or the CONFIG environment variable. \[**default:** `~/.config/moclojer.yml`]
+
+> moclojer uses `XDG_CONFIG_HOME` to fetch the default moclojer configuration file, if you want to set a different directory you must use the `-c` or `CONFIG` environment variable
 
 #### -m, --mocks
 

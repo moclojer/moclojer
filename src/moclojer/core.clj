@@ -7,7 +7,8 @@
             [io.pedestal.http.jetty]
             [io.pedestal.log :as log]
             [moclojer.adapters :as adapters]
-            [moclojer.router :as router])
+            [moclojer.router :as router]
+            [moclojer.config :as config])
   (:import (java.nio.file
             FileSystems
             Path
@@ -119,7 +120,8 @@
   {:org.babashka/cli {:collect {:args []}}}
   [& args]
   (let [args-opts (cli/parse-args args {:spec spec})
-        envs {:config (System/getenv "CONFIG")
+        envs {:config (or (System/getenv "CONFIG")
+                          (config/with-xdg "moclojer.yml"))
               :mocks (System/getenv "MOCKS")}
         current-version (or (get @*pom-info "version") "dev")
         config (adapters/inputs->config args-opts envs current-version)]
