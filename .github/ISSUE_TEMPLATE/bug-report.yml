@@ -1,0 +1,90 @@
+name: Bug Report
+description: Report a bug encountered while using moclojer
+labels: [":bug", ":triage :pending"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you very much for opening a bug report with moclojer.
+
+        If you have a feature idea or need help, please go to [our Forum](https://github.com/moclojer/moclojer/discussions).
+  - type: checkboxes
+    id: confirm-search
+    attributes:
+      label: Search first
+      description: Please search [existing issues](https://github.com/moclojer/moclojer/issues) and the [moclojer forum](https://github.com/moclojer/moclojer/discussions) before reporting.
+      options:
+        - label: I searched and no similar issues were found
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What Happened?
+      description: |
+        Please provide as much info as possible. Not doing so may result in your bug not being addressed in a timely manner.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduce the Bug
+      description: |
+        Please tell us the steps to reproduce the bug.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: moclojer config
+      description: |
+        Please tell us the steps to reproduce the bug.
+      placeholder: |
+        ```yaml
+        - endpoint:
+          method: GET
+          path: /hello/:username
+          response:
+            status: 200
+            headers:
+              Content-Type: application/json
+            body: >
+              {
+                "hello": "{{path-params.username}}!"
+              }
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: |
+        Please tell us what's the behavior you expect.
+    validations:
+      required: false
+  - type: textarea
+    id: version
+    attributes:
+      label: Version and environment information
+      description: |
+        Would you mind to tell us the system information about your moclojer version and environment (OS, etc)
+      placeholder: |
+        moclojer version:
+        OS system:
+    validations:
+      required: true
+  - type: checkboxes
+    id: ask-pr
+    attributes:
+      label: Are you willing to submit a PR? If you know how to fix the bug.
+      description: |
+        If you are not familiar with programming, you can skip this step.
+        If you are a developer and know how to fix the bug, you can submit a **PR to fix it**.
+        Your contributions are greatly appreciated and play a vital role in helping to improve the project!
+      options:
+        - label: I'm willing to submit a PR (Thank you!)
