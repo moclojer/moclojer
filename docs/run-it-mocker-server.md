@@ -14,6 +14,8 @@ Has an alias created in `edn` with the name _"run"_
 CONFIG=moclojer.yml clojure -X:run
 ```
 
+> moclojer uses `XDG_CONFIG_HOME` to fetch the default moclojer configuration file, if you want to set a different directory you must use the `-c` or `CONFIG` environment variable
+
 ### Binary
 
 You don’t have the binary file yet? [Download it here](https://github.com/avelino/moclojer/releases/latest). The moclojer is distributed as follows:
