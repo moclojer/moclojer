@@ -8,7 +8,7 @@ on:
 
 jobs:
   call-build-jar:
-    uses: moclojer/moclojer/.github/workflows/build-jar.yml@gh-action-release-issue-102
+    uses: moclojer/moclojer/.github/workflows/build-jar.yml@avelino/gh-action-release-issue-102
   native-image:
     needs: "call-build-jar"
     runs-on: "ubuntu-20.04"
