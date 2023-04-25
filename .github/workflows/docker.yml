@@ -2,14 +2,14 @@ name: docker
 
 on: [push, workflow_call]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   release:
     runs-on: "ubuntu-20.04"
     environment: release
-
-    permissions:
-      contents: write
-      packages: write
 
     steps:
     - uses: actions/checkout@v3
