@@ -23,15 +23,13 @@ jobs:
         key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-buildx-
-    - name: set env release name
-      run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
         context: .
         push: false
-        tags: ghcr.io/moclojer/moclojer:dev,ghcr.io/moclojer/moclojer:latest,ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }}
+        tags: ghcr.io/moclojer/moclojer:dev,ghcr.io/moclojer/moclojer:latest
 
     - name: ghcr.io login
       uses: docker/login-action@v2
@@ -49,7 +47,11 @@ jobs:
         push: true
         tags: ghcr.io/moclojer/moclojer:dev
 
-    - name: ghcr.io push moclojer:dev @ branch main
+    # for relase (prefix `v*`)
+    - name: set env release name
+      if: startsWith(github.event.ref, 'refs/tags/v')
+      run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - name: ghcr.io push by git tag
       if: startsWith(github.event.ref, 'refs/tags/v')
       uses: docker/build-push-action@v2
       with:
