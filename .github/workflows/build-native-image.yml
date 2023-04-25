@@ -4,7 +4,7 @@ on: [pull_request, workflow_call]
 
 jobs:
   call-build-jar:
-    uses: moclojer/moclojer/.github/workflows/build-jar.yml@avelino/gh-action-release-issue-102
+    uses: moclojer/moclojer/.github/workflows/build-jar.yml@main
 
   build-native:
     needs: "call-build-jar"

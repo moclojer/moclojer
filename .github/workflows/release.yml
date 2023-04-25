@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   call-build:
-    uses: moclojer/moclojer/.github/workflows/build-native-image.yml@avelino/gh-action-release-issue-102
+    uses: moclojer/moclojer/.github/workflows/build-native-image.yml@main
 
   release:
     needs: "call-build"
@@ -46,4 +46,4 @@ jobs:
 
   call-docker:
     needs: "release"
-    uses: moclojer/moclojer/.github/workflows/docker.yml@avelino/gh-action-release-issue-102
+    uses: moclojer/moclojer/.github/workflows/docker.yml@main
