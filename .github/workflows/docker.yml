@@ -51,6 +51,9 @@ jobs:
     - name: set env release name
       if: startsWith(github.event.ref, 'refs/tags/v')
       run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - name: docker tag for release
+      if: startsWith(github.event.ref, 'refs/tags/v')
+      run: docker tag ghcr.io/moclojer/moclojer:latest ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }}
     - name: ghcr.io push by git tag
       if: startsWith(github.event.ref, 'refs/tags/v')
       uses: docker/build-push-action@v2
