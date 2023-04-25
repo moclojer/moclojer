@@ -1,5 +1,13 @@
 version: 2
 updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "avelino"
+    labels:
+      - ":dep"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
