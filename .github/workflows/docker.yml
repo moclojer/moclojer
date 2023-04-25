@@ -2,13 +2,15 @@ name: docker
 
 on: [push, workflow_call]
 
-permissions:
-  contents: write
-
 jobs:
   release:
     runs-on: "ubuntu-20.04"
     environment: release
+
+    permissions:
+      contents: write
+      packages: write
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Docker Buildx
@@ -33,8 +35,8 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.RELEASE_TOKEN }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: ghcr.io push moclojer:dev @ branch main
       if: github.ref_name == 'main'
