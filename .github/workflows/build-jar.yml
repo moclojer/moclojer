@@ -1,4 +1,4 @@
-name: build jar
+name: Build jar
 
 on:
   workflow_call:
