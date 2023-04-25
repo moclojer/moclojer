@@ -15,5 +15,5 @@ updates:
     assignees:
       - "avelino"
     labels:
-      - "github-actions"
-      - "dependencies"
+      - ":github :actions"
+      - ":dep"
