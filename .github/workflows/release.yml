@@ -26,12 +26,11 @@ jobs:
       - run: "clojure -A:dev -M --report stderr -m moclojer.build"
         env:
           CI_COMMIT_SHA: "${{ github.sha }}"
-      - name: tar (pack) target folder
-        run: tar -cjvf moclojer_target.tar.bz2 target
       - uses: "actions/upload-artifact@v3.1.2"
         with:
-          name: moclojer_target.tar.bz2
-          path: moclojer_target.tar.bz2
+          name: moclojer_target
+          path: target
+      # save .jar as artifact, used in release
       - uses: "actions/upload-artifact@v3.1.2"
         with:
           name: moclojer_jar
@@ -53,10 +52,8 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - uses: "actions/download-artifact@v3"
         with:
-          name: moclojer_target.tar.bz2
-          path: moclojer_target.tar.bz2
-      - name: tar (unpack) target folder
-        run: tar -xf moclojer_target.tar.bz2 target
+          name: moclojer_target
+          path: target
       - name: Gen reflect.config.json to ${{ runner.os }}
         working-directory: target/native
         run: |
@@ -94,6 +91,8 @@ jobs:
           else
             exit 1
           fi
+      # save binary generated for OS (by native image) in artifact
+      # used in release
       - uses: "actions/upload-artifact@v3.1.2"
         with:
           name: moclojer_bin_${{ runner.os }}
