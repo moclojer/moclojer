@@ -1,18 +1,18 @@
-name: native-image
+name: GraalVM Native Images
 
-on:
-  push:
-    branches:
-      - '!main'
-  pull_request:
+on: [pull_request, workflow_call]
 
 jobs:
   call-build-jar:
     uses: moclojer/moclojer/.github/workflows/build-jar.yml@avelino/gh-action-release-issue-102
-  native-image:
+
+  build-native:
     needs: "call-build-jar"
-    runs-on: "ubuntu-20.04"
-    name: "Build native image"
+    runs-on: "${{ matrix.os }}"
+    name: "Build native image on ${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ "macos-11", "ubuntu-20.04" ]
     steps:
       - uses: "actions/checkout@v3"
       - uses: "graalvm/setup-graalvm@v1.0.11"
@@ -25,7 +25,7 @@ jobs:
         with:
           name: moclojer_target
           path: target
-      - name: Gen reflect.config.json
+      - name: Gen reflect.config.json to ${{ runner.os }}
         working-directory: target/native
         run: |
           echo [] > moclojer.yml
@@ -36,19 +36,22 @@ jobs:
           while ! curl -s localhost:8000 -o /dev/null; do echo waiting; sleep 3; done
           curl -s localhost:8000 -D -
           kill $PID
-      - name: GraalVM native image build moclojer binary
+      - name: GraalVM native image build moclojer binary to ${{ runner.os }}
         working-directory: target/native
         run: |
           native-image @native-image-args \
+            -H:Name=moclojer_${{ runner.os }} \
             -H:DashboardDump=report/moclojer \
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
-            -H:ResourceConfigurationFiles=resource-config.json
-      - name: "test native image: check http status"
+            -H:ResourceConfigurationFiles=resource-config.json && \
+            cp moclojer moclojer_${{ runner.os }}
+      - name: "Check http status"
+        working-directory: target/native
         run: |
           echo [] > moclojer.yml
-          chmod +x ./target/native/moclojer
-          ./target/native/moclojer &
+          chmod +x ./moclojer_${{ runner.os }}
+          ./moclojer_${{ runner.os }} &
           PID=$!
           sleep 5
           curl -vvv -s -D - localhost:8000
@@ -59,3 +62,9 @@ jobs:
           else
             exit 1
           fi
+      # save binary generated for OS (by native image) in artifact
+      # used in release
+      - uses: "actions/upload-artifact@v3.1.2"
+        with:
+          name: moclojer_bin_${{ runner.os }}
+          path: target/native/moclojer_${{ runner.os }}

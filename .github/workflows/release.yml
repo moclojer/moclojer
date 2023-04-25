@@ -4,101 +4,20 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_run:
+    workflows: ["tests"]
+    types:
+      - completed
 
 permissions:
   contents: write
 
 jobs:
-  build-jar:
-    runs-on: "ubuntu-20.04"
-    steps:
-      - uses: "actions/checkout@v3"
-      - uses: "actions/cache@v3.3.1"
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.gitlibs
-          key: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
-      - uses: "DeLaGuardo/setup-clojure@10.3"
-        with:
-          cli: "1.11.1.1139"
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - run: "clojure -A:dev -M --report stderr -m moclojer.build"
-        env:
-          CI_COMMIT_SHA: "${{ github.sha }}"
-      - uses: "actions/upload-artifact@v3.1.2"
-        with:
-          name: moclojer_target
-          path: target
-      # save .jar as artifact, used in release
-      - uses: "actions/upload-artifact@v3.1.2"
-        with:
-          name: moclojer_jar
-          path: target/moclojer.jar
-  build-native:
-    needs: "build-jar"
-    runs-on: "${{ matrix.os }}"
-    name: "Build native image on ${{ matrix.os }}"
-    strategy:
-      matrix:
-        os: [ "macos-11", "ubuntu-20.04" ]
-    steps:
-      - uses: "actions/checkout@v3"
-      - uses: "graalvm/setup-graalvm@v1.0.11"
-        with:
-          version: "22.1.0"
-          java-version: "17"
-          components: "native-image"
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: "actions/download-artifact@v3"
-        with:
-          name: moclojer_target
-          path: target
-      - name: Gen reflect.config.json to ${{ runner.os }}
-        working-directory: target/native
-        run: |
-          echo [] > moclojer.yml
-          java -agentlib:native-image-agent=caller-filter-file=filter.json,config-output-dir=. \
-            -jar ../moclojer.jar &
-          PID=$!
-          ## Wait startup
-          while ! curl -s localhost:8000 -o /dev/null; do echo waiting; sleep 3; done
-          curl -s localhost:8000 -D -
-          kill $PID
-      - name: GraalVM native image build moclojer binary to ${{ runner.os }}
-        working-directory: target/native
-        run: |
-          native-image @native-image-args \
-            -H:Name=moclojer_${{ runner.os }} \
-            -H:DashboardDump=report/moclojer \
-            -jar ../moclojer.jar \
-            -H:ReflectionConfigurationFiles=reflect-config.json \
-            -H:ResourceConfigurationFiles=resource-config.json && \
-            cp moclojer moclojer_${{ runner.os }}
-      - name: "Check http status"
-        working-directory: target/native
-        run: |
-          echo [] > moclojer.yml
-          chmod +x ./moclojer_${{ runner.os }}
-          ./moclojer_${{ runner.os }} &
-          PID=$!
-          sleep 5
-          curl -vvv -s -D - localhost:8000
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" localhost:8000)
-          kill $PID
-          if [ "x$STATUS" = "x200" ]; then
-            exit 0
-          else
-            exit 1
-          fi
-      # save binary generated for OS (by native image) in artifact
-      # used in release
-      - uses: "actions/upload-artifact@v3.1.2"
-        with:
-          name: moclojer_bin_${{ runner.os }}
-          path: target/native/moclojer_${{ runner.os }}
+  call-build:
+    uses: moclojer/moclojer/.github/workflows/build-native-image.yml@avelino/gh-action-release-issue-102
+
   release:
-    needs: "build-native"
+    needs: "call-build"
     runs-on: "ubuntu-20.04"
     environment: release
     steps:
@@ -124,15 +43,7 @@ jobs:
           moclojer_Linux
           moclojer_macOS
           moclojer.jar
-    - name: ghcr.io login
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.RELEASE_TOKEN }}
-    - name: ghcr.io push
-      run: |
-        docker build -t ghcr.io/moclojer/moclojer:latest .
-        docker tag ghcr.io/moclojer/moclojer:latest ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }}
-        docker push ghcr.io/moclojer/moclojer:latest
-        docker push ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }}
+
+  call-docker:
+    needs: "release"
+    uses: moclojer/moclojer/.github/workflows/docker.yml@avelino/gh-action-release-issue-102
