@@ -34,11 +34,10 @@ jobs:
       with:
         name: moclojer_jar
         path: moclojer.jar
-    - name: Set release name
-      run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
     - uses: softprops/action-gh-release@v1
       with:
-        name: ${{ env.RELEASE_NAME }}
+        name: ${{  github.ref_name }}
         files: |
           moclojer_Linux
           moclojer_macOS
