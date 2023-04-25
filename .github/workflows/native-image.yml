@@ -7,29 +7,10 @@ on:
   pull_request:
 
 jobs:
-  build-jar:
-    runs-on: "ubuntu-20.04"
-    steps:
-      - uses: "actions/checkout@v3"
-      - uses: "actions/cache@v3.3.1"
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.gitlibs
-          key: "deps-${{ hashFiles('deps.edn') }}"
-      - uses: "DeLaGuardo/setup-clojure@10.3"
-        with:
-          cli: "1.11.1.1139"
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - run: "clojure -A:dev -M --report stderr -m moclojer.build"
-        env:
-          CI_COMMIT_SHA: "${{ github.sha }}"
-      - uses: "actions/upload-artifact@v3.1.2"
-        with:
-          name: moclojer_target
-          path: target
+  call-build-jar:
+    uses: moclojer/moclojer/.github/workflows/build-jar.yml@gh-action-release-issue-102
   native-image:
-    needs: "build-jar"
+    needs: "call-build-jar"
     runs-on: "ubuntu-20.04"
     name: "Build native image"
     steps:
