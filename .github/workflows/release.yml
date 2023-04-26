@@ -40,7 +40,11 @@ jobs:
         name: moclojer_jar
         path: /tmp/moclojer.jar
 
-    - run: ls -l /tmp
+    - run: |
+        ls -l /tmp \
+        && file /tmp/moclojer_Linux \
+        && file /tmp/moclojer_macOS \
+        && file /tmp/moclojer.jar
 
     - uses: softprops/action-gh-release@master
       with:
