@@ -15,8 +15,8 @@ jobs:
     uses: moclojer/moclojer/.github/workflows/build-native-image.yml@main
 
   release:
-    needs: "call-build"
-    runs-on: "ubuntu-20.04"
+    needs: call-build
+    runs-on: ubuntu-20.04
     environment: release
     steps:
     - uses: actions/checkout@v3
@@ -27,28 +27,26 @@ jobs:
         key: ${{ runner.os }}-artifacts-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-artifacts-
-    - uses: "actions/download-artifact@v3"
+    - uses: actions/download-artifact@v3
       with:
         name: moclojer_bin_Linux
         path: /tmp/moclojer_Linux
-    - uses: "actions/download-artifact@v3"
+    - uses: actions/download-artifact@v3
       with:
         name: moclojer_bin_macOS
         path: /tmp/moclojer_macOS
-    - uses: "actions/download-artifact@v3"
+    - uses: actions/download-artifact@v3
       with:
         name: moclojer_jar
         path: /tmp/moclojer.jar
 
-    - run: |
-        ls -l /tmp/moclojer_Linux/* \
-        && ls -l /tmp/moclojer_macOS/* \
-        && ls -l /tmp/moclojer.jar/*
-
+    - name: set env release name
+      run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
     - uses: softprops/action-gh-release@master
       with:
-        name: ${{  github.ref_name }}
+        name: ${{ github.ref_name }}
         discussion_category_name: announcements
+        body_path: ${{ github.workspace }}/docs/releases/${{ env.RELEASE_NAME }}.md
         files: |
           /tmp/moclojer_Linux/*
           /tmp/moclojer_macOS/*
