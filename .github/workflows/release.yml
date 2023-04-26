@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   packages: write
+  discussions: write
 
 jobs:
   call-build:
@@ -41,9 +42,10 @@ jobs:
 
     - run: ls -l /tmp
 
-    - uses: softprops/action-gh-release@v1
+    - uses: softprops/action-gh-release@master
       with:
         name: ${{  github.ref_name }}
+        discussion_category_name: announcements
         files: |
           /tmp/moclojer_Linux
           /tmp/moclojer_macOS
