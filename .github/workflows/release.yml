@@ -41,16 +41,15 @@ jobs:
         path: /tmp/moclojer.jar
 
     - run: |
-        ls -l /tmp \
-        && file /tmp/moclojer_Linux \
-        && file /tmp/moclojer_macOS \
-        && file /tmp/moclojer.jar
+        ls -l /tmp/moclojer_Linux/* \
+        && ls -l /tmp/moclojer_macOS/* \
+        && ls -l /tmp/moclojer.jar/*
 
     - uses: softprops/action-gh-release@master
       with:
         name: ${{  github.ref_name }}
         discussion_category_name: announcements
         files: |
-          /tmp/moclojer_Linux
-          /tmp/moclojer_macOS
-          /tmp/moclojer.jar
+          /tmp/moclojer_Linux/*
+          /tmp/moclojer_macOS/*
+          /tmp/moclojer.jar/*
