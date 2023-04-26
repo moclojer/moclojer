@@ -1,6 +1,11 @@
 name: docker
 
-on: [push, workflow_call]
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
 
 permissions:
   contents: write
