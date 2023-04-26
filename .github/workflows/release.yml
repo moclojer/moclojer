@@ -19,6 +19,13 @@ jobs:
     environment: release
     steps:
     - uses: actions/checkout@v3
+    - name: cache artifacts
+      uses: actions/cache@v2
+      with:
+        path: /tmp
+        key: ${{ runner.os }}-artifacts-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-artifacts-
     - uses: "actions/download-artifact@v3"
       with:
         name: moclojer_bin_Linux
