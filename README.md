@@ -8,7 +8,7 @@ Simple and efficient HTTP mock server with specification written in `yaml`, `edn
 
 [![tests](https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/tests.yml) [![linter](https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/linter.yml)
 
-[**📖 See the complete documentation for moclojer here**](https://docs.moclojer.com/), if you want to contribute (or complement) the documentation, it is [here](https://github.com/avelino/avelino.run/blob/main/content/projects/moclojer.md).
+[**📖 See the complete documentation for moclojer here**](https://docs.moclojer.com/), if you want to contribute (or complement) the documentation, it is [here](https://github.com/moclojer/moclojer/tree/main/docs).
 
 **`YAML` example**
 
