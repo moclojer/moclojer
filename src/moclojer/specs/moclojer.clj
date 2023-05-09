@@ -24,14 +24,17 @@
   [endpoints]
   (log/info :mode "moclojer")
   (let [handlers []]
-    ;; (conj handlers handler/home-endpoint)
-    (for [[path ops] (group-by :path (remove nil? (map :endpoint endpoints)))]
-      (for [{:keys [host method response]} ops
-            :let [{:keys [status headers body store]} response]]
-        (conj handlers
-              (route/expand-routes
-               (handler/struct-handler
-                host method path body status headers store)))))))
+    (route/expand-routes
+     (reduce
+      (fn [r i]
+        (conj r (ffirst i)))
+      []
+      (for [[path ops] (group-by :path (remove nil? (map :endpoint endpoints)))]
+        (for [{:keys [host method response]} ops
+              :let [{:keys [status headers body store]} response]]
+          (conj handlers
+                (handler/struct-handler
+                 host method path body status headers store))))))))
 
 (defn generate-route-by-file
   "generate route from file"
