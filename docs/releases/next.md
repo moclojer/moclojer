@@ -5,4 +5,8 @@
 
 ## What's Changed
 
-* 
+* Reduce maintenance complexity caused by the OpenAPI specification by @avelino <https://github.com/moclojer/moclojer/issues/113>
+
+## Contributors
+
+* @avelino
