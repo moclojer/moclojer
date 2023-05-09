@@ -8,18 +8,19 @@
   (let [hostname (or host "localhost")
         method-keyword (keyword (string/lower-case (or method "get")))
         router-name (keyword (str method-keyword "-" hostname "-" path))]
-    #{[path
-       method-keyword
-       {:body    (json/write-str {:body body})
-        :status  status
-        :headers (into
-                  {}
-                  (map (fn [[k v]]
-                         [(name k) (str v)]))
-                  headers)}
-       :route-name router-name]
+    #_{:host hostname :scheme :http}
+     [path
+      method-keyword
+      {:body    (json/write-str {:body body})
+       :status  status
+       :headers (into
+                 {}
+                 (map (fn [[k v]]
+                        [(name k) (str v)]))
+                 headers)}
+      :route-name router-name])
       ;; TODO: scheme support for http/https (default to http)
-      {:host hostname :scheme :http}}))
+  )
 
 (defn home-endpoint
   "initial/home endpoint URI: /"
