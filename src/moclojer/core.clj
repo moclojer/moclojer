@@ -85,13 +85,13 @@
    :version current-version
    :config config
    :mocks mocks)
-  (let [env {::router/config config
-             ::router/mocks  mocks}
-        *router (atom (router/smart-router env))]
-    (watch-service (vals env)
+  (let [envs {::router/config config
+              ::router/mocks  mocks}
+        *router (atom (router/smart-router envs))]
+    (watch-service (vals envs)
                    (fn [changed]
                      (log/info :changed changed)
-                     (reset! *router (router/smart-router env))))
+                     (reset! *router (router/smart-router envs))))
     (-> {:env                     :prod
          ::http/routes            (fn [] @*router)
          ::http/type              :jetty

@@ -10,21 +10,22 @@
 (defn open-config
   "open file"
   [path]
+  (if (empty? path)
+    (log/error :open-config "file not found"))
   (try
     (if (string/ends-with? path ".edn")
       (edn/read-string (str "[" (slurp path) "]"))
       (yaml/from-file path))
     (catch FileNotFoundException e
-      (log/info :open-config (str "file not found" e)))))
+      (log/error :open-config (str "file not found" e)))))
 
 (defn generate-route
   "generate route from moclojer spec"
   [endpoints]
   (log/info :mode "moclojer")
   (let [handlers []]
-    (conj handlers handler/home-endpoint)
-    (for [[path ops] (group-by (juxt :host :method :path)
-                               (remove nil? (map :endpoint endpoints)))]
+    ;; (conj handlers handler/home-endpoint)
+    (for [[path ops] (group-by :path (remove nil? (map :endpoint endpoints)))]
       (for [{:keys [host method response]} ops
             :let [{:keys [status headers body store]} response]]
         (conj handlers
