@@ -92,7 +92,7 @@ git submodule update -f --init
 ### run
 
 ```
-clj -M:run
+clj -X:run
 ```
 
 ### test
