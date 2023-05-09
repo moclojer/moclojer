@@ -5,6 +5,8 @@
             [clojure.java.io :as io]
             [io.pedestal.http :as http]
             [io.pedestal.http.jetty]
+            [io.pedestal.http.body-params :as body-params]
+            [io.pedestal.http.ring-middlewares :as middlewares]
             [io.pedestal.log :as log]
             [moclojer.adapters :as adapters]
             [moclojer.router :as router]
@@ -77,18 +79,19 @@
 (defn start
   "start moclojer server"
   [{:keys [current-version config mocks]}]
-  (prn (list '-> 'moclojer :start-server
-             :version current-version
-             :config config
-             :mocks mocks))
+  (log/info
+   "-> moclojer"
+   :start-server
+   :version current-version
+   :config config
+   :mocks mocks)
   (let [env {::router/config config
              ::router/mocks  mocks}
-        *router (atom (router/make-smart-router
-                       env))]
+        *router (atom (router/smart-router env))]
     (watch-service (vals env)
                    (fn [changed]
                      (log/info :changed changed)
-                     (reset! *router (router/make-smart-router env))))
+                     (reset! *router (router/smart-router env))))
     (-> {:env                     :prod
          ::http/routes            (fn [] @*router)
          ::http/type              :jetty
@@ -100,7 +103,9 @@
                                               Integer/parseInt)
                                       8000)}
         http/default-interceptors
-        (update ::http/interceptors into [http/json-body])
+        (update ::http/interceptors into [http/json-body
+                                          (body-params/body-params)
+                                          (middlewares/multipart-params)])
         http/create-server
         http/start)))
 
@@ -132,7 +137,7 @@
 
     (when (:help config)
       (println
-       (str "Moclojer (" current-version "), simple and efficient HTTP mock server.\r\n"
+       (str "moclojer (" current-version "), simple and efficient HTTP mock server.\r\n"
             (cli/format-opts {:spec spec :order [:config :mocks :version :help]})))
       (System/exit 0))
 
