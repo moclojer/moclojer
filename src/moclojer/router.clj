@@ -4,7 +4,9 @@
 
 (defn smart-router
   "identifies configuration type (moclojer or openapi spec)"
-  [{::keys [config mocks]}]
-  (if mocks
-    (openapi/->moclojer config mocks)
-    (spec/generate-route-by-file config)))
+  [envs]
+  (let [config (:moclojer.router/config envs)
+        mocks (:moclojer.router/mocks envs)]
+    (if mocks
+      (openapi/->moclojer config mocks)
+      (spec/generate-route-by-file config))))
