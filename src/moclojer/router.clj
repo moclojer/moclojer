@@ -9,4 +9,5 @@
         mocks (:moclojer.router/mocks envs)]
     (if mocks
       (openapi/->moclojer config mocks)
-      (spec/generate-route-by-file config))))
+      (spec/generate-routes-by-file config))))
+

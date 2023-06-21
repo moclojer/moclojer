@@ -7,6 +7,7 @@
             [io.pedestal.http.jetty]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as middlewares]
+            [io.pedestal.http.route :as route]
             [io.pedestal.log :as log]
             [moclojer.adapters :as adapters]
             [moclojer.router :as router]
@@ -88,12 +89,14 @@
   (let [envs {::router/config config
               ::router/mocks  mocks}
         *router (atom (router/smart-router envs))]
-    (watch-service (vals envs)
-                   (fn [changed]
-                     (log/info :changed changed)
-                     (reset! *router (router/smart-router envs))))
+    (watch-service
+     (vals envs)
+     (fn [changed]
+       (log/info :changed changed)
+       (reset! *router (router/smart-router envs))))
+    (println :*router @*router)
     (-> {:env                     :prod
-         ::http/routes            (fn [] @*router)
+         ::http/routes            @*router
          ::http/type              :jetty
          ::http/join?             true
          ::http/container-options {:h2c?                 true

@@ -8,4 +8,4 @@
   [config mock]
   (log/info :mode "openapi")
   ;; TODO: implement conversion from openapi to moclojer spec
-  (spec/generate-route (edn/read-string "[]")))
+  (spec/generate-routes (edn/read-string "[]")))
