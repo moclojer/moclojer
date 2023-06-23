@@ -91,5 +91,6 @@
   "generate route from file"
   [path]
   ;; (println :here (generate-routes (open-config path)))
-  (println :router routes3)
-  routes3)
+  ;; (println :router routes3)
+  ;; routes3
+  [])
