@@ -1,0 +1,10 @@
+find pet by id:
+  status: 200
+  body: '{"id":0,"name":"caramelo"}'
+  headers: {Content-Type: application/json}
+addPet: {status: 303}
+deletePet: {status: 202}
+findPets:
+  status: 200
+  body: '[{"id":0,"name":"caramelo"}]'
+  headers: {Content-Type: application/json}
