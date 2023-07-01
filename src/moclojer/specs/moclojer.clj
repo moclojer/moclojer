@@ -1,7 +1,6 @@
 (ns moclojer.specs.moclojer
   (:require [clojure.edn :as edn]
             [clojure.string :as string]
-            [io.pedestal.http.route :as route]
             [io.pedestal.http.route.definition.table :as table]
             [io.pedestal.log :as log]
             [moclojer.handler :as handler]
@@ -20,37 +19,27 @@
       (catch FileNotFoundException e
         (log/error :open-config (str "file not found" e))))))
 
-(defn home
-  [r]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body (str '(-> moclojer server))})
-
 (defn generate-routes
   "generate route from moclojer spec"
   [endpoints]
   (log/info :mode "moclojer")
-  (let [handlers []]
-    (->>
-     (for [[groups ops] (group-by (juxt :host :path :method) (remove nil? (map :endpoint endpoints)))]
-       (let [host (or (nth groups 0) "localhost")
-             path (nth groups 1)
-             method (or (string/lower-case (nth groups 2)) "get")
-             method-keyword (keyword (string/lower-case method))
-             route-name (keyword (str method "-"
-                                      host "-"
-                                      (string/replace
-                                       (string/replace path "/" "")
-                                       ":" "--")))]
-         (for [{:keys [response]} ops]
-           (conj
-            handlers
-            [path
-             method-keyword
-             (handler/generic-handler response)
-             :route-name route-name]))))
-     (mapcat first)
-     (table/table-routes))))
+  (->>
+   (for [[groups ops] (group-by (juxt :host :path :method) (remove nil? (map :endpoint endpoints)))]
+     (let [host (or (nth groups 0) "localhost")
+           path (nth groups 1)
+           method (or (string/lower-case (nth groups 2)) "get")
+           method-keyword (keyword (string/lower-case method))
+           route-name (keyword (str method "-"
+                                    host "-"
+                                    (string/replace
+                                     (string/replace path "/" "")
+                                     ":" "--")))
+           response (:response (first ops))]
+       [path
+        method-keyword
+        (handler/generic-handler response)
+        :route-name route-name]))
+   (table/table-routes)))
 
 (defn generate-routes-by-file
   "generate route from file"
