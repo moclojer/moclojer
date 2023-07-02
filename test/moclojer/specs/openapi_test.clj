@@ -16,23 +16,22 @@
         mocks (read-yaml (:mocks petstore))
         endpoints (openapi/->moclojer config mocks)]
 
-    (testing
-     "Should convert openapi spec to moclojer spec"
+    (testing "Should convert openapi spec to moclojer spec"
       (is (=
-           [{:endpoint {:method :get
+           [{:endpoint {:method "get"
                         :path "/pets"
                         :response {:status 200
                                    :body "[{\"id\":0,\"name\":\"caramelo\"}]"
                                    :headers {:Content-Type "application/json"}}}},
-            {:endpoint {:method :post
+            {:endpoint {:method "post"
                         :path "/pets"
                         :response {:status 303}}},
-            {:endpoint {:method :get
+            {:endpoint {:method "get"
                         :path "/pets/:id"
                         :response {:status 200
                                    :body "{\"id\":0,\"name\":\"caramelo\"}"
                                    :headers {:Content-Type "application/json"}}}},
-            {:endpoint {:method :delete
+            {:endpoint {:method "delete"
                         :path "/pets/:id"
                         :response {:status 202}}}]
            endpoints)))))

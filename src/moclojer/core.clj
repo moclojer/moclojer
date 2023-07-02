@@ -1,26 +1,31 @@
 (ns moclojer.core
   (:gen-class)
-  (:require [babashka.cli :as cli]
-            [clojure.core.async :as async]
-            [clojure.java.io :as io]
-            [io.pedestal.http :as http]
-            [io.pedestal.http.jetty]
-            [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.ring-middlewares :as middlewares]
-            [io.pedestal.http.route :as route]
-            [io.pedestal.log :as log]
-            [moclojer.adapters :as adapters]
-            [moclojer.router :as router]
-            [moclojer.config :as config])
-  (:import (java.nio.file
-            FileSystems
-            Path
-            StandardWatchEventKinds
-            WatchEvent)
-           (java.util Properties)
-           (java.util.concurrent TimeUnit)
-           (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)))
+  (:require
+   [babashka.cli :as cli]
+   [clojure.core.async :as async]
+   [clojure.edn :as edn]
+   [clojure.java.io :as io]
+   [clojure.string :as string]
+   [io.pedestal.http :as http]
+   [io.pedestal.http.body-params :as body-params]
+   [io.pedestal.http.jetty]
+   [io.pedestal.http.ring-middlewares :as middlewares]
+   [io.pedestal.log :as log]
+   [moclojer.adapters :as adapters]
+   [moclojer.config :as config]
+   [moclojer.router :as router]
+   [yaml.core :as yaml])
+  (:import
+   (java.io FileNotFoundException)
+   (java.nio.file
+    FileSystems
+    Path
+    StandardWatchEventKinds
+    WatchEvent)
+   (java.util Properties)
+   (java.util.concurrent TimeUnit)
+   (org.eclipse.jetty.server.handler.gzip GzipHandler)
+   (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
   "http container options, active gzip"
@@ -77,6 +82,16 @@
               (->> (.load p)))
       p)))
 
+(defn open-file [path]
+  (if (empty? path)
+    (log/error :open-config "file not found")
+    (try
+      (if (string/ends-with? path ".edn")
+        (edn/read-string (str "[" (slurp path) "]"))
+        (yaml/from-file path))
+      (catch FileNotFoundException e
+        (log/error :open-config (str "file not found" e))))))
+
 (defn start
   "start moclojer server"
   [{:keys [current-version config mocks]}]
@@ -88,13 +103,16 @@
    :mocks mocks)
   (let [envs {::router/config config
               ::router/mocks  mocks}
-        *router (atom (router/smart-router envs))]
+        *router (atom (router/smart-router
+                       (open-file config)
+                       (open-file mocks)))]
     (watch-service
      (vals envs)
      (fn [changed]
        (log/info :changed changed)
-       (reset! *router (router/smart-router envs))))
-    (println :*router @*router)
+       (reset! *router (router/smart-router
+                        (open-file config)
+                        (open-file mocks)))))
     (-> {:env                     :prod
          ::http/routes            @*router
          ::http/type              :jetty
