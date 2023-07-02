@@ -12,12 +12,9 @@
   {:config "META-INF/openapi-spec/v3.0/petstore-expanded.yaml"
    :mocks "test/moclojer/resources/petstore-expanded-mocks.yaml"})
 
-(defn read-yaml [path]
-  (yaml/parse-string (slurp path)))
-
 (deftest openapi->moclojer
-  (let [config (read-yaml (:config petstore))
-        mocks (read-yaml (:mocks petstore))
+  (let [config (yaml/from-file (:config petstore))
+        mocks (yaml/from-file (:mocks petstore))
         endpoints (openapi/->moclojer config mocks)]
 
     (testing "Should convert openapi spec to moclojer spec"
@@ -42,8 +39,8 @@
 
 (deftest openapi->moclojer->pedestal
   (let [service-fn (-> {::http/routes (router/smart-router
-                                       (read-yaml (:config petstore))
-                                       (read-yaml (:mocks petstore)))}
+                                       (yaml/from-file (:config petstore))
+                                       (yaml/from-file (:mocks petstore)))}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
