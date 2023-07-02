@@ -1,8 +1,12 @@
 (ns moclojer.specs.openapi-test
   (:require
+   [cheshire.core :as json]
    [clojure.test :refer [deftest is testing]]
-   [yaml.core :as yaml]
-   [moclojer.specs.openapi :as openapi]))
+   [io.pedestal.http :as http]
+   [io.pedestal.test :refer [response-for]]
+   [moclojer.router :as router]
+   [moclojer.specs.openapi :as openapi]
+   [yaml.core :as yaml]))
 
 (def petstore
   {:config "META-INF/openapi-spec/v3.0/petstore-expanded.yaml"
@@ -35,3 +39,17 @@
                         :path "/pets/:id"
                         :response {:status 202}}}]
            endpoints)))))
+
+(deftest openapi->moclojer->pedestal
+  (let [service-fn (-> {::http/routes (router/smart-router
+                                       (read-yaml (:config petstore))
+                                       (read-yaml (:mocks petstore)))}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
+    (is (= {:id 0, :name "caramelo"}
+           (-> service-fn
+               (response-for :get "/pets/1")
+               :body
+               (json/parse-string true))))))
