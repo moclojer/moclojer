@@ -1,7 +1,6 @@
 (ns moclojer.specs.openapi
   (:require
-   [clojure.string :as str]
-   [io.pedestal.log :as log]))
+   [clojure.string :as str]))
 
 (defn convert-path
   "converts OpenAPI path to moclojer path
@@ -14,7 +13,6 @@
 (defn ->moclojer
   "converts OpenAPI spec to moclojer spec"
   [{:keys [paths]} mocks]
-  (log/info :mode "OpenAPI")
   (->>
    (for [[path methods] paths]
      (for [[method {:keys [operationId]}] methods]
