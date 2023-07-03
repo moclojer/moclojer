@@ -1,21 +1,24 @@
 {
-	"name": "moclojer",
-	"dockerFile": "Dockerfile",
-	"extensions": [
-		"betterthantomorrow.calva",
-		"borkdude.clj-kondo",
+    "name": "moclojer",
+    "dockerFile": "Dockerfile",
+    "extensions": [
+        "betterthantomorrow.calva",
+        "borkdude.clj-kondo",
         "redhat.vscode-yaml",
         "yzhang.markdown-all-in-one"
-	],
-	"settings":{
-		"calva.jokerPath": "/usr/bin"
-	},
-	"forwardPorts": [8000],
-	"features": {
-		"github-cli": "latest",
-		"git": "latest"
-	},
-	"[clojure]": {
+    ],
+    "settings": {
+        "calva.jokerPath": "/usr/bin"
+    },
+    "forwardPorts": [
+        8000
+    ],
+    "features": {
+        "github-cli": "latest",
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers-contrib/features/clojure-asdf:2": {}
+    },
+    "[clojure]": {
         "editor.autoClosingBrackets": "always",
         "editor.autoClosingQuotes": "always",
         "editor.autoIndent": "full",
