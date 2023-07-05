@@ -10,13 +10,11 @@
   [body]
   (if (string? body)
     body
-    (-> body
-        (cheshire/generate-string))))
+    (cheshire/generate-string body)))
 
 (defn generic-handler
   [response]
   (fn [request]
-    (prn :fn-req request)
     {:body    (selmer/render (body->str (:body response)) request)
      :status  (:status response)
      :headers (into
@@ -29,6 +27,11 @@
   [host path method]
   (str method "-" host "-" (string/replace (string/replace path "/" "") ":" "--")))
 
+(defn generate-method [method]
+  (-> (or method "get")
+      name
+      string/lower-case))
+
 (defn ->pedestal
   "generate routes from moclojer spec to pedestal"
   [spec]
@@ -36,12 +39,11 @@
    (for [[[host path method] endpoints] (group-by (juxt :host :path :method)
                                                   (remove nil? (map :endpoint spec)))]
      (let [host (or host "localhost")
-           method (or (string/lower-case method) "get")
-           method-keyword (keyword (string/lower-case method))
-           route-name (keyword (generate-route-name host path method))
+           method (generate-method method)
+           route-name (generate-route-name host path method)
            response (:response (first endpoints))]
        [path
-        method-keyword
+        (keyword method)
         (generic-handler response)
-        :route-name route-name]))
+        :route-name (keyword route-name)]))
    (table/table-routes)))

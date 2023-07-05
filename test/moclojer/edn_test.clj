@@ -1,5 +1,6 @@
 (ns moclojer.edn-test
   (:require [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clojure.test :refer [deftest is testing]]
             [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
@@ -7,8 +8,8 @@
 
 
 (deftest dynamic-endpoint-edn
-  (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "test/moclojer/resources/moclojer.edn"})}
+  (let [service-fn (-> {::http/routes (router/smart-router
+                                       {::router/config (edn/read-string (str "[" (slurp "test/moclojer/resources/moclojer.edn") "]"))})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
