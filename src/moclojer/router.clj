@@ -6,7 +6,7 @@
 
 (defn smart-router
   "identifies configuration type (moclojer or openapi spec)"
-  [config mocks]
+  [{:keys [::config ::mocks]}]
   (spec/->pedestal
    (if mocks
      (do

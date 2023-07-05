@@ -3,11 +3,13 @@
             [clojure.test :refer [deftest is]]
             [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
-            [moclojer.router :as router]))
+            [moclojer.router :as router]
+            [moclojer.core :as core]
+            [yaml.core :as yaml]))
 
 (deftest hello-world
-  (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
+  (let [service-fn (-> {::http/routes (router/smart-router
+                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -19,8 +21,8 @@
                (json/parse-string true))))))
 
 (deftest dyanamic-endpoint
-  (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
+  (let [service-fn (-> {::http/routes (router/smart-router
+                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -32,8 +34,8 @@
                (json/parse-string true))))))
 
 (deftest with-params
-  (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
+  (let [service-fn (-> {::http/routes (router/smart-router
+                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
@@ -45,9 +47,9 @@
                (json/parse-string true))))))
 
 (deftest first-post-route
-  (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "test/moclojer/resources/moclojer.yml"})}
-                       http/default-interceptors
+  (let [service-fn (-> {::http/routes (router/smart-router
+                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
+                       core/get-interceptors
                        http/dev-interceptors
                        http/create-servlet
                        ::http/service-fn)]
@@ -60,8 +62,8 @@
                (json/parse-string true))))))
 
 (deftest multi-host
-  (let [service-fn (-> {::http/routes (router/make-smart-router
-                                       {::router/config "test/moclojer/resources/multihost.yml"})}
+  (let [service-fn (-> {::http/routes (router/smart-router
+                                       {::router/config (yaml/from-file "test/moclojer/resources/multihost.yml")})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet

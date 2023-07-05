@@ -37,27 +37,31 @@
               (->> (.load p)))
       p)))
 
+(defn get-interceptors [service-map]
+  (-> service-map
+      http/default-interceptors
+      (update ::http/interceptors into [http/json-body
+                                        (body-params/body-params)
+                                        (middlewares/multipart-params)])))
+
 (defn start
   "start moclojer server"
-  [{:keys [current-version config mocks]}]
+  [{:keys [current-version config-path mocks-path]}]
   (log/info
    "-> moclojer"
    :start-server
    :version current-version
-   :config config
-   :mocks mocks)
-  (let [envs {::router/config config
-              ::router/mocks  mocks}
-        *router (atom (router/smart-router
-                       (open-file config)
-                       (open-file mocks)))]
+   :config-path config-path
+   :mocks-path mocks-path)
+  (let [generate-routes (fn [config-path mocks-path]
+                          (router/smart-router {::router/config (open-file config-path)
+                                                ::router/mocks  (open-file mocks-path)}))
+        *router (atom (generate-routes config-path mocks-path))]
     (start-watcher
-     (vals envs)
+     [config-path mocks-path]
      (fn [changed]
        (log/info :changed changed)
-       (reset! *router (router/smart-router
-                        (open-file config)
-                        (open-file mocks)))))
+       (reset! *router (generate-routes config-path mocks-path))))
     (-> {:env                     :prod
          ::http/routes            @*router
          ::http/type              :jetty
@@ -68,10 +72,7 @@
          ::http/port              (or (some-> (System/getenv "PORT")
                                               Integer/parseInt)
                                       8000)}
-        http/default-interceptors
-        (update ::http/interceptors into [http/json-body
-                                          (body-params/body-params)
-                                          (middlewares/multipart-params)])
+        get-interceptors
         http/create-server
         http/start)))
 

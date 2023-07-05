@@ -39,8 +39,8 @@
 
 (deftest openapi->moclojer->pedestal
   (let [service-fn (-> {::http/routes (router/smart-router
-                                       (yaml/from-file (:config petstore))
-                                       (yaml/from-file (:mocks petstore)))}
+                                       {::router/config (yaml/from-file (:config petstore))
+                                        ::router/mocks (yaml/from-file (:mocks petstore))})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
