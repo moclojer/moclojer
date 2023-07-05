@@ -1,12 +1,11 @@
 (ns moclojer.specs.openapi-test
-  (:require
-   [cheshire.core :as json]
-   [clojure.test :refer [deftest is testing]]
-   [io.pedestal.http :as http]
-   [io.pedestal.test :refer [response-for]]
-   [moclojer.router :as router]
-   [moclojer.specs.openapi :as openapi]
-   [yaml.core :as yaml]))
+  (:require [cheshire.core :as json]
+            [clojure.test :refer [deftest is testing]]
+            [io.pedestal.http :as http]
+            [io.pedestal.test :refer [response-for]]
+            [moclojer.router :as router]
+            [moclojer.specs.openapi :as openapi]
+            [yaml.core :as yaml]))
 
 (def petstore
   {:config "META-INF/openapi-spec/v3.0/petstore-expanded.yaml"

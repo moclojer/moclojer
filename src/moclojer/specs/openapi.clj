@@ -1,6 +1,5 @@
 (ns moclojer.specs.openapi
-  (:require
-   [clojure.string :as str]))
+  (:require [clojure.string :as str]))
 
 (defn convert-path
   "converts OpenAPI path to moclojer path

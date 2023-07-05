@@ -1,14 +1,12 @@
 (ns moclojer.watcher
-  (:require
-   [clojure.core.async :as async]
-   [clojure.java.io :as io])
-  (:import
-   (java.nio.file
-    FileSystems
-    Path
-    StandardWatchEventKinds
-    WatchEvent)
-   (java.util.concurrent TimeUnit)))
+  (:require [clojure.core.async :as async]
+            [clojure.java.io :as io])
+  (:import (java.nio.file
+            FileSystems
+            Path
+            StandardWatchEventKinds
+            WatchEvent)
+           (java.util.concurrent TimeUnit)))
 
 (defn start-watcher
   "watch spec file change to server reload

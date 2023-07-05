@@ -1,9 +1,8 @@
 (ns moclojer.specs.moclojer
-  (:require
-   [cheshire.core :as cheshire]
-   [clojure.string :as string]
-   [io.pedestal.http.route.definition.table :as table]
-   [selmer.parser :as selmer]))
+  (:require [cheshire.core :as cheshire]
+            [clojure.string :as string]
+            [io.pedestal.http.route.definition.table :as table]
+            [selmer.parser :as selmer]))
 
 (defn body->str
   "convert body to string, if it is edn it will be converted to json->str"
