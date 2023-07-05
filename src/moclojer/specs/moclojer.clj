@@ -1,4 +1,4 @@
-(ns moclojer.routes
+(ns moclojer.specs.moclojer
   (:require
    [cheshire.core :as cheshire]
    [clojure.string :as string]
@@ -29,8 +29,8 @@
   [host path method]
   (str method "-" host "-" (string/replace (string/replace path "/" "") ":" "--")))
 
-(defn generate-routes
-  "generate routes from moclojer spec"
+(defn ->pedestal
+  "generate routes from moclojer spec to pedestal"
   [spec]
   (->>
    (for [[[host path method] endpoints] (group-by (juxt :host :path :method)

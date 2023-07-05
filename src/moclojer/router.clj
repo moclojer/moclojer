@@ -1,13 +1,13 @@
 (ns moclojer.router
   (:require
    [io.pedestal.log :as log]
-   [moclojer.routes :as routes]
+   [moclojer.specs.moclojer :as spec]
    [moclojer.specs.openapi :as openapi]))
 
 (defn smart-router
   "identifies configuration type (moclojer or openapi spec)"
   [config mocks]
-  (routes/generate-routes
+  (spec/->pedestal
    (if mocks
      (do
        (log/info :mode "openapi")
