@@ -1,22 +1,20 @@
 (ns moclojer.core
   (:gen-class)
-  (:require
-   [babashka.cli :as cli]
-   [clojure.java.io :as io]
-   [io.pedestal.http :as http]
-   [io.pedestal.http.body-params :as body-params]
-   [io.pedestal.http.jetty]
-   [io.pedestal.http.ring-middlewares :as middlewares]
-   [io.pedestal.log :as log]
-   [moclojer.adapters :as adapters]
-   [moclojer.config :as config]
-   [moclojer.io-utils :refer [open-file]]
-   [moclojer.router :as router]
-   [moclojer.watcher :refer [start-watcher]])
-  (:import
-   (java.util Properties)
-   (org.eclipse.jetty.server.handler.gzip GzipHandler)
-   (org.eclipse.jetty.servlet ServletContextHandler)))
+  (:require [babashka.cli :as cli]
+            [clojure.java.io :as io]
+            [io.pedestal.http :as http]
+            [io.pedestal.http.body-params :as body-params]
+            [io.pedestal.http.jetty]
+            [io.pedestal.http.ring-middlewares :as middlewares]
+            [io.pedestal.log :as log]
+            [moclojer.adapters :as adapters]
+            [moclojer.config :as config]
+            [moclojer.io-utils :refer [open-file]]
+            [moclojer.router :as router]
+            [moclojer.watcher :refer [start-watcher]])
+  (:import (java.util Properties)
+           (org.eclipse.jetty.server.handler.gzip GzipHandler)
+           (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
   "http container options, active gzip"

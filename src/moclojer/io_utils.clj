@@ -1,9 +1,8 @@
 (ns moclojer.io-utils
-  (:require
-   [clojure.edn :as edn]
-   [clojure.string :as string]
-   [io.pedestal.log :as log]
-   [yaml.core :as yaml])
+  (:require [clojure.edn :as edn]
+            [clojure.string :as string]
+            [io.pedestal.log :as log]
+            [yaml.core :as yaml])
   (:import [java.io FileNotFoundException]))
 
 (defn open-file [path]
