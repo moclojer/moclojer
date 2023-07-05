@@ -7,9 +7,10 @@
   (testing "should make edn routers"
     (let [routers (router/smart-router
                    {::router/config aux.samples/edn-sample})]
-      (is (= (count routers) 1))
-      (is (= (:path (first routers)) "/users"))))
+      (is (= (count routers) 2))
+      (is (= (:path (first routers)) "/"))
+      (is (= (:path (second routers)) "/users")))
   (testing "should make yaml routers"
     (let [yaml-routers (router/smart-router
                         {::router/config aux.samples/yaml-sample})]
-      (is (= (count yaml-routers) 1)))))
+      (is (= (count yaml-routers) 2))))))
