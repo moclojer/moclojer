@@ -14,16 +14,12 @@
                          :status 200}}})
 
 (defn smart-router
-  "identifies configuration type (moclojer or openapi spec)"
+  "Identifies configuration type (moclojer or openapi spec)"
   [{:keys [::config ::mocks]}]
-  (->>
-   (if mocks
-     (do
-       (log/info :mode "openapi")
-       (openapi/->moclojer config mocks))
-     (do
-       (log/info :mode "moclojer")
-       config))
-   (cons home-endpoint)
-   (spec/->pedestal)))
-
+  (let [mode (if mocks :openapi :moclojer)]
+    (log/info :mode mode)
+    (->> (if mocks
+           (openapi/->moclojer config mocks)
+           config)
+         (cons home-endpoint)
+         (spec/->pedestal))))
