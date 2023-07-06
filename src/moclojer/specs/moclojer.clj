@@ -1,7 +1,7 @@
 (ns moclojer.specs.moclojer
   (:require [cheshire.core :as cheshire]
             [clojure.string :as string]
-            [io.pedestal.http.route.definition.table :as table]
+            [io.pedestal.http.route :as route]
             [selmer.parser :as selmer]))
 
 (defn body->str
@@ -24,7 +24,7 @@
 
 (defn generate-route-name
   [host path method]
-  (str method "-" host "-" (string/replace (string/replace path "/" "") ":" "--")))
+  (str method "-" (or host "localhost") "-" (string/replace (string/replace path "/" "") ":" "--")))
 
 (defn generate-method [method]
   (-> (or method "get")
@@ -37,12 +37,14 @@
   (->>
    (for [[[host path method] endpoints] (group-by (juxt :host :path :method)
                                                   (remove nil? (map :endpoint spec)))]
-     (let [host (or host "localhost")
-           method (generate-method method)
+     (let [method (generate-method method)
            route-name (generate-route-name host path method)
            response (:response (first endpoints))]
-       [path
-        (keyword method)
-        (generic-handler response)
-        :route-name (keyword route-name)]))
-   (table/table-routes)))
+       (route/expand-routes
+        #{{:host host}
+          [path
+           (keyword method)
+           (generic-handler response)
+           :route-name (keyword route-name)]}
+        )))
+   (mapcat identity)))

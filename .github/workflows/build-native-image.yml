@@ -51,7 +51,7 @@ jobs:
         run: |
           echo [] > moclojer.yml
           chmod +x ./moclojer_${{ runner.os }}
-          ./moclojer_${{ runner.os }} &
+          ./moclojer_${{ runner.os }} -c moclojer.yml &
           PID=$!
           sleep 5
           curl -vvv -s -D - localhost:8000
