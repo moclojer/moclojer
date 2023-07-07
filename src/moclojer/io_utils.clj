@@ -6,7 +6,8 @@
   (:import [java.io FileNotFoundException]))
 
 (defn open-file [path]
-  (when (seq path)
+  (if (empty? path)
+    (log/error :open-config "file not found")
     (try
       (if (string/ends-with? path ".edn")
         (edn/read-string (str "[" (slurp path) "]"))

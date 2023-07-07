@@ -39,8 +39,7 @@
   (-> service-map
       http/default-interceptors
       (update ::http/interceptors into [http/json-body
-                                        (body-params/body-params)
-                                        (middlewares/multipart-params)])))
+                                        (body-params/body-params)])))
 
 (defn start
   "start moclojer server"
