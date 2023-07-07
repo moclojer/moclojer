@@ -5,7 +5,6 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.jetty]
-            [io.pedestal.http.ring-middlewares :as middlewares]
             [io.pedestal.log :as log]
             [moclojer.adapters :as adapters]
             [moclojer.config :as config]
