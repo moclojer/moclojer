@@ -5,7 +5,6 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.jetty]
-            [io.pedestal.http.ring-middlewares :as middlewares]
             [io.pedestal.log :as log]
             [moclojer.adapters :as adapters]
             [moclojer.config :as config]
@@ -39,8 +38,7 @@
   (-> service-map
       http/default-interceptors
       (update ::http/interceptors into [http/json-body
-                                        (body-params/body-params)
-                                        (middlewares/multipart-params)])))
+                                        (body-params/body-params)])))
 
 (defn start
   "start moclojer server"
