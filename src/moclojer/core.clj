@@ -52,14 +52,15 @@
   (let [generate-routes (fn [config-path mocks-path]
                           (router/smart-router {::router/config (open-file config-path)
                                                 ::router/mocks  (open-file mocks-path)}))
-        *router (atom (generate-routes config-path mocks-path))]
+        *router (atom (generate-routes config-path mocks-path))
+        get-routes (fn [] @*router)]
     (start-watcher
      [config-path mocks-path]
      (fn [changed]
        (log/info :changed changed)
        (reset! *router (generate-routes config-path mocks-path))))
     (-> {:env                     :prod
-         ::http/routes            @*router
+         ::http/routes            get-routes
          ::http/type              :jetty
          ::http/join?             true
          ::http/container-options {:h2c?                 true
