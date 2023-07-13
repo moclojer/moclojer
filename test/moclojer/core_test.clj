@@ -31,7 +31,14 @@
            (-> service-fn
                (response-for :get "/hello-world" :headers {"Origin" "http://google.com/"})
                :body
-               (json/parse-string true))))))
+               (json/parse-string true))))
+    (is (= nil
+           (get-in
+            (-> service-fn
+                (response-for :get "/hello-world")
+                :body
+                (json/parse-string true))
+            [:headers "Access-Control-Allow-Origin"])))))
 
 (deftest dyanamic-endpoint
   (let [service-fn (-> {::http/routes (router/smart-router
