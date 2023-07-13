@@ -63,6 +63,7 @@
          ::http/routes            get-routes
          ::http/type              :jetty
          ::http/join?             true
+         ::http/allowed-origins   {:creds true :allowed-origins (constantly true)}
          ::http/container-options {:h2c?                 true
                                    :context-configurator context-configurator}
          ::http/host              (or (System/getenv "HOST") "0.0.0.0")
