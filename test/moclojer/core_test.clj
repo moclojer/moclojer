@@ -20,6 +20,19 @@
                :body
                (json/parse-string true))))))
 
+(deftest hello-world-different-origin
+  (let [service-fn (-> {::http/routes (router/smart-router
+                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
+                       http/default-interceptors
+                       http/dev-interceptors
+                       http/create-servlet
+                       ::http/service-fn)]
+    (is (= {:hello "Hello, World!"}
+           (-> service-fn
+               (response-for :get "/hello-world" :headers {"Origin" "http://google.com/"})
+               :body
+               (json/parse-string true))))))
+
 (deftest dyanamic-endpoint
   (let [service-fn (-> {::http/routes (router/smart-router
                                        {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
