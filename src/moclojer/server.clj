@@ -3,7 +3,6 @@
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.jetty]
             [io.pedestal.log :as log]
-            [moclojer.server :as server]
             [moclojer.io-utils :refer [open-file]]
             [moclojer.router :as router]
             [moclojer.watcher :refer [start-watcher]])
