@@ -35,6 +35,7 @@
     (spit (io/file "target" "native" "native-image-args")
           (string/join "\n" ["-H:Name=moclojer"
                              "-Dio.pedestal.log.defaultMetricsRecorder=nil"
+                             "-Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
                              "-H:+ReportExceptionStackTraces"
                              "--allow-incomplete-classpath"
                              "--initialize-at-build-time"

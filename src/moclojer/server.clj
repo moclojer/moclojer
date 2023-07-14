@@ -1,13 +1,15 @@
 (ns moclojer.server
-  (:require [io.pedestal.http :as http]
-            [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.jetty]
-            [io.pedestal.log :as log]
-            [moclojer.io-utils :refer [open-file]]
-            [moclojer.router :as router]
-            [moclojer.watcher :refer [start-watcher]])
-  (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)))
+  (:require
+   [io.pedestal.http :as http]
+   [io.pedestal.http.body-params :as body-params]
+   [io.pedestal.http.jetty]
+   [moclojer.io-utils :refer [open-file]]
+   [moclojer.log :as logs]
+   [moclojer.router :as router]
+   [moclojer.watcher :refer [start-watcher]])
+  (:import
+   (org.eclipse.jetty.server.handler.gzip GzipHandler)
+   (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
   "http container options, active gzip"
@@ -37,7 +39,9 @@
                       8000)
         *router (atom (generate-routes config-path mocks-path))
         get-routes (fn [] @*router)]
-    (log/info
+    (logs/log
+     :info
+     :moclojer-start
      "-> moclojer"
      :start-server
      :host http-host
@@ -49,7 +53,7 @@
     (start-watcher
      [config-path mocks-path]
      (fn [changed]
-       (log/info :changed changed)
+       (logs/log :info :reload :router changed)
        (reset! *router (generate-routes config-path mocks-path))))
     (-> {:env                     :prod
          ::http/routes            get-routes
