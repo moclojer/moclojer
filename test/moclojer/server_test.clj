@@ -1,10 +1,10 @@
-(ns moclojer.core-test
+(ns moclojer.server-test
   (:require [cheshire.core :as json]
             [clojure.test :refer [deftest is]]
             [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
             [moclojer.router :as router]
-            [moclojer.core :as core]
+            [moclojer.server :as server]
             [yaml.core :as yaml]))
 
 (deftest hello-world
@@ -69,7 +69,7 @@
 (deftest first-post-route
   (let [service-fn (-> {::http/routes (router/smart-router
                                        {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
-                       core/get-interceptors
+                       server/get-interceptors
                        http/dev-interceptors
                        http/create-servlet
                        ::http/service-fn)]
