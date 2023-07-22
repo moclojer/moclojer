@@ -42,11 +42,11 @@
         config (adapters/inputs->config args-opts envs config/version)]
 
     (when (:version config)
-      (logs/log :error :version-not-found "moclojer" config/version)
+      (log/log :error :version-not-found "moclojer" config/version)
       (System/exit 0))
 
     (when (:help config)
-      (logs/log :error :empty-args :empty-config config/empty-args)
+      (log/log :error :empty-args :empty-config config/empty-args)
       (System/exit 0))
 
     (server/start config)))

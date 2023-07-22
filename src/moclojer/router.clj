@@ -1,9 +1,8 @@
 (ns moclojer.router
-  (:require
-   [clojure.data.json :as json]
-   [moclojer.log :as logs]
-   [moclojer.specs.moclojer :as spec]
-   [moclojer.specs.openapi :as openapi]))
+  (:require [clojure.data.json :as json]
+            [moclojer.log :as log]
+            [moclojer.specs.moclojer :as spec]
+            [moclojer.specs.openapi :as openapi]))
 
 (def home-endpoint
   "initial/home endpoint URL: /"
@@ -18,7 +17,7 @@
   "Identifies configuration type (moclojer or openapi spec)"
   [{:keys [::config ::mocks]}]
   (let [mode (if mocks :openapi :moclojer)]
-    (logs/log :info :spec-mode :mode mode)
+    (log/log :info :spec-mode :mode mode)
     (->> (if mocks
            (openapi/->moclojer config mocks)
            config)
