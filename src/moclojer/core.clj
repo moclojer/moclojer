@@ -5,6 +5,7 @@
             [io.pedestal.log :as log]
             [moclojer.adapters :as adapters]
             [moclojer.config :as config]
+            [moclojer.log :as logs]
             [moclojer.server :as server])
   (:import (java.util.logging Filter Formatter Handler LogRecord Logger)))
 
@@ -33,6 +34,7 @@
   {:org.babashka/cli {:collect {:args []}}}
   [& args]
   (setup-logger (.getParent (Logger/getGlobal)))
+  ;; (logs/setup :info :auto)
   (let [args-opts (cli/parse-args args {:spec config/spec})
         envs {:config (or (System/getenv "CONFIG")
                           (config/with-xdg "moclojer.yml"))
@@ -40,11 +42,11 @@
         config (adapters/inputs->config args-opts envs config/version)]
 
     (when (:version config)
-      (log/error "moclojer" config/version)
+      (logs/log :error :version-not-found "moclojer" config/version)
       (System/exit 0))
 
     (when (:help config)
-      (log/error :empty-args config/empty-args)
+      (logs/log :error :empty-args :empty-config config/empty-args)
       (System/exit 0))
 
     (server/start config)))
