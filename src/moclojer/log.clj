@@ -19,7 +19,7 @@
     (.setFilter
      handler
      (reify Filter
-       (isLoggable [this record]
+       (isLoggable [_ record]
          (not (string/starts-with? (.getLoggerName record)
                                    "org.eclipse.jetty")))))))
 
