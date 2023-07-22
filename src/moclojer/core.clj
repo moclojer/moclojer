@@ -1,12 +1,10 @@
 (ns moclojer.core
   (:gen-class)
   (:require [babashka.cli :as cli]
-            [clojure.string :as string]
             [moclojer.adapters :as adapters]
             [moclojer.config :as config]
             [moclojer.log :as log]
-            [moclojer.server :as server])
-  (:import (java.util.logging Filter Formatter Handler LogRecord Logger)))
+            [moclojer.server :as server]))
 
 
 (defn -main
