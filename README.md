@@ -1,6 +1,7 @@
 # moclojer
 
 [![moclojer](https://github.com/moclojer/moclojer/raw/main/docs/assets/logo.png)](https://github.com/moclojer/moclojer)
+[![CLA assistant](https://cla-assistant.io/readme/badge/moclojer/moclojer)](https://cla-assistant.io/moclojer/moclojer)
 
 Simple and efficient HTTP mock server with specification written in `yaml`, `edn` or `OpenAPI`.
 
