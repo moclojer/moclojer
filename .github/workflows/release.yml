@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: cache artifacts
-      uses: actions/cache@v3.3.1
+      uses: actions/cache@v3.3.2
       with:
         path: /tmp
         key: ${{ runner.os }}-artifacts-${{ github.sha }}
