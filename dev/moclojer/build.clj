@@ -2,14 +2,15 @@
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
             [clojure.string :as string]
-            [clojure.tools.build.api :as b]))
+            [clojure.tools.build.api :as b]
+            [moclojer.config :as config]))
 
 (def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
 (def moclojer-version
   "moclojer version rendering constant"
-  "0.1")
+  config/version)
 
 (set! *warn-on-reflection* true)
 
