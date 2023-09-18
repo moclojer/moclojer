@@ -37,7 +37,7 @@ jobs:
         tags: ghcr.io/moclojer/moclojer:dev,ghcr.io/moclojer/moclojer:latest
 
     - name: ghcr.io login
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
