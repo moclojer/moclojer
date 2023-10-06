@@ -37,6 +37,7 @@
           (string/join "\n" ["-H:Name=moclojer"
                              "-Dio.pedestal.log.defaultMetricsRecorder=nil"
                              "-Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
+                             "-Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error"
                              "-H:+ReportExceptionStackTraces"
                              "--allow-incomplete-classpath"
                              "--initialize-at-build-time"
