@@ -37,7 +37,7 @@ Simple and efficient HTTP mock server with specification written in `yaml`, `edn
 * **image:** `ghcr.io/moclojer/moclojer:dev`
 * **port _(default)_:** `8000`_, if you want to change the port set the environment variable `PORT`_
 
-```
+```sh
 docker run -it \
   -p 8000:8000 -v $(pwd)/moclojer.yml:/app/moclojer.yml \
   ghcr.io/moclojer/moclojer:dev
@@ -50,7 +50,7 @@ docker run -it \
 
 ## manual (Linux & macOS)
 
-```
+```sh
 bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/install.sh)
 ```
 
@@ -64,46 +64,33 @@ bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/instal
 
 ### Options
 
-#### -c, --config
+parameter | description
+--- | ---
+`-c, --config` | Config path or the CONFIG environment variable. \[**default:** `~/.config/moclojer.yml`\]
+`-m, --mocks` | OpenAPI v3 mocks path or the MOCKS environment variable.
+`-h, --help` | Show help information
+`-v, --version` | Show version information
 
-Config path or the CONFIG environment variable. \[**default:** `~/.config/moclojer.yml`]
-
-> moclojer uses `XDG_CONFIG_HOME` to fetch the default moclojer configuration file, if you want to set a different directory you must use the `-c` or `CONFIG` environment variable
-
-#### -m, --mocks
-
-OpenAPI v3 mocks path or the MOCKS environment variable.
-
-#### -h, --help
-
-Show help information
-
-#### -v, --version
-
-Show version information
+> **Config** uses `XDG_CONFIG_HOME` to fetch the default moclojer configuration file, if you want to set a different directory you must use the `-c` or environment variable `CONFIG`
 
 ## 💻 dev environment
 
-We use git submodule to integrate with [**OpenAPI v3** specification](https://github.com/OAI/OpenAPI-Specification), if you want to use it, you will need to update the git submodule code.
+moclojer is written in **Clojure**, to run the commands below we assume you have clojure _installed_ on your operating system.
 
-```
-git submodule update -f --init
-```
+**run:**
 
-### run
-
-```
+```sh
 clj -M:run
 ```
 
-### test
+**test:**
 
-```
+```sh
 clj -M:test
 ```
 
-### `moclojer.jar` generate
+**`moclojer.jar` generate:**
 
-```
+```sh
 clj -A:dev -M --report stderr -m moclojer.build
 ```
