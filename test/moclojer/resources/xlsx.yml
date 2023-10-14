@@ -7,5 +7,5 @@
         Content-Type: application/json
       external-body:
         provider: xlsx
-        path: test/moclojer/resources/lerolero.xlsx
+        path: test/moclojer/resources/excel-sample.xlsx
         sheet-name: test

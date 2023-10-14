@@ -89,6 +89,8 @@ clj -M:run
 clj -M:test
 ```
 
+> _if you want to run a specific test:_ `clj -M:test -n moclojer.external-body.xlsx-test`
+
 **`moclojer.jar` generate:**
 
 ```sh
