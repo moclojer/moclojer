@@ -985,6 +985,11 @@
   "name":"dk.ative.docjure.spreadsheet__init"
 },
 {
+  "name": "org.apache.poi.**",
+  "allDeclaredMethods": true,
+  "allPublicMethods": true
+},
+{
   "name":"flatland.ordered.common.Compactable"
 },
 {
