@@ -2,6 +2,7 @@
   (:require [cheshire.core :as cheshire]
             [clojure.string :as string]
             [io.pedestal.http.route :as route]
+            [moclojer.external-body.xlsx :as xlsx]
             [selmer.parser :as selmer]))
 
 (defn body->str
@@ -11,10 +12,18 @@
     body
     (cheshire/generate-string body)))
 
+(defn build-body
+  "build body from response"
+  [response]
+  (let [external-body (:external-body response)]
+    (if external-body
+      (xlsx/->map (:path external-body) (:sheet-name external-body))
+      (:body response))))
+
 (defn generic-handler
   [response]
   (fn [request]
-    {:body    (selmer/render (body->str (:body response)) request)
+    {:body    (selmer/render (body->str (build-body response)) request)
      :status  (:status response)
      :headers (into
                {}
@@ -45,6 +54,5 @@
           [path
            (keyword method)
            (generic-handler response)
-           :route-name (keyword route-name)]}
-        )))
+           :route-name (keyword route-name)]})))
    (mapcat identity)))
