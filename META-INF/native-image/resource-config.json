@@ -720,6 +720,8 @@
     "pattern":"\\Qyaml/writer.clj\\E"
   }, {
     "pattern":"\\Qyaml/writer__init.class\\E"
+  }, {
+    "pattern": "org/apache/poi/**"
   }]},
   "bundles":[]
 }
