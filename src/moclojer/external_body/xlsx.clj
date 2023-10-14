@@ -2,14 +2,10 @@
   (:require [dk.ative.docjure.spreadsheet :as sheet]))
 
 (defn header-keywordize
-  "converts header to keywords"
-  [data]
-  (let [header (-> data first vec)]
-    (map (fn [entry]
-           (let [values (rest entry)]
-             (zipmap (map keyword header)
-                     (cons (first entry) values))))
-         (rest data))))
+  "Converts header to keywords."
+  [[header-row & rows]]
+  (let [header-keys (map keyword header-row)]
+    (map (fn [row] (zipmap header-keys row)) rows)))
 
 (defn ->map
   "converts xlsx to map, sheet-name is optional"
