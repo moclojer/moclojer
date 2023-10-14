@@ -90,11 +90,6 @@
   "name":"clojure.asm.commons.Method"
 },
 {
-  "name":"clojure.core$pr_str",
-  "queryAllPublicConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"clojure.core.ArrayChunk"
 },
 {
@@ -536,6 +531,9 @@
   "name":"clojure.lang.Numbers"
 },
 {
+  "name":"clojure.lang.PersistentArrayMap"
+},
+{
   "name":"clojure.lang.PersistentArrayMap$Seq"
 },
 {
@@ -779,6 +777,9 @@
   "name":"clojure.tools.reader.default_data_readers__init"
 },
 {
+  "name":"clojure.tools.reader.edn__init"
+},
+{
   "name":"clojure.tools.reader.impl.commons__init"
 },
 {
@@ -978,6 +979,12 @@
   "name":"crypto.random__init"
 },
 {
+  "name":"dk.ative.docjure.spreadsheet.IFontable"
+},
+{
+  "name":"dk.ative.docjure.spreadsheet__init"
+},
+{
   "name":"flatland.ordered.common.Compactable"
 },
 {
@@ -1009,6 +1016,15 @@
 },
 {
   "name":"flatland.useful.ns__init"
+},
+{
+  "name":"io.aviso.ansi__init"
+},
+{
+  "name":"io.aviso.columns__init"
+},
+{
+  "name":"io.aviso.exception__init"
 },
 {
   "name":"io.opentracing.Scope"
@@ -1351,7 +1367,15 @@
   "queryAllPublicMethods":true
 },
 {
-  "name":"java.lang.String"
+  "name":"java.lang.String",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.StringBuilder"
+},
+{
+  "name":"java.lang.Thread",
+  "fields":[{"name":"threadLocalRandomProbe"}]
 },
 {
   "name":"java.lang.ThreadLocal"
@@ -1419,12 +1443,7 @@
 {
   "name":"java.lang.management.PlatformLoggingMXBean",
   "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getLoggerLevel","parameterTypes":["java.lang.String"] }, 
-    {"name":"getLoggerNames","parameterTypes":[] }, 
-    {"name":"getParentLoggerName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setLoggerLevel","parameterTypes":["java.lang.String","java.lang.String"] }
-  ]
+  "methods":[{"name":"getLoggerLevel","parameterTypes":["java.lang.String"] }, {"name":"getLoggerNames","parameterTypes":[] }, {"name":"getParentLoggerName","parameterTypes":["java.lang.String"] }, {"name":"setLoggerLevel","parameterTypes":["java.lang.String","java.lang.String"] }]
 },
 {
   "name":"java.lang.management.RuntimeMXBean",
@@ -1661,6 +1680,9 @@
   "name":"java.util.concurrent.ConcurrentSkipListMap"
 },
 {
+  "name":"java.util.concurrent.CountDownLatch"
+},
+{
   "name":"java.util.concurrent.DelayQueue"
 },
 {
@@ -1685,13 +1707,25 @@
   "name":"java.util.concurrent.TimeUnit"
 },
 {
+  "name":"java.util.concurrent.atomic.AtomicBoolean",
+  "fields":[{"name":"value"}]
+},
+{
   "name":"java.util.concurrent.atomic.AtomicInteger"
 },
 {
   "name":"java.util.concurrent.atomic.AtomicLong"
 },
 {
+  "name":"java.util.concurrent.atomic.AtomicReference",
+  "fields":[{"name":"value"}]
+},
+{
   "name":"java.util.concurrent.atomic.AtomicReferenceArray"
+},
+{
+  "name":"java.util.concurrent.atomic.Striped64",
+  "fields":[{"name":"base"}, {"name":"cellsBusy"}]
 },
 {
   "name":"java.util.concurrent.locks.Lock"
@@ -1703,8 +1737,23 @@
   "name":"java.util.function.Function"
 },
 {
+  "name":"java.util.logging.Filter"
+},
+{
+  "name":"java.util.logging.Formatter"
+},
+{
+  "name":"java.util.logging.Handler"
+},
+{
   "name":"java.util.logging.LogManager",
   "methods":[{"name":"getLoggingMXBean","parameterTypes":[] }]
+},
+{
+  "name":"java.util.logging.LogRecord"
+},
+{
+  "name":"java.util.logging.Logger"
 },
 {
   "name":"java.util.logging.LoggingMXBean",
@@ -1727,6 +1776,10 @@
 },
 {
   "name":"javax.management.ObjectName"
+},
+{
+  "name":"javax.management.StandardEmitterMBean",
+  "methods":[{"name":"cacheMBeanInfo","parameterTypes":["javax.management.MBeanInfo"] }, {"name":"getCachedMBeanInfo","parameterTypes":[] }, {"name":"getMBeanInfo","parameterTypes":[] }]
 },
 {
   "name":"javax.management.openmbean.CompositeData"
@@ -1766,7 +1819,8 @@
 },
 {
   "name":"jdk.management.jfr.FlightRecorderMXBeanImpl",
-  "queryAllPublicConstructors":true
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"cacheMBeanInfo","parameterTypes":["javax.management.MBeanInfo"] }, {"name":"getCachedMBeanInfo","parameterTypes":[] }, {"name":"getMBeanInfo","parameterTypes":[] }, {"name":"getNotificationInfo","parameterTypes":[] }]
 },
 {
   "name":"jdk.management.jfr.RecordingInfo",
@@ -1777,19 +1831,40 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"json_html.core__init"
+},
+{
   "name":"moclojer.adapters__init"
+},
+{
+  "name":"moclojer.config__init"
 },
 {
   "name":"moclojer.core__init"
 },
 {
-  "name":"moclojer.handler__init"
+  "name":"moclojer.external_body.xlsx__init"
 },
 {
-  "name":"moclojer.openapi__init"
+  "name":"moclojer.io_utils__init"
+},
+{
+  "name":"moclojer.log__init"
 },
 {
   "name":"moclojer.router__init"
+},
+{
+  "name":"moclojer.server__init"
+},
+{
+  "name":"moclojer.specs.moclojer__init"
+},
+{
+  "name":"moclojer.specs.openapi__init"
+},
+{
+  "name":"moclojer.watcher__init"
 },
 {
   "name":"org.apache.commons.codec.binary.Base32"
@@ -1817,6 +1892,81 @@
 },
 {
   "name":"org.apache.commons.io.IOUtils"
+},
+{
+  "name":"org.apache.poi.hssf.usermodel.HSSFCellStyle"
+},
+{
+  "name":"org.apache.poi.hssf.usermodel.HSSFWorkbook"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.BorderStyle"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.Cell"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.CellStyle"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.CellType"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.CellValue"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.CreationHelper"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.DateUtil"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.Drawing"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.FillPatternType"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.Font"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.FormulaError"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.HorizontalAlignment"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.IndexedColors"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.Row"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.Row$MissingCellPolicy"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.Sheet"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.VerticalAlignment"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.Workbook"
+},
+{
+  "name":"org.apache.poi.ss.usermodel.WorkbookFactory"
+},
+{
+  "name":"org.apache.poi.ss.util.AreaReference"
+},
+{
+  "name":"org.apache.poi.ss.util.CellReference"
+},
+{
+  "name":"org.apache.poi.xssf.usermodel.XSSFCellStyle"
+},
+{
+  "name":"org.apache.poi.xssf.usermodel.XSSFWorkbook"
 },
 {
   "name":"org.eclipse.jetty.alpn.ALPN"
@@ -1901,6 +2051,12 @@
   "name":"org.eclipse.jetty.util.thread.QueuedThreadPool"
 },
 {
+  "name":"org.joda.time.DateTime"
+},
+{
+  "name":"org.joda.time.Interval"
+},
+{
   "name":"org.objectweb.asm.Type"
 },
 {
@@ -1925,9 +2081,7 @@
   "name":"org.yaml.snakeyaml.DumperOptions$ScalarStyle"
 },
 {
-  "name":"org.yaml.snakeyaml.Yaml",
-  "queryAllPublicConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.yaml.snakeyaml.constructor.BaseConstructor"] }]
+  "name":"org.yaml.snakeyaml.Yaml"
 },
 {
   "name":"org.yaml.snakeyaml.composer.ComposerException"
@@ -2080,6 +2234,60 @@
 {
   "name":"sun.management.RuntimeImpl",
   "queryAllPublicConstructors":true
+},
+{
+  "name":"taoensso.encore.Counter"
+},
+{
+  "name":"taoensso.encore.DefaultTimeoutImpl"
+},
+{
+  "name":"taoensso.encore.ITimeoutFuture"
+},
+{
+  "name":"taoensso.encore.ITimeoutImpl"
+},
+{
+  "name":"taoensso.encore.LimitEntry"
+},
+{
+  "name":"taoensso.encore.LimitHits"
+},
+{
+  "name":"taoensso.encore.LimitSpec"
+},
+{
+  "name":"taoensso.encore.RollingCounter"
+},
+{
+  "name":"taoensso.encore.SimpleCacheEntry"
+},
+{
+  "name":"taoensso.encore.Swapped"
+},
+{
+  "name":"taoensso.encore.TickedCacheEntry"
+},
+{
+  "name":"taoensso.encore.TimeoutFuture"
+},
+{
+  "name":"taoensso.encore__init"
+},
+{
+  "name":"taoensso.timbre.appenders.core__init"
+},
+{
+  "name":"taoensso.timbre__init"
+},
+{
+  "name":"taoensso.truss.impl.WrappedError"
+},
+{
+  "name":"taoensso.truss.impl__init"
+},
+{
+  "name":"taoensso.truss__init"
 },
 {
   "name":"yaml.core__init"
