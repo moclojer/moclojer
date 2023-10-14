@@ -11,7 +11,8 @@
            com.taoensso/timbre          {:mvn/version "6.2.1"}
            org.slf4j/slf4j-jdk14        {:mvn/version "2.0.7"}
            org.slf4j/slf4j-simple       {:mvn/version "1.7.36"}
-           selmer/selmer                {:mvn/version "1.12.52"}}
+           selmer/selmer                {:mvn/version "1.12.52"}
+           dk.ative/docjure             {:mvn/version "1.19.0"}}
  :aliases {;; Run project
            ;; clj -M:run
            :run  {:main-opts ["-m" "babashka.cli.exec"]
