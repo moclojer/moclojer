@@ -45,6 +45,7 @@
                              "--initialize-at-run-time=java.security.SecureRandom"
                              "--initialize-at-run-time=org.apache.poi.util.RandomSingleton"
                              "--initialize-at-run-time=com.fasterxml.jackson.core.io.SerializedString"
+                             "--initialize-at-run-time=sun.security.ssl.SSLContextImpl"
                              "-H:DashboardDump=report/moclojer"
                              "-H:+ReportExceptionStackTraces"
                              "-H:+DashboardHeap"
