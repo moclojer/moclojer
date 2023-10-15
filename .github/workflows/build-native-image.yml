@@ -11,12 +11,6 @@ jobs:
         os: ["macos-11", "ubuntu-20.04"]
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "actions/cache@v3.3.2"
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.gitlibs
-          key: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
       - uses: "DeLaGuardo/setup-clojure@12.1"
         with:
           cli: "1.11.1.1139"
@@ -24,6 +18,12 @@ jobs:
       - run: "clojure -M:dev --report stderr -m moclojer.build"
         env:
           CI_COMMIT_SHA: "${{ github.sha }}"
+      - uses: "actions/cache@v3.3.2"
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+          key: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
       - uses: "graalvm/setup-graalvm@v1"
         with:
           version: "22.3.2"
@@ -36,7 +36,7 @@ jobs:
             ~/.m2/repository
             ~/.gitlibs
           key: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
-          restore-keys: "${{ runner.os }}-deps-"
+          restore-keys: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
       - name: Gen reflect.config.json to ${{ runner.os }}
         working-directory: target/native
         run: |
