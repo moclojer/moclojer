@@ -15,7 +15,7 @@ jobs:
         with:
           cli: "1.11.1.1139"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - run: "clojure -A:dev -M --report stderr -m moclojer.build"
+      - run: "clojure -A:dev -M:dev --report stderr -m moclojer.build"
         env:
           CI_COMMIT_SHA: "${{ github.sha }}"
       - uses: "graalvm/setup-graalvm@v1"
