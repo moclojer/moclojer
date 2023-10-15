@@ -42,6 +42,7 @@
                              "--allow-incomplete-classpath"
                              "--features=clj_easy.graal_build_time.InitClojureClasses"
                              "--initialize-at-run-time=java.security.SecureRandom"
+                             "--trace-object-instantiation=com.sun.jndi.dns.DnsClient"
                              "--initialize-at-run-time=org.apache.poi.util.RandomSingleton"
                              "--initialize-at-run-time=com.fasterxml.jackson.core.io.SerializedString"
                              "--initialize-at-run-time=sun.security.ssl.SSLContextImpl"
