@@ -39,7 +39,7 @@
                              "-Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
                              "-H:+ReportExceptionStackTraces"
                              "--allow-incomplete-classpath"
-                             "--initialize-at-build-time"
+                             "-features=clj_easy.graal_build_time.InitClojureClasses"
                              "--verbose"
                              "-H:+DashboardHeap"
                              "-H:+DashboardCode"

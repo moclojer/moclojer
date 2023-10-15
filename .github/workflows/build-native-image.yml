@@ -45,10 +45,9 @@ jobs:
             -H:DashboardDump=report/moclojer \
             --enable-all-security-services \
             --allow-incomplete-classpath \
-            --initialize-at-run-time=java.security.SecureRandom \
+            --features=clj_easy.graal_build_time.InitClojureClasses \
             --trace-class-initialization=java.security.SecureRandom \
             --trace-object-instantiation=java.security.SecureRandom \
-            --initialize-at-run-time=org.apache.poi.util.RandomSingleton \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json
       - name: "Check http status"
