@@ -41,17 +41,9 @@ jobs:
           native-image -jar ../moclojer.jar -o moclojer_${{ runner.os }} \
             -H:Name=moclojer_${{ runner.os }} \
             -H:DashboardDump=report/moclojer \
-            -H:+ReportExceptionStackTraces \
-            -H:+DashboardHeap \
-            -H:+DashboardCode \
-            -H:+DashboardBgv \
-            -H:+DashboardJson \
+            --features=clj_easy.graal_build_time.InitClojureClasses \
             --enable-all-security-services \
             --allow-incomplete-classpath \
-            --features=clj_easy.graal_build_time.InitClojureClasses \
-            -Dio.pedestal.log.defaultMetricsRecorder=nil \
-            -Dorg.slf4j.simpleLogger.defaultLogLevel=error \
-            -Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json \
             --no-fallback --verbose
