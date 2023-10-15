@@ -39,6 +39,8 @@ jobs:
         working-directory: target/native
         run: |
           native-image @native-image-args \
+            -jar ../moclojer.jar \
+            -o moclojer_${{ runner.os }} \
             -H:Name=moclojer_${{ runner.os }} \
             -H:DashboardDump=report/moclojer \
             --enable-all-security-services \
@@ -47,11 +49,8 @@ jobs:
             --trace-class-initialization=java.security.SecureRandom \
             --trace-object-instantiation=java.security.SecureRandom \
             --initialize-at-run-time=org.apache.poi.util.RandomSingleton \
-            -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
-            -H:ResourceConfigurationFiles=resource-config.json \
-            --class-name-filter=com.sun.jndi.dns.DnsClient && \
-            cp moclojer moclojer_${{ runner.os }}
+            -H:ResourceConfigurationFiles=resource-config.json
       - name: "Check http status"
         working-directory: target/native
         run: |
