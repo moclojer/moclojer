@@ -48,6 +48,7 @@
                              "--initialize-at-run-time=sun.security.ssl.SSLContextImpl"
                              "--trace-object-instantiation=org.yaml.snakeyaml.DumperOptions$ScalarStyle"
                              "--trace-object-instantiation=org.yaml.snakeyaml.DumperOptions$FlowStyle"
+                             "--initialize-at-build-time=org.yaml.snakeyaml.DumperOptions$FlowStyle"
                              "-H:DashboardDump=report/moclojer"
                              "-H:+ReportExceptionStackTraces"
                              "-H:+DashboardHeap"
