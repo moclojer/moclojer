@@ -50,8 +50,6 @@ jobs:
             --enable-all-security-services \
             --allow-incomplete-classpath \
             --features=clj_easy.graal_build_time.InitClojureClasses \
-            --trace-class-initialization=java.security.SecureRandom \
-            --trace-object-instantiation=java.security.SecureRandom \
             -Dio.pedestal.log.defaultMetricsRecorder=nil \
             -Dorg.slf4j.simpleLogger.defaultLogLevel=error \
             -Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error \
