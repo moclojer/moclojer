@@ -15,7 +15,7 @@ jobs:
         with:
           cli: "1.11.1.1139"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - run: "clojure -M:dev --report stderr -m moclojer.build && ls -l ~/.m2/repository/com/github/"
+      - run: "clojure -M:dev --report stderr -m moclojer.build"
         env:
           CI_COMMIT_SHA: "${{ github.sha }}"
       - uses: "graalvm/setup-graalvm@v1"
@@ -28,7 +28,6 @@ jobs:
       - name: Gen reflect.config.json to ${{ runner.os }}
         working-directory: target/native
         run: |
-          ls -l ~/.m2/repository/com/github/
           echo [] > moclojer.yml
           java -agentlib:native-image-agent=caller-filter-file=filter.json,config-output-dir=. \
             -jar ../moclojer.jar &
@@ -40,7 +39,6 @@ jobs:
       - name: GraalVM native image build moclojer binary to ${{ runner.os }}
         working-directory: target/native
         run: |
-          ls -l ~/.m2/repository/com/github/
           native-image @native-image-args \
             -jar ../moclojer.jar \
             -o moclojer_${{ runner.os }} \
