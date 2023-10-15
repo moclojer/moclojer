@@ -46,7 +46,6 @@ jobs:
             -H:+DashboardCode \
             -H:+DashboardBgv \
             -H:+DashboardJson \
-            --initialize-at-build-time \
             --enable-all-security-services \
             --allow-incomplete-classpath \
             --features=clj_easy.graal_build_time.InitClojureClasses \
