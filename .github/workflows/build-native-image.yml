@@ -30,6 +30,13 @@ jobs:
           java-version: "17"
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: "actions/cache@v3.3.2"
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+          key: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
+          restore-keys: "${{ runner.os }}-deps-"
       - name: Gen reflect.config.json to ${{ runner.os }}
         working-directory: target/native
         run: |
