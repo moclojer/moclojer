@@ -1,6 +1,6 @@
 name: Build jar
 
-on: [push, pull_request, workflow_call]
+on: [pull_request, workflow_call]
 
 jobs:
   build-jar:
