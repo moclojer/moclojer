@@ -46,6 +46,7 @@
                              "--initialize-at-run-time=org.apache.poi.util.RandomSingleton"
                              "--initialize-at-run-time=com.fasterxml.jackson.core.io.SerializedString"
                              "--initialize-at-run-time=sun.security.ssl.SSLContextImpl"
+                             "--trace-object-instantiation=org.yaml.snakeyaml.DumperOptions$ScalarStyle"
                              "-H:DashboardDump=report/moclojer"
                              "-H:+ReportExceptionStackTraces"
                              "-H:+DashboardHeap"
