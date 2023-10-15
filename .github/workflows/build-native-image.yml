@@ -38,7 +38,7 @@ jobs:
       - name: GraalVM native image build moclojer binary to ${{ runner.os }}
         working-directory: target/native
         run: |
-          native-image @native-image-args \
+          clojure -P -M:dev && native-image @native-image-args \
             -jar ../moclojer.jar \
             -o moclojer_${{ runner.os }} \
             -H:Name=moclojer_${{ runner.os }}
