@@ -20,9 +20,10 @@
                   :exec-fn    moclojer.core/-main}
            ;; clj -A:dev -m moclojer.core
            :dev      {:extra-paths ["dev"]
-                      :extra-deps  {io.github.clojure/tools.build {:git/url    "https://github.com/clojure/tools.build.git"
-                                                                   :sha        "ba1a2bf421838802e7bdefc541b41f57582e53b6"
-                                                                   :exclusions [org.slf4j/slf4j-nop]}}}
+                      :extra-deps  {io.github.clojure/tools.build        {:git/url    "https://github.com/clojure/tools.build.git"
+                                                                          :sha        "ba1a2bf421838802e7bdefc541b41f57582e53b6"
+                                                                          :exclusions [org.slf4j/slf4j-nop]}
+                                    com.github.clj-easy/graal-build-time {:mvn/version "1.0.5"}}}
            ;; Run all tests
            ;; clj -M:test
            ;; Run specific test

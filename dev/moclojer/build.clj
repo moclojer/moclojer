@@ -5,12 +5,8 @@
             [clojure.tools.build.api :as b]
             [moclojer.config :as config]))
 
-(def lib 'moclojer/moclojer)
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
-(def moclojer-version
-  "moclojer version rendering constant"
-  config/version)
 
 (set! *warn-on-reflection* true)
 
@@ -19,8 +15,8 @@
   (let [basis (b/create-basis {:project "deps.edn"})]
     (b/delete {:path "target"})
     (b/write-pom {:class-dir class-dir
-                  :lib       lib
-                  :version   moclojer-version
+                  :lib       'moclojer/moclojer
+                  :version   config/version
                   :basis     basis
                   :src-dirs  (:paths basis)})
     (b/compile-clj {:basis     basis
@@ -30,19 +26,33 @@
              :main      'moclojer.core
              :uber-file uber-file
              :basis     basis})
+
     (.mkdirs (io/file "target" "native"))
+
+    ;; create native-image configuration file `filter.json`
     (spit (io/file "target" "native" "filter.json")
-          (json/write-str {}))
+          (json/write-str {:rules []}))
+
+    ;; create native-image parameter file `@native-image-args`
     (spit (io/file "target" "native" "native-image-args")
           (string/join "\n" ["-H:Name=moclojer"
                              "-Dio.pedestal.log.defaultMetricsRecorder=nil"
-                             "-Dorg.slf4j.simpleLogger.defaultLogLevel=warn"
-                             "-H:+ReportExceptionStackTraces"
+                             "-Dorg.slf4j.simpleLogger.defaultLogLevel=error"
+                             "-Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error"
                              "--allow-incomplete-classpath"
-                             "--initialize-at-build-time"
-                             "--verbose"
+                             "--features=clj_easy.graal_build_time.InitClojureClasses"
+                             "--enable-all-security-services"
+                             "--initialize-at-run-time=java.security.SecureRandom"
+                             "--initialize-at-run-time=org.apache.poi.util.RandomSingleton"
+                             "--rerun-class-initialization-at-runtime=com.fasterxml.jackson.core.io.SerializedString"
+                             "--delay-class-initialization-at-runtime=sun.security.ssl.SSLContextImpl$DefaultSSLContextHolder"
+                             "-H:DashboardDump=report/moclojer"
+                             "-H:+ReportExceptionStackTraces"
                              "-H:+DashboardHeap"
                              "-H:+DashboardCode"
                              "-H:+DashboardBgv"
                              "-H:+DashboardJson"
-                             "--no-fallback"]))))
+                             "-H:ReflectionConfigurationFiles=reflect-config.json"
+                             "-H:ResourceConfigurationFiles=resource-config.json"
+                             "--no-fallback"
+                             "--verbose"]))))
