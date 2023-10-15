@@ -15,9 +15,9 @@ jobs:
         os: [ "macos-11", "ubuntu-20.04" ]
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "graalvm/setup-graalvm@v1.1.4"
+      - uses: "graalvm/setup-graalvm@v1"
         with:
-          version: "22.1.0"
+          version: "22.3.2"
           java-version: "17"
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -45,6 +45,7 @@ jobs:
             --enable-all-security-services \
             --initialize-at-run-time=java.security.SecureRandom \
             --trace-class-initialization=java.security.SecureRandom \
+            --trace-object-instantiation=java.security.SecureRandom \
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json && \
