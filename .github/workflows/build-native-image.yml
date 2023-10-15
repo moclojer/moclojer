@@ -38,19 +38,27 @@ jobs:
       - name: GraalVM native image build moclojer binary to ${{ runner.os }}
         working-directory: target/native
         run: |
-          native-image @native-image-args \
-            -jar ../moclojer.jar \
-            -o moclojer_${{ runner.os }} \
+          native-image -jar ../moclojer.jar -o moclojer_${{ runner.os }} \
             -H:Name=moclojer_${{ runner.os }} \
             -H:DashboardDump=report/moclojer \
+            -H:+ReportExceptionStackTraces \
+            -H:+DashboardHeap \
+            -H:+DashboardCode \
+            -H:+DashboardBgv \
+            -H:+DashboardJson \
+            --initialize-at-build-time \
             --enable-all-security-services \
             --allow-incomplete-classpath \
             --initialize-at-run-time=java.security.SecureRandom \
             --trace-class-initialization=java.security.SecureRandom \
             --trace-object-instantiation=java.security.SecureRandom \
             --initialize-at-run-time=org.apache.poi.util.RandomSingleton \
+            -Dio.pedestal.log.defaultMetricsRecorder=nil \
+            -Dorg.slf4j.simpleLogger.defaultLogLevel=error \
+            -Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error \
             -H:ReflectionConfigurationFiles=reflect-config.json \
-            -H:ResourceConfigurationFiles=resource-config.json
+            -H:ResourceConfigurationFiles=resource-config.json \
+            --no-fallback --verbose
       - name: "Check http status"
         working-directory: target/native
         run: |
