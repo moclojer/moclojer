@@ -46,6 +46,7 @@ jobs:
             --initialize-at-run-time=java.security.SecureRandom \
             --trace-class-initialization=java.security.SecureRandom \
             --trace-object-instantiation=java.security.SecureRandom \
+            --initialize-at-run-time=org.apache.poi.util.RandomSingleton \
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json && \
