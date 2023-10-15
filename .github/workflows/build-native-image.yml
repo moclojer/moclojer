@@ -47,10 +47,10 @@ jobs:
             --trace-class-initialization=java.security.SecureRandom \
             --trace-object-instantiation=java.security.SecureRandom \
             --initialize-at-run-time=org.apache.poi.util.RandomSingleton \
-            --exclude=com.sun.jndi.dns.DnsClient \
             -jar ../moclojer.jar \
             -H:ReflectionConfigurationFiles=reflect-config.json \
-            -H:ResourceConfigurationFiles=resource-config.json && \
+            -H:ResourceConfigurationFiles=resource-config.json \
+            --class-name-filter=com.sun.jndi.dns.DnsClient && \
             cp moclojer moclojer_${{ runner.os }}
       - name: "Check http status"
         working-directory: target/native
