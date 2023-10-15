@@ -46,6 +46,7 @@ jobs:
             --allow-incomplete-classpath \
             -H:ReflectionConfigurationFiles=reflect-config.json \
             -H:ResourceConfigurationFiles=resource-config.json \
+            --rerun-class-initialization-at-runtime=com.fasterxml.jackson.core.io.SerializedString \
             --no-fallback --verbose
       - name: "Check http status"
         working-directory: target/native
