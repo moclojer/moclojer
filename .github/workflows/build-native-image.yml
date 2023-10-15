@@ -11,6 +11,12 @@ jobs:
         os: ["macos-11", "ubuntu-20.04"]
     steps:
       - uses: "actions/checkout@v4"
+      - uses: "actions/cache@v3.3.2"
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+          key: "${{ runner.os }}-deps-${{ hashFiles('deps.edn') }}"
       - uses: "DeLaGuardo/setup-clojure@12.1"
         with:
           cli: "1.11.1.1139"
@@ -38,7 +44,7 @@ jobs:
       - name: GraalVM native image build moclojer binary to ${{ runner.os }}
         working-directory: target/native
         run: |
-          clojure -P -M:dev && native-image @native-image-args \
+          native-image @native-image-args \
             -jar ../moclojer.jar \
             -o moclojer_${{ runner.os }} \
             -H:Name=moclojer_${{ runner.os }}
