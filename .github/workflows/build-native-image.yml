@@ -42,6 +42,7 @@ jobs:
             -H:Name=moclojer_${{ runner.os }} \
             -H:DashboardDump=report/moclojer \
             --enable-all-security-services \
+            --allow-incomplete-classpath \
             --initialize-at-run-time=java.security.SecureRandom \
             --trace-class-initialization=java.security.SecureRandom \
             --trace-object-instantiation=java.security.SecureRandom \
