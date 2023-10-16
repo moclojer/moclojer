@@ -26,25 +26,26 @@ jobs:
           components: "native-image"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Gen reflect.config.json to ${{ runner.os }}
-        working-directory: target/native
+        working-directory: target
         run: |
           echo [] > moclojer.yml
-          java -agentlib:native-image-agent=caller-filter-file=filter.json,config-output-dir=. \
-            -jar ../moclojer.jar &
-          PID=$!
+          java -agentlib:native-image-agent=caller-filter-file=filter.json,config-output-dir=. -jar moclojer.jar & PID=$!
           ## Wait startup
           while ! curl -s localhost:8000 -o /dev/null; do echo waiting; sleep 3; done
           curl -s localhost:8000 -D -
           kill $PID
       - name: GraalVM native image build moclojer binary to ${{ runner.os }}
-        working-directory: target/native
+        working-directory: target
         run: |
           native-image @native-image-args \
-            -jar ../moclojer.jar \
+            -jar moclojer.jar \
+            -cp ./classes:moclojer.jar \
+            --class-path ./classes:moclojer.jar \
+            -classpath ./classes:moclojer.jar \
             -o moclojer_${{ runner.os }} \
             -H:Name=moclojer_${{ runner.os }}
       - name: "Check http status"
-        working-directory: target/native
+        working-directory: target
         run: |
           echo [] > moclojer.yml
           chmod +x ./moclojer_${{ runner.os }}
