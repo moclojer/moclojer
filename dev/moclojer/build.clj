@@ -3,7 +3,8 @@
             [clojure.java.io :as io]
             [clojure.string :as string]
             [clojure.tools.build.api :as b]
-            [moclojer.config :as config]))
+            [moclojer.config :as config]
+            [moclojer.native-image :as native-image]))
 
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
@@ -40,10 +41,17 @@
                              "-Dorg.slf4j.simpleLogger.defaultLogLevel=error"
                              "-Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error"
                              "--allow-incomplete-classpath"
+
+                             ;; TODO: Option 'EnableAllSecurityServices' is deprecated
                              "--enable-all-security-services"
-                             ;; TODO: used clj-easy's InitClojureClasses
-                             ;; "--features=clj_easy.graal_build_time.InitClojureClasses"
-                             "-H:+PrintClassInitialization"
+                             "--features=clj_easy.graal_build_time.InitClojureClasses"
+
+                             ;; lists managed in the native-image library
+                             native-image/initialize-at-build-time
+                             native-image/initialize-at-run-time
+                             native-image/trace-class-initialization
+
+                             ;; "-H:+PrintClassInitialization"
                              "-H:DashboardDump=report/moclojer"
                              "-H:+ReportExceptionStackTraces"
                              "-H:+DashboardHeap"
