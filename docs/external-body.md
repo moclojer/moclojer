@@ -34,6 +34,23 @@ We support two providers _(file type)_:
         path: test/moclojer/resources/text-plan.json
 ```
 
+### http request (API proxy)
+
+You can use the `json` provider to make URL (site) requests and have it returned to the endpoint:
+
+```yaml
+- endpoint:
+    method: GET
+    path: /pokemon/phanpy
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: json
+        path: https://pokeapi.co/api/v2/pokemon/phanpy
+```
+
 ## `xlsx` Excel type
 
 This is where the use of moclojer starts to get different, as it is possible to _"transform"_ an **Excel** spreadsheet into an API return (`json`).
