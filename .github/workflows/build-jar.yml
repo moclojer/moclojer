@@ -20,13 +20,3 @@ jobs:
     - run: "clojure -M:dev --report stderr -m moclojer.build"
       env:
         CI_COMMIT_SHA: "${{ github.sha }}"
-    # save target folder at artifact
-    - uses: "actions/upload-artifact@v3.1.3"
-      with:
-        name: moclojer_target
-        path: target
-    # save .jar as artifact, used in release
-    - uses: "actions/upload-artifact@v3.1.3"
-      with:
-        name: moclojer_jar
-        path: target/moclojer.jar
