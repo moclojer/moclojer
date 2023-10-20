@@ -12,7 +12,7 @@
   [external-body]
   (let [path (:path external-body)
         body (case (:provider external-body)
-               "text" (slurp path)
+               "json" (slurp path)
                "xlsx" (xlsx/->map (:path external-body) (:sheet-name external-body))
                "format not supported, read documentation")]
     (->str body)))

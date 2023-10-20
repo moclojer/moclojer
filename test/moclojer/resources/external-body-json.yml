@@ -6,5 +6,5 @@
       headers:
         Content-Type: application/json
       external-body:
-        provider: text
+        provider: json
         path: test/moclojer/resources/text-plan.json

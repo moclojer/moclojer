@@ -8,7 +8,7 @@
             [yaml.core :as yaml]))
 
 (def data-text
-  {:provider "text"
+  {:provider "json"
    :path "test/moclojer/resources/text-plan.json"})
 (def ret-text {:a 123 :b "abc"})
 
@@ -20,7 +20,7 @@
                {:name "chicao", :langs "python"}])
 
 (deftest type-identification
-  (testing "text file type, json is also text"
+  (testing "json file type"
     (is (= ret-text
            (jsond/read-str
             (core/type-identification data-text)
@@ -34,7 +34,7 @@
 
 (deftest text-config-test
   (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/external-body-text.yml")})}
+                                       {::router/config (yaml/from-file "test/moclojer/resources/external-body-json.yml")})}
                        http/default-interceptors
                        http/dev-interceptors
                        http/create-servlet
