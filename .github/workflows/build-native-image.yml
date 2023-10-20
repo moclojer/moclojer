@@ -1,6 +1,6 @@
 name: GraalVM Native Images
 
-on: [pull_request, workflow_call]
+on: [workflow_dispatch]
 
 jobs:
   build-native:
