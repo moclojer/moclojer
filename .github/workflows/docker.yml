@@ -1,6 +1,7 @@
 name: docker
 
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -36,7 +37,9 @@ jobs:
         push: false
         tags: ghcr.io/moclojer/moclojer:dev,ghcr.io/moclojer/moclojer:latest
 
+    # from here down is executed in the `main` branch
     - name: ghcr.io login
+      if: github.ref_name == 'main'
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
