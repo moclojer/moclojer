@@ -1,0 +1,10 @@
+- endpoint:
+    method: GET
+    path: /external-body-text
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: text
+        path: test/moclojer/resources/text-plan.json
