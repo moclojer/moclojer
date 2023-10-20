@@ -34,7 +34,7 @@ We support two providers _(file type)_:
         path: test/moclojer/resources/text-plan.json
 ```
 
-### http request (API proxy)
+## http request (API proxy)
 
 You can use the `json` provider to make URL (site) requests and have it returned to the endpoint:
 
