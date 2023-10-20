@@ -1,29 +1,21 @@
 (ns moclojer.specs.moclojer
-  (:require [cheshire.core :as cheshire]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [io.pedestal.http.route :as route]
-            [moclojer.external-body.xlsx :as xlsx]
+            [moclojer.external-body.core :as ext-body]
             [selmer.parser :as selmer]))
-
-(defn body->str
-  "convert body to string, if it is edn it will be converted to json->str"
-  [body]
-  (if (string? body)
-    body
-    (cheshire/generate-string body)))
 
 (defn build-body
   "build body from response"
   [response]
   (let [external-body (:external-body response)]
     (if external-body
-      (xlsx/->map (:path external-body) (:sheet-name external-body))
+      (ext-body/type-identification external-body)
       (:body response))))
 
 (defn generic-handler
   [response]
   (fn [request]
-    {:body    (selmer/render (body->str (build-body response)) request)
+    {:body    (selmer/render (ext-body/->str (build-body response)) request)
      :status  (:status response)
      :headers (into
                {}
