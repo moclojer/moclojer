@@ -22,29 +22,28 @@ print_help() {
     exit 1
 }
 
-while [[ $# -gt 0 ]]
-do
+while [[ $# -gt 0 ]]; do
     key="$1"
     case "$key" in
-        --dir)
-            INSTALL_DIR="$2"
-            shift
-            shift
-            ;;
-        --download-dir)
-            DOWNLOAD_DIr="$2"
-            shift
-            shift
-            ;;
-        --version)
-            VERSION="$2"
-            shift
-            shift
-            ;;
-        *)  # unknown option
-            print_help
-            shift
-            ;;
+    --dir)
+        INSTALL_DIR="$2"
+        shift
+        shift
+        ;;
+    --download-dir)
+        DOWNLOAD_DIr="$2"
+        shift
+        shift
+        ;;
+    --version)
+        VERSION="$2"
+        shift
+        shift
+        ;;
+    *) # unknown option
+        print_help
+        shift
+        ;;
     esac
 done
 
@@ -59,12 +58,20 @@ fi
 
 # Local enviroment
 case "$(uname -s)" in
-    Linux*)  PLATFORM=Linux;;
-    Darwin*) PLATFORM=macOS;;
+Linux*) PLATFORM=Linux ;;
+Darwin*) PLATFORM=macOS ;;
 esac
 
+if hash java 2>/dev/null; then
+    JAVA_BIN=$(which java)
+else
+    echo "Java not found: to install moclojer you need Java installed on your operating system."
+    exit 1
+fi
+
 # Build file name and download link
-FILENAME=${BIN}_${PLATFORM}
+# TODO: use when you have GraalVM native-image _${PLATFORM}
+FILENAME=${BIN}.jar
 
 DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${VERSION}/${FILENAME}"
 
@@ -77,14 +84,17 @@ mkdir -p "$DOWNLOAD_DIR" && (
 )
 
 # Install
-if [[ "$DOWNLOAD_DIR" != "$INSTALL_DIR" ]]
-then
+if [[ "$DOWNLOAD_DIR" != "$INSTALL_DIR" ]]; then
     mkdir -p "$INSTALL_DIR"
     if [ -f "$INSTALL_DIR/$BIN" ]; then
         echo "Moving $INSTALL_DIR/$BIN to $INSTALL_DIR/$BIN.old"
         mv -f "$INSTALL_DIR/$BIN" "$INSTALL_DIR/$BIN.old"
     fi
-    mv -f "$DOWNLOAD_DIR/$FILENAME" "$INSTALL_DIR/$BIN"
+    mv -f "$DOWNLOAD_DIR/$FILENAME" "$INSTALL_DIR/$FILENAME"
+    echo <<-EOF
+    #!/usr/bin/env bash
+    ${JAVA_BIN} -jar ${FILENAME}
+    EOF > "$INSTALL_DIR/$BIN"
     chmod +x "$INSTALL_DIR/$BIN"
 fi
 
