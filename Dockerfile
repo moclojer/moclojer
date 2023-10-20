@@ -4,7 +4,6 @@ WORKDIR /app
 COPY . .
 RUN clojure -M:dev --report stderr -m moclojer.build
 
-# FROM container-registry.oracle.com/os/oraclelinux:8-slim
 FROM docker.io/clojure:temurin-21-tools-deps-alpine
 LABEL org.opencontainers.image.source https://github.com/moclojer/moclojer
 WORKDIR /app

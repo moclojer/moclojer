@@ -1,7 +1,5 @@
 (ns moclojer.build
-  (:require [clojure.data.json :as json]
-            [clojure.java.io :as io]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [clojure.tools.build.api :as b]
             [moclojer.config :as config]
             [moclojer.native-image :as native-image]))
@@ -50,35 +48,6 @@
              :uber-file uber-file
              :basis     basis})
 
-    (println "Building native image configuration files")
-    ;; create native-image configuration file `filter.json`
-    (spit (io/file "target" "filter.json")
-          (json/write-str {:rules []}))
-
-    ;; create native-image parameter file `@native-image-args`
-    (spit (io/file "target" "native-image-args")
-          (string/join "\n" ["-H:Name=moclojer"
-                             "-Dio.pedestal.log.defaultMetricsRecorder=nil"
-                             "-Dorg.slf4j.simpleLogger.defaultLogLevel=error"
-                             "-Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error"
-                             "--allow-incomplete-classpath"
-
-                             ;; TODO: Option 'EnableAllSecurityServices' is deprecated
-                             "--enable-all-security-services"
-
-                             ;; TODO: use clj-easy.graal-build-time
-                             ;; "--features=clj_easy.graal_build_time.InitClojureClasses"
-
-                             ;; lists managed in the native-image library
-                             native-image/initialize-at-build-time
-
-                             "-H:DashboardDump=report/moclojer"
-                             "-H:+ReportExceptionStackTraces"
-                             "-H:+DashboardHeap"
-                             "-H:+DashboardCode"
-                             "-H:+DashboardBgv"
-                             "-H:+DashboardJson"
-                             "-H:ReflectionConfigurationFiles=reflect-config.json"
-                             "-H:ResourceConfigurationFiles=resource-config.json"
-                             "--no-fallback"
-                             "--verbose"]))))
+    ;; prepare file for native image
+    ;; TODO: commented feature, see why https://github.com/moclojer/moclojer/issues/158
+    (native-image/prepare-files)))

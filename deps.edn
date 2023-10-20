@@ -1,19 +1,18 @@
 {:paths   ["src"]
- :deps    {cheshire/cheshire                    {:mvn/version "5.11.0"}
-           io.forward/yaml                      {:mvn/version "1.0.11"}
-           io.pedestal/pedestal.jetty           {:mvn/version "0.5.10"}
-           io.pedestal/pedestal.route           {:mvn/version "0.5.10"}
-           io.pedestal/pedestal.service         {:mvn/version "0.5.10"}
-           org.babashka/cli                     {:mvn/version "0.7.51"}
-           org.clojure/clojure                  {:mvn/version "1.11.1"}
-           org.clojure/core.async               {:mvn/version "1.5.648"}
-           org.clojure/data.json                {:mvn/version "2.4.0"}
-           com.taoensso/timbre                  {:mvn/version "6.2.1"}
-           org.slf4j/slf4j-jdk14                {:mvn/version "2.0.7"}
-           org.slf4j/slf4j-simple               {:mvn/version "1.7.36"}
-           selmer/selmer                        {:mvn/version "1.12.52"}
-           dk.ative/docjure                     {:mvn/version "1.19.0"}
-           com.github.clj-easy/graal-build-time {:mvn/version "1.0.5"}}
+ :deps    {cheshire/cheshire            {:mvn/version "5.11.0"}
+           io.forward/yaml              {:mvn/version "1.0.11"}
+           io.pedestal/pedestal.jetty   {:mvn/version "0.5.10"}
+           io.pedestal/pedestal.route   {:mvn/version "0.5.10"}
+           io.pedestal/pedestal.service {:mvn/version "0.5.10"}
+           org.babashka/cli             {:mvn/version "0.7.51"}
+           org.clojure/clojure          {:mvn/version "1.11.1"}
+           org.clojure/core.async       {:mvn/version "1.5.648"}
+           org.clojure/data.json        {:mvn/version "2.4.0"}
+           com.taoensso/timbre          {:mvn/version "6.2.1"}
+           org.slf4j/slf4j-jdk14        {:mvn/version "2.0.7"}
+           org.slf4j/slf4j-simple       {:mvn/version "1.7.36"}
+           selmer/selmer                {:mvn/version "1.12.52"}
+           dk.ative/docjure             {:mvn/version "1.19.0"}}
  :aliases {;; Run project
            ;; clj -M:run
            :run  {:main-opts ["-m" "babashka.cli.exec"]
