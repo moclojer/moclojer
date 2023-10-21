@@ -91,10 +91,7 @@ if [[ "$DOWNLOAD_DIR" != "$INSTALL_DIR" ]]; then
         mv -f "$INSTALL_DIR/$BIN" "$INSTALL_DIR/$BIN.old"
     fi
     mv -f "$DOWNLOAD_DIR/$FILENAME" "$INSTALL_DIR/$FILENAME"
-    echo <<-EOF
-    #!/usr/bin/env bash
-    ${JAVA_BIN} -jar ${FILENAME}
-    EOF > "$INSTALL_DIR/$BIN"
+    echo -e "#!/usr/bin/env bash\n${JAVA_BIN} -jar ${INSTALL_DIR}/${FILENAME} \$@" >"$INSTALL_DIR/$BIN"
     chmod +x "$INSTALL_DIR/$BIN"
 fi
 
