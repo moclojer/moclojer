@@ -1,13 +1,12 @@
 # moclojer
 
 [![moclojer](https://github.com/moclojer/moclojer/raw/main/docs/assets/logo.png)](https://github.com/moclojer/moclojer)
-[![CLA assistant](https://cla-assistant.io/readme/badge/moclojer/moclojer)](https://cla-assistant.io/moclojer/moclojer)
 
 Simple and efficient HTTP mock server with specification written in `yaml`, `edn` or `OpenAPI`.
 
-> 💾 Download the binary with the latest version of moclojer to test on your computer [here](https://github.com/moclojer/moclojer/releases/latest).
+> 💾 Download the `.jar` file with the latest version of moclojer to test on your computer [here](https://github.com/moclojer/moclojer/releases/latest).
 
-[![tests](https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/tests.yml) [![linter](https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/linter.yml)
+[![tests](https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/tests.yml) [![linter](https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/linter.yml) [![CLA assistant](https://cla-assistant.io/readme/badge/moclojer/moclojer)](https://cla-assistant.io/moclojer/moclojer)
 
 [**📖 See the complete documentation for moclojer here**](https://docs.moclojer.com/), if you want to contribute (or complement) the documentation, it is [here](https://github.com/moclojer/moclojer/tree/main/docs).
 
@@ -48,7 +47,9 @@ docker run -it \
 * `dev`: main branch docker image
 * `latest`: latest stable version image
 
-## manual (Linux & macOS)
+## manual installation
+
+We distribute via the `.jar` file, you need to have Java installed on your operating system.
 
 ```sh
 bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/install.sh)
