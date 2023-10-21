@@ -1,0 +1,10 @@
+- endpoint:
+    method: GET
+    path: /pokemon/:name
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: json
+        path: https://pokeapi.co/api/v2/pokemon/{{path-params.name}}
