@@ -4,20 +4,29 @@
             [moclojer.external-body.core :as ext-body]
             [selmer.parser :as selmer]))
 
-(defn tmpl->str
-  "convert template to string"
-  [body request]
-  (selmer/render (ext-body/->str body) request))
+(defn render-template
+  [template request]
+  (selmer/render (ext-body/->str template) request))
+
+(defn enrich-external-body
+  "Enriches the external body with a resolved path."
+  [external-body request]
+  (let [path (render-template (:path external-body) request)]
+    (assoc external-body :path path)))
 
 (defn build-body
-  "build body from response"
+  "Builds the body from the response."
   [response request]
-  (let [external-body (:external-body response)
-        path (tmpl->str (:path external-body) request)
-        body (if external-body
-               (ext-body/type-identification (assoc external-body :path path))
-               (:body response))]
-    (tmpl->str body request)))
+  (let [external-body (:external-body response)]
+    (cond
+      external-body
+      (-> external-body
+          (enrich-external-body request)
+          ext-body/type-identification
+          (render-template request))
+
+      :else (-> (:body response) 
+                (render-template request)))))
 
 (defn generic-handler
   [response]
