@@ -2,6 +2,7 @@
 
 * [moclojer](../README.md)
 * [Creating mock server](creating-mock-server.md)
+* [Using rendering templates](template.md)
 * [External body](external-body.md)
 * [Multi-domain support](multi-domain-support.md)
 * [Run it mocker server](run-it-mocker-server.md)
