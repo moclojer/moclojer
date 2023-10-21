@@ -24,8 +24,7 @@
           (enrich-external-body request)
           ext-body/type-identification
           (render-template request))
-
-      :else (-> (:body response) 
+      :else (-> (:body response)
                 (render-template request)))))
 
 (defn generic-handler
