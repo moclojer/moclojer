@@ -8,6 +8,11 @@ description: how the template works within the moclojer specification file
 
 We use the [Selmer](https://github.com/yogthos/Selmer) template engine _(is inspired by the [Django](https://www.djangoproject.com/) template engine)_, making it possible to place conditions and rules within the template. The [Selmer documentation](https://github.com/yogthos/Selmer#built-in-tags) shows examples of how to do this.
 
+**it is possible to use template rendering in:**
+
+* `endpoint.response.body`
+* `endpoint.response.external-body.path` _understand what **extended body** is [here](external-body.md)_
+
 ## Path params `path-params`
 
 Parameter passed by the endpoint's **URI/URL**.

@@ -14,10 +14,12 @@ external-body:
   path: files-path.json
 ```
 
-We support two providers _(file type)_:
+**We support two providers _(file type)_:**
 
 * `json`
 * `xlsx` **(excel)**
+
+> it is possible to use template rendering to declare the `path` of the file, see more [here](template.md).
 
 ## `json` type
 
