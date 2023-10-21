@@ -63,7 +63,7 @@ To access this field in the template, simply use the following syntax: `{{json-p
 
 ```yaml
 - endpoint:
-    method: GET
+    method: POST
     path: /
     response:
       status: 200
