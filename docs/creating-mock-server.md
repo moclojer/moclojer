@@ -20,7 +20,7 @@ Create a file named `moclojer.yml` (we will use yaml because it is a more famili
       body: >
         {
           "hello": "{{path-params.username}}!"
-        }        
+        }
 
 - endpoint:
     method: GET
@@ -32,7 +32,7 @@ Create a file named `moclojer.yml` (we will use yaml because it is a more famili
       body: >
         {
           "hello": "Hello, World!"
-        }        
+        }
 - endpoint:
     method: GET
     path: /with-params/:param1
@@ -44,7 +44,7 @@ Create a file named `moclojer.yml` (we will use yaml because it is a more famili
         {
           "path-params": "{{path-params.param1}}",
           "query-params": "{{query-params.param1}}"
-        }        
+        }
 - endpoint:
     method: POST
     path: /first-post-route

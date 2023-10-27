@@ -18,5 +18,5 @@ To add a specific domain for the endpoint just put the tag “host” for which 
       body: >
         {
           "domain": "sub.moclojer.com"
-        } 
+        }
 ```

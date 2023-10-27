@@ -4,7 +4,7 @@ description: extended return support (not specified in the configuration file)
 
 # External body
 
-By default, moclojer reads the `endpoint.response.body` parameter for the endpoint return, but when we need a "long" return (with lots of characters) the specification file (yaml example) makes it difficult to maintain and leaves it with low visibility (confusing).
+By default, moclojer reads the `endpoint.response.body` parameter for the endpoint return, but when we need a “long” return (with lots of characters) the specification file (yaml example) makes it difficult to maintain and leaves it with low visibility (confusing).
 
 To solve this problem you can stop using `endpoint.response.body` and use `endpoint.response.external-body` which has the following structure:
 
@@ -55,7 +55,7 @@ You can use the `json` provider to make URL (site) requests and have it returned
 
 ## `xlsx` Excel type
 
-This is where the use of moclojer starts to get different, as it is possible to _"transform"_ an **Excel** spreadsheet into an API return (`json`).
+This is where the use of moclojer starts to get different, as it is possible to _“transform”_ an **Excel** spreadsheet into an API return (`json`).
 
 ```yaml
 - endpoint:
