@@ -6,7 +6,7 @@ description: >-
 
 # Run it mocker server
 
-### Clojure
+## Clojure
 
 Has an alias created in `edn` with the name _“run”_
 
@@ -16,7 +16,7 @@ CONFIG=moclojer.yml clojure -X:run
 
 > moclojer uses `XDG_CONFIG_HOME` to fetch the default moclojer configuration file, if you want to set a different directory you must use the `-c` or `CONFIG` environment variable
 
-### Binary
+## Binary
 
 You don’t have the binary file yet? [Download it here](https://github.com/avelino/moclojer/releases/latest). The moclojer is distributed as follows:
 
@@ -32,13 +32,13 @@ After creating the file you must run moclojer passing the configuration file by 
 CONFIG=moclojer.yml moclojer # binary filename
 ```
 
-### **jar file**
+## **jar file**
 
 ```shell
 CONFIG=moclojer.yml java -jar moclojer.jar
 ```
 
-### **Docker**
+## **Docker**
 
 ```shell
 docker pull ghcr.io/avelino/moclojer:latest
