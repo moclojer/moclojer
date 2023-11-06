@@ -1,12 +1,36 @@
-# moclojer
+<p align="center">
+  <a href="https://github.com/moclojer/moclojer">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/moclojer/moclojer/raw/main/docs/assets/logo.png">
+      <img src="https://github.com/moclojer/moclojer/raw/main/docs/assets/logo.png" height="128">
+    </picture>
+    <h1 align="center">moclojer</h1>
+  </a>
+</p>
 
-[![moclojer](https://github.com/moclojer/moclojer/raw/main/docs/assets/logo.png)](https://github.com/moclojer/moclojer)
+<p align="center">
+  <a aria-label="CLAs Agree" href="https://cla-assistant.io/moclojer/moclojer" target="_blank">
+    <img src="https://img.shields.io/badge/CLAs-ff009e.svg?style=for-the-badge&labelColor=000000&label=agree">
+  </a>
+  <a aria-label="License" href="https://github.com/moclojer/moclojer/blob/main/LICENSE">
+    <img alt="" src="https://img.shields.io/badge/MIT-ff009e.svg?style=for-the-badge&labelColor=000000&label=LICENSE">
+  </a>
+  <a aria-label="Join the community on GitHub" href="https://github.com/moclojer/moclojer/discussions">
+    <img alt="" src="https://img.shields.io/badge/Join%20the%20community-ff009e.svg?style=for-the-badge&labelColor=000000&label=Discussion">
+  </a>
+  
+  <img src="https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main" alt="linter">
+  
+  <a aria-label="CI Tests" href="https://github.com/moclojer/moclojer/actions/workflows/tests.yml">
+    <img src="https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main" alt="tests">
+  </a>
+  
+</p>
+
 
 Simple and efficient HTTP mock server with specification written in `yaml`, `edn` or `OpenAPI`.
 
 > 💾 Download the `.jar` file with the latest version of moclojer to test on your computer [here](https://github.com/moclojer/moclojer/releases/latest).
-
-[![tests](https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/tests.yml) [![linter](https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/moclojer/moclojer/actions/workflows/linter.yml) [![CLA assistant](https://cla-assistant.io/readme/badge/moclojer/moclojer)](https://cla-assistant.io/moclojer/moclojer)
 
 [**📖 See the complete documentation for moclojer here**](https://docs.moclojer.com/), if you want to contribute (or complement) the documentation, it is [here](https://github.com/moclojer/moclojer/tree/main/docs).
 
