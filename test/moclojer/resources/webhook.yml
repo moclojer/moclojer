@@ -1,0 +1,15 @@
+- endpoint:
+    method: POST
+    path: /with-webhook
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {"id": 123}
+    webhook:
+      sleep: 60
+      url: http://avelino.run/
+      method: GET
+      body: >
+        {"id": 123, "another-field": "it's working"}

@@ -2,6 +2,7 @@
   (:require [clojure.string :as string]
             [io.pedestal.http.route :as route]
             [moclojer.external-body.core :as ext-body]
+            [moclojer.webhook :as whook]
             [selmer.parser :as selmer]))
 
 (defn render-template
@@ -28,8 +29,15 @@
                 (render-template request)))))
 
 (defn generic-handler
-  [response]
+  [response webhook]
   (fn [request]
+    (when webhook
+      (whook/request-after-delay
+       (:url webhook)
+       (:method webhook)
+       (render-template (:body webhook) request)
+       :headers (:headers webhook)
+       :sleep (:sleep webhook)))
     {:body    (build-body response request)
      :status  (:status response)
      :headers (into
@@ -55,11 +63,12 @@
                                                   (remove nil? (map :endpoint spec)))]
      (let [method (generate-method method)
            route-name (generate-route-name host path method)
-           response (:response (first endpoints))]
+           response (:response (first endpoints))
+           webhook (:webhook (first endpoints))]
        (route/expand-routes
         #{{:host host}
           [path
            (keyword method)
-           (generic-handler response)
+           (generic-handler response webhook)
            :route-name (keyword route-name)]})))
    (mapcat identity)))
