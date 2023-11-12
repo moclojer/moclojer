@@ -5,10 +5,10 @@
 
 (defn request-after-delay
   "after a delay call http-request, return body"
-  [url method body & {:keys [headers sleep-time]
-                      :or {headers {}
-                           ; in seconds, 1 minute is 60000 seconds
-                           sleep-time 60}}]
+  [{:keys [url method body headers sleep-time]
+    :or {headers {}
+         ; in seconds, 1 minute is 60000 seconds
+         sleep-time 60}}]
   (let [req {:url url
              :method method
              :headers headers

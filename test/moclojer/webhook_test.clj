@@ -35,7 +35,7 @@
         ::http/service-fn)
     (is (= body
            (-> (webhook/request-after-delay
-                "http://127.0.0.1:8000/with-webhook"
-                :post
-                (json/generate-string body))
+                {:url "http://127.0.0.1:8000/with-webhook"
+                 :method :post
+                 :body (json/generate-string body)})
                (json/parse-string true))))))
