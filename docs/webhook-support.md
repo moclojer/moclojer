@@ -1,5 +1,6 @@
 ---
-description: Moclojer now supports webhooks, allowing for background requests to other APIs or endpoints.
+description: Moclojer now supports webhooks, allowing for background requests to other APIs or endpoints
+---
 
 # Webhook support (background request)
 
