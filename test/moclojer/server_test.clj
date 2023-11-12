@@ -52,7 +52,6 @@
 
 (deftest multi-host
   (let [service-fn (helpers/service-fn (yaml/from-file "test/moclojer/resources/multihost.yml"))]
-
     (is (= {:domain "moclojer.com"}
            (-> service-fn
                (response-for :get "moclojer.com/multihost")

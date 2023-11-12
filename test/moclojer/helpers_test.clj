@@ -5,9 +5,10 @@
 
 (defn service-fn
   "create a service function of pedestal from a config map"
-  [config & {:keys [mocks]}]
+  [config & {:keys [mocks port]}]
   (-> {::http/routes (router/smart-router (merge {::router/config config}
-                                                 {::router/mocks mocks}))}
+                                                 {::router/mocks mocks}))
+       ::http/port port}
       server/get-interceptors
       http/dev-interceptors
       http/default-interceptors
