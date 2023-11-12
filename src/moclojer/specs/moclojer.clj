@@ -64,11 +64,11 @@
      (let [method (generate-method method)
            route-name (generate-route-name host path method)
            response (:response (first endpoints))
-           webhook (:webhook (first endpoints))]
+           webhook-config (:webhook (first endpoints))]
        (route/expand-routes
         #{{:host host}
           [path
            (keyword method)
-           (generic-handler response webhook)
+           (generic-handler response webhook-config)
            :route-name (keyword route-name)]})))
    (mapcat identity)))
