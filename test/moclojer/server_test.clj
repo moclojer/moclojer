@@ -1,32 +1,19 @@
 (ns moclojer.server-test
   (:require [cheshire.core :as json]
             [clojure.test :refer [deftest is]]
-            [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
-            [moclojer.router :as router]
-            [moclojer.server :as server]
+            [moclojer.helpers-test :as helpers]
             [yaml.core :as yaml]))
 
 (deftest hello-world
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
-    (is (= {:hello "Hello, World!"}
-           (-> service-fn
-               (response-for :get "/hello-world")
-               :body
-               (json/parse-string true))))))
+  (is (= {:hello "Hello, World!"}
+         (-> (helpers/service-fn (yaml/from-file "test/moclojer/resources/moclojer.yml"))
+             (response-for :get "/hello-world")
+             :body
+             (json/parse-string true)))))
 
 (deftest hello-world-different-origin
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
+  (let [service-fn (helpers/service-fn (yaml/from-file "test/moclojer/resources/moclojer.yml"))]
     (is (= {:hello "Hello, World!"}
            (-> service-fn
                (response-for :get "/hello-world" :headers {"Origin" "http://google.com/"})
@@ -41,53 +28,30 @@
             [:headers "Access-Control-Allow-Origin"])))))
 
 (deftest dyanamic-endpoint
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
-    (is (= {:hello "moclojer!"}
-           (-> service-fn
-               (response-for :get "/hello/moclojer")
-               :body
-               (json/parse-string true))))))
+  (is (= {:hello "moclojer!"}
+         (-> (helpers/service-fn (yaml/from-file "test/moclojer/resources/moclojer.yml"))
+             (response-for :get "/hello/moclojer")
+             :body
+             (json/parse-string true)))))
 
 (deftest with-params
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
-    (is (= {:path-params "moclojer" :query-params "moclojer"}
-           (-> service-fn
-               (response-for :get "/with-params/moclojer?param1=moclojer")
-               :body
-               (json/parse-string true))))))
+  (is (= {:path-params "moclojer" :query-params "moclojer"}
+         (-> (helpers/service-fn (yaml/from-file "test/moclojer/resources/moclojer.yml"))
+             (response-for :get "/with-params/moclojer?param1=moclojer")
+             :body
+             (json/parse-string true)))))
 
 (deftest first-post-route
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/moclojer.yml")})}
-                       server/get-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
-    (is (= {:project "moclojer"}
-           (-> service-fn
-               (response-for :post "/first-post-route"
-                             :headers {"Content-Type" "application/json"}
-                             :body (json/encode {:project "moclojer"}))
-               :body
-               (json/parse-string true))))))
+  (is (= {:project "moclojer"}
+         (-> (helpers/service-fn (yaml/from-file "test/moclojer/resources/moclojer.yml"))
+             (response-for :post "/first-post-route"
+                           :headers {"Content-Type" "application/json"}
+                           :body (json/encode {:project "moclojer"}))
+             :body
+             (json/parse-string true)))))
 
 (deftest multi-host
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/multihost.yml")})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
+  (let [service-fn (helpers/service-fn (yaml/from-file "test/moclojer/resources/multihost.yml"))]
 
     (is (= {:domain "moclojer.com"}
            (-> service-fn

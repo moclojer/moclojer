@@ -1,10 +1,9 @@
 (ns moclojer.external-body.core-test
   (:require [clojure.data.json :as jsond]
             [clojure.test :refer [deftest is testing]]
-            [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
             [moclojer.external-body.core :as core]
-            [moclojer.router :as router]
+            [moclojer.helpers-test :as helpers]
             [yaml.core :as yaml]))
 
 (def data-text
@@ -33,29 +32,17 @@
             :key-fn keyword)))))
 
 (deftest text-config-test
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/external-body-json.yml")})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
-    (is (= ret-text
-           (-> service-fn
-               (response-for :get "/external-body-text")
-               :body
-               (jsond/read-str :key-fn keyword))))))
+  (is (= ret-text
+         (-> (helpers/service-fn (yaml/from-file "test/moclojer/resources/external-body-json.yml"))
+             (response-for :get "/external-body-text")
+             :body
+             (jsond/read-str :key-fn keyword)))))
 
 (deftest url-external-config-test
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file "test/moclojer/resources/external-body-url.yml")})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
     ;; loop to simplify implementation - no N assert `(is(=))`
-    (for [name ["kabuto"
-                "marowak"]]
-      (is (= 200
-             (-> service-fn
-                 (response-for :get (str "/pokemon/" name))
-                 :status))))))
+  (for [name ["kabuto"
+              "marowak"]]
+    (is (= 200
+           (-> (helpers/service-fn (yaml/from-file "test/moclojer/resources/external-body-json.yml"))
+               (response-for :get (str "/pokemon/" name))
+               :status)))))

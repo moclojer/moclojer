@@ -2,18 +2,12 @@
   (:require [cheshire.core :as json]
             [clojure.edn :as edn]
             [clojure.test :refer [deftest is testing]]
-            [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
-            [moclojer.router :as router]))
+            [moclojer.helpers-test :as helpers]))
 
 
 (deftest dynamic-endpoint-edn
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (edn/read-string (str "[" (slurp "test/moclojer/resources/moclojer.edn") "]"))})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
+  (let [service-fn (helpers/service-fn (edn/read-string (str "[" (slurp "test/moclojer/resources/moclojer.edn") "]")))]
     (testing "get all pets"
       (is (= {:pets [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
              (-> service-fn

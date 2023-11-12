@@ -1,9 +1,8 @@
 (ns moclojer.specs.openapi-test
   (:require [cheshire.core :as json]
             [clojure.test :refer [deftest is testing]]
-            [io.pedestal.http :as http]
             [io.pedestal.test :refer [response-for]]
-            [moclojer.router :as router]
+            [moclojer.helpers-test :as helpers]
             [moclojer.specs.openapi :as openapi]
             [yaml.core :as yaml]))
 
@@ -15,7 +14,6 @@
   (let [config (yaml/from-file (:config petstore))
         mocks (yaml/from-file (:mocks petstore))
         endpoints (openapi/->moclojer config mocks)]
-
     (testing "Should convert openapi spec to moclojer spec"
       (is (=
            [{:endpoint {:method "get"
@@ -37,15 +35,9 @@
            endpoints)))))
 
 (deftest openapi->moclojer->pedestal
-  (let [service-fn (-> {::http/routes (router/smart-router
-                                       {::router/config (yaml/from-file (:config petstore))
-                                        ::router/mocks (yaml/from-file (:mocks petstore))})}
-                       http/default-interceptors
-                       http/dev-interceptors
-                       http/create-servlet
-                       ::http/service-fn)]
-    (is (= {:id 0, :name "caramelo"}
-           (-> service-fn
-               (response-for :get "/pets/1")
-               :body
-               (json/parse-string true))))))
+  (is (= {:id 0, :name "caramelo"}
+         (-> (helpers/service-fn (yaml/from-file (:config petstore))
+                                 :mocks (yaml/from-file (:mocks petstore)))
+             (response-for :get "/pets/1")
+             :body
+             (json/parse-string true)))))
