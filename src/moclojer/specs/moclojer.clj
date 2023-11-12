@@ -33,11 +33,11 @@
   (fn [request]
     (when webhook-config
       (webhook/request-after-delay
-       (:url webhook-config)
-       (:method webhook-config)
-       (render-template (:body webhook-config) request)
-       :headers (:headers webhook-config)
-       :sleep-time (:sleep-time webhook-config)))
+       {:url (:url webhook-config)
+        :method (:method webhook-config)
+        :body (render-template (:body webhook-config) request)
+        :headers (:headers webhook-config)
+        :sleep-time (:sleep-time webhook-config)}))
     {:body    (build-body response request)
      :status  (:status response)
      :headers (into
