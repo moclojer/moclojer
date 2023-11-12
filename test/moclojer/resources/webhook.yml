@@ -9,7 +9,7 @@
         {"id": 123}
     webhook:
       sleep-time: 60
-      url: http://avelino.run/
+      url: https://moclojer.com/api/webhook
       method: GET
       body: >
         {"id": 123, "another-field": "it's working"}
