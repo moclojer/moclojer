@@ -3,10 +3,6 @@
             [clojure.core.async :as a]
             [moclojer.log :as log]))
 
-(defn blocking-sleep [ms]
-  "blocking sleep using Thread/sleep"
-  (Thread/sleep (long ms)))
-
 (defn request-after-delay
   "after a delay call http-request"
   [url method body & {:keys [headers sleep-time]
@@ -20,6 +16,6 @@
     (a/go
       (a/thread
         (log/log :info :sleep sleep-time :webhook-start req)
-        (blocking-sleep sleep-time)
+        (Thread/sleep (long sleep-time))
         (client/request req)
         (log/log :info :sleep sleep-time :webhook-done req)))))
