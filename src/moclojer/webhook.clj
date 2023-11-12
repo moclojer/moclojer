@@ -4,7 +4,7 @@
             [moclojer.log :as log]))
 
 (defn request-after-delay
-  "after a delay call http-request"
+  "after a delay call http-request, return body"
   [url method body & {:keys [headers sleep-time]
                       :or {headers {}
                            ; in seconds, 1 minute is 60000 seconds
@@ -15,7 +15,9 @@
              :body body}]
     (a/go
       (a/thread
-        (log/log :info :sleep sleep-time :webhook-start req)
-        (Thread/sleep (long sleep-time))
-        (client/request req)
-        (log/log :info :sleep sleep-time :webhook-done req)))))
+        (do
+          (log/log :info :sleep sleep-time :webhook-start req)
+          (Thread/sleep (long sleep-time))
+          (client/request req)
+          (log/log :info :sleep sleep-time :webhook-done req))))
+    body))
