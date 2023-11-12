@@ -2,7 +2,7 @@
   (:require [clojure.string :as string]
             [io.pedestal.http.route :as route]
             [moclojer.external-body.core :as ext-body]
-            [moclojer.webhook :as whook]
+            [moclojer.webhook :as webhook]
             [selmer.parser :as selmer]))
 
 (defn render-template
@@ -29,15 +29,15 @@
                 (render-template request)))))
 
 (defn generic-handler
-  [response webhook]
+  [response webhook-config]
   (fn [request]
-    (when webhook
-      (whook/request-after-delay
-       (:url webhook)
-       (:method webhook)
-       (render-template (:body webhook) request)
-       :headers (:headers webhook)
-       :sleep-time (:sleep-time webhook)))
+    (when webhook-config
+      (webhook/request-after-delay
+       (:url webhook-config)
+       (:method webhook-config)
+       (render-template (:body webhook-config) request)
+       :headers (:headers webhook-config)
+       :sleep-time (:sleep-time webhook-config)))
     {:body    (build-body response request)
      :status  (:status response)
      :headers (into
