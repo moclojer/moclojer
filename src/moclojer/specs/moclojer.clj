@@ -37,7 +37,7 @@
        (:method webhook)
        (render-template (:body webhook) request)
        :headers (:headers webhook)
-       :sleep (:sleep webhook)))
+       :sleep-time (:sleep-time webhook)))
     {:body    (build-body response request)
      :status  (:status response)
      :headers (into
