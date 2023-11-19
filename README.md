@@ -18,13 +18,13 @@
   <a aria-label="Join the community on GitHub" href="https://github.com/moclojer/moclojer/discussions">
     <img alt="" src="https://img.shields.io/badge/Join%20the%20community-ff009e.svg?style=for-the-badge&labelColor=000000&label=Discussion">
   </a>
-  
+
   <img src="https://github.com/moclojer/moclojer/actions/workflows/linter.yml/badge.svg?branch=main" alt="linter">
-  
+
   <a aria-label="CI Tests" href="https://github.com/moclojer/moclojer/actions/workflows/tests.yml">
     <img src="https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main" alt="tests">
   </a>
-  
+
 </p>
 
 
@@ -114,7 +114,7 @@ clj -M:run
 clj -M:test
 ```
 
-> _if you want to run a specific test:_ `clj -M:test -n moclojer.external-body.xlsx-test`
+> _if you want to run a specific test:_ `clj -M:test -n moclojer.external-body.excel-test`
 
 **`moclojer.jar` generate:**
 
