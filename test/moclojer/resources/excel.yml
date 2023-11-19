@@ -1,0 +1,22 @@
+- endpoint:
+    method: GET
+    path: /xlsx
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: excel
+        path: test/moclojer/resources/excel-sample.xlsx
+        sheet-name: test
+- endpoint:
+    method: GET
+    path: /xls
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: excel
+        path: test/moclojer/resources/excel-sample.xls
+        sheet-name: test

@@ -17,7 +17,7 @@ external-body:
 **We support two providers _(file type)_:**
 
 * `json`
-* `xlsx` **(excel)**
+* `excel`
 
 > it is possible to use template rendering to declare the `path` of the file, see more [here](template.md).
 
@@ -53,9 +53,11 @@ You can use the `json` provider to make URL (site) requests and have it returned
         path: https://pokeapi.co/api/v2/pokemon/phanpy
 ```
 
-## `xlsx` Excel type
+## Excel type
 
 This is where the use of moclojer starts to get different, as it is possible to _“transform”_ an **Excel** spreadsheet into an API return (`json`).
+
+Support in `xlsx` and `xls` formats.
 
 ```yaml
 - endpoint:
@@ -66,7 +68,7 @@ This is where the use of moclojer starts to get different, as it is possible to 
       headers:
         Content-Type: application/json
       external-body:
-        provider: xlsx
+        provider: excel
         path: excel-sample.xlsx
         sheet-name: test
 ```
