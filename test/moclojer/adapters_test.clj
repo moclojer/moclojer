@@ -6,8 +6,7 @@
   (testing "inputs->config can read data from all data sources"
     (are [result inputs] (= result inputs)
 
-      {:current-version "dev"
-       :config-path "config.yaml"
+      {:config-path "config.yaml"
        :mocks-path "mocks.yaml"
        :version true
        :help true}
@@ -18,11 +17,9 @@
                                 :opts {:config "opts-config.yaml"
                                        :mocks "opts-mocks.yaml"}}
                                {:config "default-config.yaml"
-                                :mocks "default-mocks.yaml"}
-                               "dev")
+                                :mocks "default-mocks.yaml"})
 
-      {:current-version "dev"
-       :config-path "opts-config.yaml"
+      {:config-path "opts-config.yaml"
        :mocks-path "opts-mocks.yaml"
        :version true
        :help true}
@@ -31,11 +28,9 @@
                                        :mocks "opts-mocks.yaml"
                                        :version true
                                        :help true}}
-                               {}
-                               "dev")
+                               {})
 
-      {:current-version "dev"
-       :config-path "env-config.yaml"
+      {:config-path "env-config.yaml"
        :mocks-path "env-mocks.yaml"
        :version true
        :help true}
@@ -44,16 +39,13 @@
                                 :opts {:config "opts-config.yaml"
                                        :mocks "opts-mocks.yaml"}}
                                {:config "env-config.yaml"
-                                :mocks "env-mocks.yaml"}
-                               "dev")
+                                :mocks "env-mocks.yaml"})
 
-      {:current-version "dev"
-       :config-path "env-config.yaml"
+      {:config-path "env-config.yaml"
        :mocks-path "env-mocks.yaml"
        :version true
        :help true}
       (adapters/inputs->config {:args [{:version true
                                         :help true}]}
                                {:config "env-config.yaml"
-                                :mocks "env-mocks.yaml"}
-                               "dev"))))
+                                :mocks "env-mocks.yaml"}))))
