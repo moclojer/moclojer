@@ -19,11 +19,13 @@
            :run  {:main-opts ["-m" "babashka.cli.exec"]
                   :org.babashka/cli {:exec true}
                   :exec-fn    moclojer.core/-main}
+
            ;; clj -A:dev -m moclojer.core
            :dev      {:extra-paths ["dev"]
                       :extra-deps  {io.github.clojure/tools.build {:git/tag    "v0.9.6"
                                                                    :git/sha    "8e78bcc"
                                                                    :exclusions [org.slf4j/slf4j-nop]}}}
+
            ;; Run all tests
            ;; clj -M:test
            ;; Run specific test
@@ -36,7 +38,17 @@
                                     cljfmt/cljfmt                        {:mvn/version "0.9.2"}}
                        :main-opts ["-m" "cognitect.test-runner"]
                        :exec-fn cognitect.test-runner.api/test}
+
            ;; Lint the source
            ;; clj -M:lint
            :lint      {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2023.10.20"}}
-                       :main-opts    ["-m" "clj-kondo.main" "--lint" "src"]}}}
+                       :main-opts    ["-m" "clj-kondo.main" "--lint" "src"]}
+
+           ;; clj -X:deps mvn-pom
+           ;; env CLOJARS_USERNAME=username CLOJARS_PASSWORD=clojars-token
+           ;; clj -X:deploy-clojars
+           :deploy-clojars {:extra-deps {slipset/deps-deploy {:mvn/version "RELEASE"}}
+                            :exec-fn deps-deploy.deps-deploy/deploy
+                            :exec-args {:installer :remote
+                                        :sign-releases? true
+                                        :artifact "target/moclojer.jar"}}}}
