@@ -67,3 +67,5 @@ jobs:
         cache-from: type=local,src=/tmp/.buildx-cache
         push: true
         tags: ghcr.io/moclojer/moclojer:latest,ghcr.io/moclojer/moclojer:${{ env.RELEASE_NAME }}
+        secrets: |
+          GIT_AUTH_TOKEN=${{ secrets.RELEASE_TOKEN }}
