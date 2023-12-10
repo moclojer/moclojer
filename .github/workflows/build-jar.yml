@@ -1,6 +1,16 @@
 name: Build jar
 
-on: [pull_request, workflow_call]
+on:
+  pull_request:
+  workflow_call:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+  discussions: write
 
 jobs:
   build-jar:
@@ -20,3 +30,15 @@ jobs:
     - run: "clojure -M:dev --report stderr -m com.moclojer.build"
       env:
         CI_COMMIT_SHA: "${{ github.sha }}"
+
+    # for relase (prefix `v*`)
+    - name: set env release name
+      if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
+      run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - uses: softprops/action-gh-release@master
+      if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/tags/v')
+      with:
+        name: ${{ github.ref_name }}
+        discussion_category_name: announcements
+        body_path: ${{ github.workspace }}/docs/releases/${{ env.RELEASE_NAME }}.md
+        files: target/moclojer.jar
