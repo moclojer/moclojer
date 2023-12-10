@@ -19,9 +19,9 @@
            ;; clj -M:run
            :run  {:main-opts ["-m" "babashka.cli.exec"]
                   :org.babashka/cli {:exec true}
-                  :exec-fn    moclojer.core/-main}
+                  :exec-fn    com.moclojer.core/-main}
 
-           ;; clj -A:dev -m moclojer.core
+           ;; clj -A:dev -m com.moclojer.core
            :dev      {:extra-paths ["dev"]
                       :extra-deps  {io.github.clojure/tools.build {:git/tag    "v0.9.6"
                                                                    :git/sha    "8e78bcc"
@@ -30,9 +30,9 @@
            ;; Run all tests
            ;; clj -M:test
            ;; Run specific test
-           ;; clj -M:test -n moclojer.external-body.excel-test
+           ;; clj -M:test -n com.moclojer.external-body.excel-test
            :test      {:extra-paths ["test"]
-                       :resource-paths ["test/moclojer/resources"]
+                       :resource-paths ["test/com/moclojer/resources"]
                        :extra-deps {io.github.cognitect-labs/test-runner {:git/tag "v0.5.1"
                                                                           :git/sha "dfb30dd"}
                                     clj-kondo/clj-kondo                  {:mvn/version "2023.10.20"}

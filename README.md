@@ -114,10 +114,10 @@ clj -M:run
 clj -M:test
 ```
 
-> _if you want to run a specific test:_ `clj -M:test -n moclojer.external-body.excel-test`
+> _if you want to run a specific test:_ `clj -M:test -n com.moclojer.external-body.excel-test`
 
 **`moclojer.jar` generate:**
 
 ```sh
-clj -A:dev -M --report stderr -m moclojer.build
+clj -A:dev -M --report stderr -m com.moclojer.build
 ```
