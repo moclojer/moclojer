@@ -27,7 +27,6 @@
 
 </p>
 
-
 Simple and efficient HTTP mock server with specification written in `yaml`, `edn` or `OpenAPI`.
 
 > 💾 Download the `.jar` file with the latest version of moclojer to test on your computer [here](https://github.com/moclojer/moclojer/releases/latest).
@@ -120,4 +119,37 @@ clj -M:test
 
 ```sh
 clj -A:dev -M --report stderr -m com.moclojer.build
+```
+
+## framework integrations
+
+We are unable to distribute **moclojer** via clojars because it is larger than `20MB`, if you need to use **moclojer** as a framework we recommend installing it via `git` in `deps.edn`:
+
+```edn
+{:deps
+ {com.moclojer/moclojer {:git/url "https://github.com/moclojer/moclojer.git"
+                         :sha "8bdb1b8ddcf76c527fea005dda50534ec08d3ae3"}}}
+```
+
+**example of use:**
+
+```clj
+(ns my-app.core
+  (:require [com.moclojer.adapters :as adapters]
+            [com.moclojer.server :as server]))
+
+(def *router
+  "create a router from a config map"
+  (adapters/generate-routes
+   [{:endpoint
+     {:method "GET"
+      :path "/example"
+      :response {:status 200
+                 :headers {:Content-Type "application/json"}
+                 :body {:id 123}}}}]))
+
+(defn -main
+  "start the server"
+  [& args]
+  (server/start-server! *router))
 ```
