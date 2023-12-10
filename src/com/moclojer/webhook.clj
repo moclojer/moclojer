@@ -7,7 +7,7 @@
   "after a delay call http-request, return body"
   [{:keys [url method body headers sleep-time]
     :or {headers {}
-         ; in seconds, 1 minute is 60000 seconds
+         ; in milliseconds, 1 minute is 60000 milliseconds
          sleep-time 60}}]
   (let [req {:url url
              :method method
