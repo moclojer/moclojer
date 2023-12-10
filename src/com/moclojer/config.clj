@@ -1,21 +1,11 @@
 (ns com.moclojer.config
   (:require [babashka.cli :as cli]
-            [clojure.java.io :as io])
-  (:import (java.util Properties)))
-
-(def *pom-info
-  "pom file info load"
-  (delay
-    (let [p (Properties.)]
-      (some-> "META-INF/maven/moclojer/moclojer/pom.properties"
-              io/resource
-              io/reader
-              (->> (.load p)))
-      p)))
+            [clojure.edn :as edn]))
 
 (def version
   "get version from pom properties"
-  (or (get @*pom-info "version") "dev"))
+  (or (:mvn/version (:aliases (edn/read-string (slurp "./deps.edn"))))
+      "dev"))
 
 ;; https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html
 (def get-home (System/getProperty "user.home"))

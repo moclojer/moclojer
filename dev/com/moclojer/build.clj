@@ -1,8 +1,8 @@
-(ns moclojer.build
+(ns com.moclojer.build
   (:require [clojure.string :as string]
             [clojure.tools.build.api :as b]
-            [moclojer.config :as config]
-            [moclojer.native-image :as native-image]))
+            [com.moclojer.config :as config]
+            [com.moclojer.native-image :as native-image]))
 
 (def class-dir "target/classes")
 (def uber-file "target/moclojer.jar")
@@ -24,7 +24,7 @@
 
     (println "Writing pom")
     (->> (b/write-pom {:class-dir class-dir
-                       :lib       'moclojer/moclojer
+                       :lib       'com.moclojer/moclojer
                        :version   config/version
                        :basis     basis
                        :src-dirs  (:paths basis)})
@@ -40,11 +40,11 @@
     (b/compile-clj {:basis      basis
                     :src-dirs   (:paths basis)
                     :class-dir  class-dir
-                    :ns-compile '[moclojer.core]})
+                    :ns-compile '[com.moclojer.core]})
 
     (println "Building uberjar")
     (b/uber {:class-dir class-dir
-             :main      'moclojer.core
+             :main      'com.moclojer.core
              :uber-file uber-file
              :basis     basis})
 
