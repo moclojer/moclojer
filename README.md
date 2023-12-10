@@ -128,7 +128,7 @@ We are unable to distribute **moclojer** via clojars because it is larger than `
 ```edn
 {:deps
  {com.moclojer/moclojer {:git/url "https://github.com/moclojer/moclojer.git"
-                         :git/tag "v0.2.2"
+                         :git/tag "v0.3.0"
                          :git/sha "8bdb1b8ddcf76c527fea005dda50534ec08d3ae3"}}}
 ```
 
