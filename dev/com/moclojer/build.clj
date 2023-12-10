@@ -1,11 +1,11 @@
 (ns com.moclojer.build
+  (:refer-clojure :exclude [test])
   (:require [clojure.string :as string]
             [clojure.tools.build.api :as b]
             [com.moclojer.config :as config]
             [com.moclojer.native-image :as native-image]))
 
 (def class-dir "target/classes")
-(def uber-file "target/moclojer.jar")
 
 (set! *warn-on-reflection* true)
 
@@ -16,6 +16,17 @@
        ~@body
        (str s#))))
 
+(def uber-options
+  (let [basis (b/create-basis {:project "deps.edn"})]
+    {:class-dir  class-dir
+     :lib        'com.moclojer/moclojer
+     :version    config/version
+     :basis      basis
+     :ns-compile '[com.moclojer.core]
+     :uber-file  "target/moclojer.jar"
+     :src-dirs   (:paths basis)
+     :exclude    ["docs/*" "META-INF/*" "test/*" "target/*"]}))
+
 (defn -main
   [& _]
   (let [basis (b/create-basis {:project "deps.edn"})]
@@ -23,11 +34,7 @@
     (b/delete {:path "target"})
 
     (println "Writing pom")
-    (->> (b/write-pom {:class-dir class-dir
-                       :lib       'com.moclojer/moclojer
-                       :version   config/version
-                       :basis     basis
-                       :src-dirs  (:paths basis)})
+    (->> (b/write-pom uber-options)
          with-err-str
          string/split-lines
          ;; Avoid confusing future me/you: suppress "Skipping coordinate" messages for our jars, we don't care, we are creating an uberjar
@@ -37,16 +44,10 @@
                  :target-dir class-dir})
 
     (println "Compile sources to classes")
-    (b/compile-clj {:basis      basis
-                    :src-dirs   (:paths basis)
-                    :class-dir  class-dir
-                    :ns-compile '[com.moclojer.core]})
+    (b/compile-clj uber-options)
 
     (println "Building uberjar")
-    (b/uber {:class-dir class-dir
-             :main      'com.moclojer.core
-             :uber-file uber-file
-             :basis     basis})
+    (b/uber uber-options)
 
     ;; prepare file for native image
     ;; TODO: commented feature, see why https://github.com/moclojer/moclojer/issues/158
