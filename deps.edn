@@ -14,7 +14,8 @@
            selmer/selmer                 {:mvn/version "1.12.52"}
            com.github.kbosompem/bb-excel {:mvn/version "0.0.9"}
            clj-http/clj-http             {:mvn/version "3.12.3"}}
- :aliases {;; Run project
+ :aliases {:mvn/version "0.2.1"
+           ;; Run project
            ;; clj -M:run
            :run  {:main-opts ["-m" "babashka.cli.exec"]
                   :org.babashka/cli {:exec true}
@@ -44,11 +45,12 @@
            :lint      {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2023.10.20"}}
                        :main-opts    ["-m" "clj-kondo.main" "--lint" "src"]}
 
-           ;; clj -X:deps mvn-pom
+           ;; clj -M:dev --report stderr -m com.moclojer.build
            ;; env CLOJARS_USERNAME=username CLOJARS_PASSWORD=clojars-token
            ;; clj -X:deploy-clojars
            :deploy-clojars {:extra-deps {slipset/deps-deploy {:mvn/version "RELEASE"}}
                             :exec-fn deps-deploy.deps-deploy/deploy
                             :exec-args {:installer :remote
                                         :sign-releases? true
+                                        :pom-file "target/classes/META-INF/maven/com.moclojer/moclojer/pom.xml"
                                         :artifact "target/moclojer.jar"}}}}
