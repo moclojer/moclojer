@@ -34,7 +34,7 @@
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
   (timbre/merge-config!
    {:min-level level
-    :ns-filter {:allow #{"moclojer.*"}}
+    :ns-filter {:allow #{"com.moclojer.*"}}
     :appenders
     {:println (core-appenders/println-appender {:stream stream})}}))
 
