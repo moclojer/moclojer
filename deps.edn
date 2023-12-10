@@ -14,7 +14,7 @@
            selmer/selmer                 {:mvn/version "1.12.52"}
            com.github.kbosompem/bb-excel {:mvn/version "0.0.9"}
            clj-http/clj-http             {:mvn/version "3.12.3"}}
- :aliases {:mvn/version "0.2.1"
+ :aliases {:mvn/version "0.3.0"
            ;; Run project
            ;; clj -M:run
            :run  {:main-opts ["-m" "babashka.cli.exec"]

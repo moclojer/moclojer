@@ -7,9 +7,11 @@
 * [Multi-domain support](multi-domain-support.md)
 * [Run it mocker server](run-it-mocker-server.md)
 * [Webhook support](webhook-support.md)
+* [Using moclojer as a framework](using-moclojer-as-a-framework.md)
 
 ## Releases
 
 * [next](releases/next.md)
+* [v0.3.0](releases/v0.3.0.md)
 * [v0.2](releases/v0.2.md)
 * [v0.1](releases/v0.1.md)
