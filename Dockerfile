@@ -2,7 +2,7 @@ FROM docker.io/clojure:temurin-21-tools-deps-alpine AS jar-build
 RUN apk add git
 WORKDIR /app
 COPY . .
-RUN clojure -M:dev --report stderr -m moclojer.build
+RUN clojure -M:dev --report stderr -m com.moclojer.build
 
 FROM docker.io/clojure:temurin-21-tools-deps-alpine
 LABEL org.opencontainers.image.source https://github.com/moclojer/moclojer
