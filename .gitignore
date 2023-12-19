@@ -22,7 +22,7 @@ pom.xml.asc
 !test/com/moclojer/resources/
 !.devcontainer
 moclojer.yaml
-moclojer.yml
+!moclojer.yml
 moclojer.edn
 moclojer.json
 *.org
