@@ -1,7 +1,7 @@
 {:paths   ["src"]
  :deps    {cheshire/cheshire             {:mvn/version "5.11.0"}
            io.forward/yaml               {:mvn/version "1.0.11"}
-           io.pedestal/pedestal.jetty    {:mvn/version "0.5.10"}
+           io.pedestal/pedestal.jetty    {:mvn/version "0.5.11-beta-1"}
            io.pedestal/pedestal.route    {:mvn/version "0.5.10"}
            io.pedestal/pedestal.service  {:mvn/version "0.5.10"}
            org.babashka/cli              {:mvn/version "0.7.53"}
@@ -39,6 +39,10 @@
                                     cljfmt/cljfmt                        {:mvn/version "0.9.2"}}
                        :main-opts ["-m" "cognitect.test-runner"]
                        :exec-fn cognitect.test-runner.api/test}
+
+           ;; clj -M:nrepl
+           :nrepl {:extra-deps {cider/cider-nrepl {:mvn/version "0.30.0"}}
+                   :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
 
            ;; Lint the source
            ;; clj -M:lint
