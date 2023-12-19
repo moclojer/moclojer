@@ -13,12 +13,19 @@
                  :headers {:Content-Type "application/json"}
                  :body {:id 123}}}}]))
 
+(defn start!
+  ([]
+   (server/start-server! *router))
+  ([config-path]
+   (server/start-server-with-file-watcher! {:config-path config-path})))
+
 (comment
+
   ;starting 
-  (server/start-server! *router)
+  (start!)
 
   ;starting with a file
-  (server/start-server-with-file-watcher! {:config-path "resources/moclojer.yml"}))
+  (start! "resources/moclojer.yml"))
 
 
 
