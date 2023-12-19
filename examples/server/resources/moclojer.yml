@@ -1,0 +1,11 @@
+- endpoint:
+    method: GET
+    path: /hello/:username
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "hello": "{{path-params.username}}!"
+        }
