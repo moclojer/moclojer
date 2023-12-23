@@ -103,9 +103,6 @@ Static endpoint that returns content that is not dynamic.
 
 {% endswagger %}
 
-{% swagger method="get" path="/with-params/:param1" baseUrl="" summary="" %}
-{% swagger-description %}
-
 ### /with-params/:param1
 
 {% swagger method="get" path="/with-params/:param1" baseUrl="" summary="" %}
@@ -130,7 +127,7 @@ It will take a parameter from the url called param1 and the query string called 
 {% endswagger-response %}
 {% endswagger %}
 
-### /with-params/:param1
+### /first-post-route
 
 {% swagger method="post" path="first-post-route" baseUrl="" summary="" %}
 
