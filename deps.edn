@@ -13,7 +13,9 @@
            org.slf4j/slf4j-simple        {:mvn/version "1.7.36"}
            selmer/selmer                 {:mvn/version "1.12.52"}
            com.github.kbosompem/bb-excel {:mvn/version "0.0.9"}
-           clj-http/clj-http             {:mvn/version "3.12.3"}}
+           clj-http/clj-http             {:mvn/version "3.12.3"}
+           metosin/reitit-swagger        {:mvn/version "0.5.18"}
+           metosin/reitit-swagger-ui     {:mvn/version "0.5.18"}}
  :aliases {:mvn/version "0.3.0"
            ;; Run project
            ;; clj -M:run
