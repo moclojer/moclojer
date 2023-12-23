@@ -1,45 +1,94 @@
 (ns com.moclojer.watcher
-  (:require [clojure.core.async :as async]
-            [clojure.java.io :as io])
-  (:import (java.nio.file
-            FileSystems
-            Path
-            StandardWatchEventKinds
-            WatchEvent)
-           (java.util.concurrent TimeUnit)))
+  (:require
+   [clojure.java.io :as io])
+  (:import
+   (java.nio.file FileSystems Paths StandardWatchEventKinds)))
 
-(defn start-watcher
-  "watch spec file change to server reload
-   used async/thread to not have time for server shutdown"
-  [files on-change]
-  (let [ws (.newWatchService (FileSystems/getDefault))
-        kv-paths (keep (fn [x]
-                         (when-let [path (some-> x
-                                                 io/file
-                                                 .toPath
-                                                 .toAbsolutePath)]
-                           [x path]))
-                       files)
-        roots (into #{}
-                    (keep (fn [[_ ^Path v]]
-                            (.getParent v)))
-                    kv-paths)]
-    (doseq [path roots]
-      (.register ^Path path
-                 ws (into-array [StandardWatchEventKinds/ENTRY_MODIFY
-                                 StandardWatchEventKinds/OVERFLOW
-                                 StandardWatchEventKinds/ENTRY_DELETE
-                                 StandardWatchEventKinds/ENTRY_CREATE])))
-    (async/thread
-      (loop []
-        (when-let [watch-key (.poll ws 1 TimeUnit/SECONDS)]
-          (let [changed (keep (fn [^WatchEvent event]
-                                (let [^Path changed-path (.context event)]
-                                  (first (for [[k v] kv-paths
-                                               :when (= v (.toAbsolutePath changed-path))]
-                                           k))))
-                              (.pollEvents watch-key))]
-            (when (seq changed)
-              (on-change (set changed))))
-          (.reset watch-key))
-        (recur)))))
+(def
+  ^{:doc "This is a map of kw->events to register in the path"}
+  kw->events
+  {:create StandardWatchEventKinds/ENTRY_CREATE
+   :delete  StandardWatchEventKinds/ENTRY_DELETE
+   :modify  StandardWatchEventKinds/ENTRY_MODIFY
+   :overflow  StandardWatchEventKinds/OVERFLOW})
+
+(defn register
+  [{:keys [path event-types
+           callback]}
+   watcher
+   keys]
+  (let [;make-array is needed because Paths/get is a variadic method Java compiler handles 
+        ;variadic method automatically, but when using Clojure it's necessary 
+        ;to manually supply an array at the end.
+        dir (Paths/get path (make-array String 0))
+        types (reduce (fn [acc type]
+                        (conj acc (kw->events type)))
+                      []
+                      event-types)
+        modifier  (try
+                    (let [c (Class/forName "com.sun.nio.file.SensitivityWatchEventModifier")
+                          f (.getField c "HIGH")]
+                      (.get f c))
+                    (catch Exception e))
+
+        modifiers (when modifier
+                    (doto (make-array java.nio.file.WatchEvent$Modifier 1)
+                      (aset 0 modifier)))
+
+        key (if modifiers
+              (.register dir watcher (into-array types) modifiers)
+              (.register dir watcher (into-array types)))]
+
+    (assoc keys key [dir callback])))
+
+(defn get-parent [path]
+  (-> path io/file .toPath .getParent str))
+
+(defn add-path [specs]
+  (map (fn [spec]
+         (assoc spec :path (get-parent (:file spec)))) specs))
+
+(defn filter-nil-spec [specs]
+  (filter (fn [spec]
+            (not (nil? (:file spec)))) specs))
+
+(defn kind-to-key [kind]
+  (case kind
+    "ENTRY_CREATE" :create
+    "ENTRY_MODIFY" :modify
+    "ENTRY_DELETE" :delete))
+
+(defn watch
+  [watcher keys]
+  (let [key (.take watcher)
+        [dir callback] (keys key)]
+    (do
+      (doseq [event (.pollEvents key)]
+        (let [kind (kind-to-key (.. event kind name))
+              name (->> event
+                        .context
+                        (.resolve dir)
+                        str)]
+          ; Run callback in another thread
+          (future (do
+                    (callback kind name)
+                    (.reset key)))))
+      (recur watcher keys))))
+
+(defn start-watch [specs]
+  (let [specs (-> (filter-nil-spec specs) add-path)
+        watcher (.. FileSystems getDefault newWatchService)
+        keys (reduce (fn [keys spec]
+                       (register spec watcher keys)) {} specs)]
+    (letfn [(close-watcher []
+              (.close watcher))]
+      (future (watch watcher keys))
+      close-watcher)))
+
+(comment
+  (start-watch [{:file "/Users/matheus.machado/.config/moclojer.yaml"
+                 :event-types [:create :modify :delete]
+                 :callback (fn [event filename] (prn event filename))}])
+
+  ;
+  )
