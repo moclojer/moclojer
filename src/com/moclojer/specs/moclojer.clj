@@ -1,8 +1,10 @@
 (ns com.moclojer.specs.moclojer
   (:require [clojure.string :as string]
-            [io.pedestal.http.route :as route]
             [com.moclojer.external-body.core :as ext-body]
             [com.moclojer.webhook :as webhook]
+            [io.pedestal.http.route :as route]
+            [reitit.swagger :as swagger]
+            [reitit.swagger-ui :as swagger-ui]
             [selmer.parser :as selmer]))
 
 (defn render-template
@@ -38,7 +40,8 @@
         :body (render-template (:body webhook-config) request)
         :headers (:headers webhook-config)
         :sleep-time (:sleep-time webhook-config)}))
-    {:body    (build-body response request)
+    {:swagger {}
+     :body    (build-body response request)
      :status  (:status response)
      :headers (into
                {}
@@ -71,4 +74,16 @@
            (keyword method)
            (generic-handler response webhook-config)
            :route-name (keyword route-name)]})))
+   ;; swagger
+   (cons (route/expand-routes
+          #{["/swagger.json"
+             :get
+             (swagger/create-swagger-handler)
+             :route-name :swagger-json]}))
+   ;; swagger-ui
+   (cons (route/expand-routes
+          #{["/docs/*"
+             :get
+             (swagger-ui/create-swagger-ui-handler)
+             :route-name :swagger-ui]}))
    (mapcat identity)))

@@ -45,6 +45,11 @@
              :version config/version)
     (-> {:env                     :prod
          ::http/routes            (fn [] @*router)
+         ::http/secure-headers    {:content-security-policy-settings
+                                   {:default-src "'self'"
+                                    :style-src "'self' 'unsafe-inline'"
+                                    :script-src "'self' 'unsafe-inline'"
+                                    :img-src "'self' 'unsafe-inline' data: https://validator.swagger.io"}}
          ::http/type              :jetty
          ::http/join?             true
          ;; pedestal default behavior is to return 403 for invalid origins and
@@ -58,8 +63,6 @@
         get-interceptors
         http/create-server
         http-start)))
-
-
 
 (defn start-server-with-file-watcher!
   "start moclojer server with file watcher"
