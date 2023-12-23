@@ -1,6 +1,5 @@
 (ns com.moclojer.server
   (:require
-   [clojure.core.async :as async]
    [com.moclojer.adapters :as adapters]
    [com.moclojer.config :as config]
    [com.moclojer.io-utils :refer [open-file]]
@@ -102,9 +101,11 @@
     (create-wathcer *router {:config-path config-path :mocks-path mocks-path})
     (start-server! *router)))
 
+
 (comment
 
-  (start-server-with-file-watcher! {:config-path "/Users/matheus.machado/.config/moclojer.yaml"})
+  (start-server-with-file-watcher! 
+    {:config-path "/Users/matheus.machado/.config/moclojer.yaml"})
 
   ;
   )

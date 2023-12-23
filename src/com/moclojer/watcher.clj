@@ -1,6 +1,7 @@
 (ns com.moclojer.watcher
   (:require
-   [clojure.java.io :as io])
+   [clojure.java.io :as io]
+   [com.moclojer.log :as log])
   (:import
    (java.nio.file FileSystems Paths StandardWatchEventKinds)))
 
@@ -29,7 +30,8 @@
                     (let [c (Class/forName "com.sun.nio.file.SensitivityWatchEventModifier")
                           f (.getField c "HIGH")]
                       (.get f c))
-                    (catch Exception e))
+                    (catch Exception e
+                      (log/log :error :watcher-sensitivy :error e)))
 
         modifiers (when modifier
                     (doto (make-array java.nio.file.WatchEvent$Modifier 1)
@@ -62,6 +64,7 @@
   [watcher keys]
   (let [key (.take watcher)
         [dir callback] (keys key)]
+    ^{:clj-kondo/ignore [:redundant-do]}
     (do
       (doseq [event (.pollEvents key)]
         (let [kind (kind-to-key (.. event kind name))
@@ -70,6 +73,7 @@
                         (.resolve dir)
                         str)]
           ; Run callback in another thread
+          ^{:clj-kondo/ignore [:redundant-do]}
           (future (do
                     (callback kind name)
                     (.reset key)))))
