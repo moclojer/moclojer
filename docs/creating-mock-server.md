@@ -60,9 +60,9 @@ Create a file named `moclojer.yml` (we will use yaml because it is a more famili
 
 ## Swagger
 
-Describing all endpoints declared in the configuration file, you can see the following:
+Describing all endpoints declared in the configuration file, you can see the following.
 
-### `/hello/:username`
+### /hello/:username
 
 {% swagger method="get" path="/hello/:username" baseUrl="" summary="" %}
 
@@ -83,7 +83,7 @@ Will take a parameter from the url called username and return the username dynam
 {% endswagger-response %}
 {% endswagger %}
 
-### `/hello-world`
+### /hello-world
 
 {% swagger method="get" path="/hello-world" baseUrl="" summary="" %}
 
@@ -106,7 +106,7 @@ Static endpoint that returns content that is not dynamic.
 {% swagger method="get" path="/with-params/:param1" baseUrl="" summary="" %}
 {% swagger-description %}
 
-### `/with-params/:param1`
+### /with-params/:param1
 
 {% swagger method="get" path="/with-params/:param1" baseUrl="" summary="" %}
 
@@ -130,7 +130,7 @@ It will take a parameter from the url called param1 and the query string called 
 {% endswagger-response %}
 {% endswagger %}
 
-### `/with-params/:param1`
+### /with-params/:param1
 
 {% swagger method="post" path="first-post-route" baseUrl="" summary="" %}
 
