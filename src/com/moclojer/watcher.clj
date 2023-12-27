@@ -92,12 +92,3 @@
               (.close watcher))]
       (future (watch watcher watch-keys))
       close-watcher)))
-
-(comment
-  (def stop
-    (start-watch [{:file "/Users/matheus.machado/.config/moclojer.yaml"
-                   :event-types [:create :modify :delete]
-                   :callback (fn [event filename] (prn event filename))}]))
-  ; stop the watcher
-  (stop)
-  )

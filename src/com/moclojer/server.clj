@@ -100,8 +100,3 @@
 
     (create-wathcer *router {:config-path config-path :mocks-path mocks-path})
     (start-server! *router)))
-
-(comment
-
-  (start-server-with-file-watcher!
-   {:config-path "/Users/matheus.machado/.config/moclojer.yaml"}))
