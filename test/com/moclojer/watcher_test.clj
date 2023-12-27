@@ -14,6 +14,7 @@
 
       (is (= (:path (first specs-with-path))
              "/Users/matheus.machado/.config")))
+
     (testing "add path into multiple specs"
       (let [specs [{:file "/Users/matheus.machado/.config/moclojer.yaml"
                     :event-types [:create :modify :delete]
