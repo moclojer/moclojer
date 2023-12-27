@@ -88,7 +88,6 @@
         watcher (.. FileSystems getDefault newWatchService)
         watch-keys (reduce (fn [ks spec]
                              (register spec watcher ks)) {} specs)]
-    (prn watch-keys)
     (letfn [(close-watcher []
               (.close watcher))]
       (future (watch watcher watch-keys))
