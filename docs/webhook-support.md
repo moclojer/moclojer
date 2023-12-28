@@ -30,3 +30,24 @@ In addition, it will make a request to the `https://moclojer.com/api/webhook` en
 * `sleep-time` _(field is optional, default value of `60 seconds`)_: is used to delay the request to the webhook endpoint, if you want to simulate a long processing time before sending the request.
 
 > Moclojer will not wait for the response from the webhook endpoint; it will only send the request and continue to respond to the original request. This process is asynchronous.
+
+**Swagger:**
+
+{% swagger method="get" path="/with-webhook" baseUrl="" summary="" %}
+
+{% swagger-description %}
+When making a request to the `/with-webhook` endpoint, the moclojer will respond with status `200` and body `{"id": 123}`.
+In addition, it will make a request to the `https://moclojer.com/api/webhook` endpoint with method `POST` and body `{"id": 123, "another-field": "it's working"}`.
+{% endswagger-description %}
+
+{% swagger-response status="200: OK" description="" %}
+
+```json
+{
+  "id": 123,
+  "another-field": "it's working"
+}
+```
+
+{% endswagger-response %}
+{% endswagger %}
