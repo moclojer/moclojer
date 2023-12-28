@@ -20,3 +20,22 @@ To add a specific domain for the endpoint just put the tag “host” for which 
           "domain": "sub.moclojer.com"
         }
 ```
+
+**Swagger:**
+
+{% swagger method="get" path="/multihost-sub" baseUrl="sub.moclojer.com" summary="" %}
+
+{% swagger-description %}
+Specific domain for the endpoint (aka baseUrl).
+{% endswagger-description %}
+
+{% swagger-response status="200: OK" description="" %}
+
+```json
+{
+  "domain": "sub.moclojer.com"
+}
+```
+
+{% endswagger-response %}
+{% endswagger %}
