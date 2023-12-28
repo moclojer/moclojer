@@ -16,7 +16,7 @@ external-body:
 
 **We support two providers _(file type)_:**
 
-* `json`
+* `json`, _with file support (on local disk) or remote via http_
 * `xlsx` **(excel)**
 
 > it is possible to use template rendering to declare the `path` of the file, see more [here](template.md).
@@ -33,8 +33,28 @@ external-body:
         Content-Type: application/json
       external-body:
         provider: json
-        path: test/moclojer/resources/text-plan.json
+        path: test/com/moclojer/resources/text-plan.json
 ```
+
+**Swagger:**
+
+{% swagger method="get" path="/external-body-text" baseUrl="" summary="" %}
+
+{% swagger-description %}
+Will return the text from the file `test/com/moclojer/resources/text-plan.json`.
+{% endswagger-description %}
+
+{% swagger-response status="200: OK" description="" %}
+
+```json
+{
+    "a": 123,
+    "b": "abc"
+}
+```
+
+{% endswagger-response %}
+{% endswagger %}
 
 ## http request (API proxy)
 
@@ -52,6 +72,29 @@ You can use the `json` provider to make URL (site) requests and have it returned
         provider: json
         path: https://pokeapi.co/api/v2/pokemon/phanpy
 ```
+
+**Swagger:**
+
+{% swagger method="get" path="/pokemon/phanpy" baseUrl="" summary="" %}
+
+{% swagger-description %}
+Will return the text from the URL `https://pokeapi.co/api/v2/pokemon/phanpy`.
+{% endswagger-description %}
+
+{% swagger-response status="200: OK" description="" %}
+
+```json
+{"abilities":
+  [{"ability":
+    {
+      "name":"pickup",
+      "url":"https://pokeapi.co/api/v2/ability/53/"
+    }
+  ...
+```
+
+{% endswagger-response %}
+{% endswagger %}
 
 ## `xlsx` Excel type
 
@@ -78,9 +121,22 @@ name | langs
 avelino | clojure, go
 chicao | clojure, python
 
-**response _(expected)_:**
+**Swagger:**
+
+{% swagger method="get" path="/xlsx" baseUrl="" summary="" %}
+
+{% swagger-description %}
+Will return the text from the file `test/com/moclojer/resources/excel-sample.xlsx`.
+{% endswagger-description %}
+
+{% swagger-response status="200: OK" description="" %}
 
 ```json
-[{"name": "avelino", "langs": "clojure, go"},
-{"name": "chicao","langs": "clojure, python"}]
+[
+  {"name": "avelino", "langs": "clojure, go"},
+  {"name": "chicao","langs": "clojure, python"}
+]
 ```
+
+{% endswagger-response %}
+{% endswagger %}
