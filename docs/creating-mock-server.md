@@ -129,7 +129,7 @@ It will take a parameter from the url called param1 and the query string called 
 
 ### /first-post-route
 
-{% swagger method="post" path="first-post-route" baseUrl="" summary="" %}
+{% swagger method="post" path="/first-post-route" baseUrl="" summary="" %}
 
 {% swagger-description %}
 It will take a parameter from the body called project, and return the project name dynamically from the response body.
