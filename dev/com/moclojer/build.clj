@@ -20,6 +20,7 @@
   (let [basis (b/create-basis {:project "deps.edn"})]
     {:class-dir  class-dir
      :lib        'com.moclojer/moclojer
+     :main       'com.moclojer.core
      :version    config/version
      :basis      basis
      :ns-compile '[com.moclojer.core]

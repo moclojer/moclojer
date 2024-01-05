@@ -1,10 +1,10 @@
 (ns com.moclojer.core
-  (:gen-class)
   (:require [babashka.cli :as cli]
             [com.moclojer.adapters :as adapters]
             [com.moclojer.config :as config]
             [com.moclojer.log :as log]
-            [com.moclojer.server :as server]))
+            [com.moclojer.server :as server])
+  (:gen-class))
 
 (defn -main
   "software entry point"
