@@ -71,7 +71,7 @@
      http/create-server
      http-start)))
 
-(defn create-wathcer [*router & {:keys [config-path mocks-path]}]
+(defn create-watcher [*router & {:keys [config-path mocks-path]}]
   (start-watch [{:file config-path
                  :event-types [:create :modify :delete]
                  :callback (fn [_event file]
@@ -98,5 +98,5 @@
   (let [*router (adapters/generate-routes (open-file config-path)
                                           :mocks-path mocks-path)]
 
-    (create-wathcer *router {:config-path config-path :mocks-path mocks-path})
+    (create-watcher *router {:config-path config-path :mocks-path mocks-path})
     (start-server! *router)))
