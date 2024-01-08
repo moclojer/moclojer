@@ -1,9 +1,9 @@
 {:paths   ["src"]
  :deps    {cheshire/cheshire             {:mvn/version "5.11.0"}
            io.forward/yaml               {:mvn/version "1.0.11"}
-           io.pedestal/pedestal.jetty    {:mvn/version "0.5.11-beta-1"}
-           io.pedestal/pedestal.route    {:mvn/version "0.5.10"}
-           io.pedestal/pedestal.service  {:mvn/version "0.5.10"}
+           io.pedestal/pedestal.jetty    {:mvn/version "0.6.3"}
+           io.pedestal/pedestal.route    {:mvn/version "0.6.3"}
+           io.pedestal/pedestal.service  {:mvn/version "0.6.3"}
            org.babashka/cli              {:mvn/version "0.7.53"}
            org.clojure/clojure           {:mvn/version "1.11.1"}
            org.clojure/core.async        {:mvn/version "1.5.648"}
