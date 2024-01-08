@@ -1,5 +1,6 @@
 (ns com.moclojer.log
   (:require [clojure.string :as string]
+            [io.pedestal.interceptor.helpers :as interceptor]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :as core-appenders])
   (:import (java.util.logging
@@ -42,3 +43,14 @@
   "log macro for logging with timbre"
   [level & args]
   `(timbre/log! ~level :p ~args ~{:?line (:line (meta &form))}))
+
+(def request
+  "Log the request's method and uri."
+  (interceptor/on-request
+   ::log-request
+   (fn [request]
+     (log :info
+          :method (string/upper-case (name (:request-method request)))
+          :uri (:uri request)
+          :query-string (:query-string request))
+     request)))
