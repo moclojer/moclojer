@@ -9,6 +9,7 @@
 * Running moclojer as framework it has an error when hit the `localhost:8000`  by @matheusfrancisco <https://github.com/moclojer/moclojer/issues/201>
 * Watcher is not restarting the moclojer when I change the spec file by @matheusfrancisco <https://github.com/moclojer/moclojer/issues/208>
 * `BUG`: docker no main manifest attribute, in /app/moclojer.jar by @avelino <https://github.com/moclojer/moclojer/issues/210>
+* Review structural organization the moclojer version data is stored by @avelino <https://github.com/moclojer/moclojer/issues/212>
 
 ## Contributors
 

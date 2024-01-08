@@ -1,11 +1,9 @@
 (ns com.moclojer.config
-  (:require [babashka.cli :as cli]
-            [clojure.edn :as edn]))
+  (:require [babashka.cli :as cli]))
 
 (def version
   "get version from pom properties"
-  (or (:mvn/version (:aliases (edn/read-string (slurp "./deps.edn"))))
-      "dev"))
+  "0.3.0")
 
 ;; https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html
 (def get-home (System/getProperty "user.home"))
