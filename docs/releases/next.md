@@ -10,6 +10,8 @@
 * Watcher is not restarting the moclojer when I change the spec file by @matheusfrancisco <https://github.com/moclojer/moclojer/issues/208>
 * `BUG`: docker no main manifest attribute, in /app/moclojer.jar by @avelino <https://github.com/moclojer/moclojer/issues/210>
 * improve request logs, add more fields by @avelino <https://github.com/moclojer/moclojer/issues/214>
+  * Updated `io.pedestal` library to version 0.6.3 for better stability and performance
+  * Ensured proper handling of not-found HTTP responses
 
 ## Contributors
 
