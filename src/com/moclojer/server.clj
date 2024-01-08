@@ -1,16 +1,14 @@
 (ns com.moclojer.server
-  (:require
-   [com.moclojer.adapters :as adapters]
-   [com.moclojer.config :as config]
-   [com.moclojer.io-utils :refer [open-file]]
-   [com.moclojer.log :as log]
-   [com.moclojer.watcher :refer [start-watch]]
-   [io.pedestal.http :as http]
-   [io.pedestal.http.body-params :as body-params]
-   [io.pedestal.http.jetty])
-  (:import
-   (org.eclipse.jetty.server.handler.gzip GzipHandler)
-   (org.eclipse.jetty.servlet ServletContextHandler)))
+  (:require [com.moclojer.adapters :as adapters]
+            [com.moclojer.config :as config]
+            [com.moclojer.io-utils :refer [open-file]]
+            [com.moclojer.log :as log]
+            [com.moclojer.watcher :refer [start-watch]]
+            [io.pedestal.http :as http]
+            [io.pedestal.http.body-params :as body-params]
+            [io.pedestal.http.jetty])
+  (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
+           (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
   "http container options, active gzip"
@@ -29,11 +27,11 @@
       (update ::http/interceptors into [http/json-body
                                         (body-params/body-params)])))
 
-(defn build-config-map [*router & {:keys [http-host
-                                          http-port
-                                          join?]}]
-
+(defn build-config-map
+  "build pedestal config map"
+  [*router & {:keys [http-host http-port join?]}]
   {:env                     :prod
+   ::http/request-logger    log/request
    ::http/routes            (fn [] @*router)
    ::http/type              :jetty
    ::http/join?              join?
