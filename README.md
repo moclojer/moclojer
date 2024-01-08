@@ -129,7 +129,7 @@ We are unable to distribute **moclojer** via clojars because it is larger than `
 {:deps
  {com.moclojer/moclojer {:git/url "https://github.com/moclojer/moclojer.git"
                          :git/tag "v0.3.0"
-                         :git/sha "4cc5b09e546a0c414c22e0e3698f97d3dd938492"}}}
+                         :git/sha "84df7980a56789d1f0b03b9ee06086e4b33f28f1"}}}
 ```
 
 **example of use:**
