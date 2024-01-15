@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - uses: DeLaGuardo/setup-clojure@12.2
+      - uses: DeLaGuardo/setup-clojure@12.3
         with:
           cli: "1.11.1.1139"
           github-token: ${{ secrets.GITHUB_TOKEN }}
