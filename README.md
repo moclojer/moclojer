@@ -95,6 +95,8 @@ parameter | description
 `-h, --help` | Show help information
 `-v, --version` | Show version information
 
+**sentry:** set environment var `SENTRY_DSN`, automatic send backtrace to <sentry.io>
+
 > **Config** uses `XDG_CONFIG_HOME` to fetch the default moclojer configuration file, if you want to set a different directory you must use the `-c` or environment variable `CONFIG`
 
 ## 💻 dev environment
