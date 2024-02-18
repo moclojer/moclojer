@@ -13,7 +13,7 @@
 * improve request logs, add more fields by @avelino <https://github.com/moclojer/moclojer/issues/214>
   * Updated `io.pedestal` library to version 0.6.3 for better stability and performance
   * Ensured proper handling of not-found HTTP responses 
-* sentry support, if set `SENTRY_DSN` envvar send except to <sentry.io> by @avelino <https://github.com/moclojer/moclojer/issues/195>
+* sentry support, if set `SENTRY_DSN` ([sentry doc](https://docs.sentry.io/platforms/node/guides/azure-functions/configuration/options/#dsn)) envvar send except to <sentry.io> by @avelino <https://github.com/moclojer/moclojer/issues/195>
 
 ## Contributors
 
