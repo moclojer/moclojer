@@ -36,15 +36,11 @@
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
   (let [config {:min-level level
                 :ns-filter {:allow #{"com.moclojer.*"}}
-                :appenders
-                {:println (core-appenders/println-appender {:stream stream})}}
-        sentry-dsn (or (System/getenv "SENTRY_DSN") nil)  
-        sentry-config (if sentry-dsn
-                        (merge (sentry/sentry-appender sentry-dsn) config)
-                        nil)]
-    (if sentry-config
-      (timbre/merge-config! sentry-config)
-      (timbre/merge-config! config))))
+                :appenders {:println (core-appenders/println-appender {:stream stream})}}
+        sentry-dsn (or (System/getenv "SENTRY_DSN") nil)]
+  (timbre/merge-config! config)
+  (when sentry-dsn
+    (timbre/merge-config! {:appenders {:sentry (sentry/sentry-appender sentry-dsn)}}))))
 
 (defmacro log
   "log macro for logging with timbre"
