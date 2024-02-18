@@ -2,7 +2,8 @@
   (:require [clojure.string :as string]
             [io.pedestal.interceptor.helpers :as interceptor]
             [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :as core-appenders])
+            [taoensso.timbre.appenders.core :as core-appenders]
+            [taoensso.timbre.appenders.community.sentry :as sentry])
   (:import (java.util.logging
             Filter
             Formatter
@@ -33,11 +34,17 @@
   "timbre setup for logging"
   [level stream]
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
-  (timbre/merge-config!
-   {:min-level level
-    :ns-filter {:allow #{"com.moclojer.*"}}
-    :appenders
-    {:println (core-appenders/println-appender {:stream stream})}}))
+  (let [config {:min-level level
+                :ns-filter {:allow #{"com.moclojer.*"}}
+                :appenders
+                {:println (core-appenders/println-appender {:stream stream})}}
+        sentry-dsn (or (System/getenv "SENTRY_DSN") nil)  
+        sentry-config (if sentry-dsn
+                        (merge (sentry/sentry-appender sentry-dsn) config)
+                        nil)]
+    (if sentry-config
+      (timbre/merge-config! sentry-config)
+      (timbre/merge-config! config))))
 
 (defmacro log
   "log macro for logging with timbre"

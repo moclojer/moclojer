@@ -9,6 +9,7 @@
            org.clojure/core.async        {:mvn/version "1.5.648"}
            org.clojure/data.json         {:mvn/version "2.4.0"}
            com.taoensso/timbre           {:mvn/version "6.2.1"}
+           raven-clj/raven-clj           {:mvn/version "1.7.0"}
            org.slf4j/slf4j-jdk14         {:mvn/version "2.0.7"}
            org.slf4j/slf4j-simple        {:mvn/version "1.7.36"}
            selmer/selmer                 {:mvn/version "1.12.52"}
