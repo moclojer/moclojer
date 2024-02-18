@@ -12,7 +12,8 @@
 * Review structural organization the moclojer version data is stored by @avelino <https://github.com/moclojer/moclojer/issues/212>
 * improve request logs, add more fields by @avelino <https://github.com/moclojer/moclojer/issues/214>
   * Updated `io.pedestal` library to version 0.6.3 for better stability and performance
-  * Ensured proper handling of not-found HTTP responses
+  * Ensured proper handling of not-found HTTP responses 
+* sentry support, if set `SENTRY_DSN` envvar send except to <sentry.io> by @avelino <https://github.com/moclojer/moclojer/issues/195>
 
 ## Contributors
 
