@@ -16,10 +16,16 @@
 (defn smart-router
   "Identifies configuration type (moclojer or openapi spec)"
   [{:keys [::config ::mocks]}]
-  (let [mode (if mocks :openapi :moclojer)]
+  (let [mode (if mocks :openapi :moclojer)
+        swagger? (mocks :swagger?)]
     (log/log :info :spec-mode :mode mode)
-    (->> (if mocks
-           (openapi/->moclojer config mocks)
-           config)
-         (cons home-endpoint)
-         (spec/->pedestal))))
+    ;; if swagger is anabled, then we need to make routes for reitit
+    ;; first I will keep pedestal because it is a big change
+    ;; then we will remove pedestal and keep reitit 
+    (if swagger?
+      (when-not mocks (spec/->reitit config))
+      (->> (if mocks
+             (openapi/->moclojer config mocks)
+             config)
+           (cons home-endpoint)
+           (spec/->pedestal)))))

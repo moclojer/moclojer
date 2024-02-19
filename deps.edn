@@ -4,6 +4,8 @@
            io.pedestal/pedestal.jetty    {:mvn/version "0.6.3"}
            io.pedestal/pedestal.route    {:mvn/version "0.6.3"}
            io.pedestal/pedestal.service  {:mvn/version "0.6.3"}
+           metosin/reitit-pedestal       {:mvn/version "0.7.0-alpha7"}
+           metosin/reitit                {:mvn/version "0.7.0-alpha7"}
            org.babashka/cli              {:mvn/version "0.7.53"}
            org.clojure/clojure           {:mvn/version "1.11.1"}
            org.clojure/core.async        {:mvn/version "1.5.648"}

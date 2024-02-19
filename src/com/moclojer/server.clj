@@ -46,8 +46,10 @@
 (defn start-server!
   "start moclojer server"
   [*router & {:keys [start?
+                     swagger?
                      join?] :or {start? true
-                                 join? true}}]
+                                 join? true
+                                 swagger? false}}]
   (let [http-host (or (System/getenv "HOST") "0.0.0.0")
         http-port (or (some-> (System/getenv "PORT")
                               Integer/parseInt)
@@ -94,8 +96,11 @@
 (defn start-server-with-file-watcher!
   "start moclojer server with file watcher"
   [{:keys [config-path mocks-path]}]
-  (let [*router (adapters/generate-routes (open-file config-path)
-                                          :mocks-path mocks-path)]
+  (let [enabled? (some-> (or (System/getenv "SWAGGER_ENABLED") false)
+                         boolean)
+        *router (adapters/generate-routes (open-file config-path)
+                                          :mocks-path mocks-path
+                                          :swagger? enabled?)]
 
     (create-watcher *router {:config-path config-path :mocks-path mocks-path})
-    (start-server! *router)))
+    (start-server! *router :swagger? enabled?)))

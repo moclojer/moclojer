@@ -12,6 +12,8 @@
 
 (defn generate-routes
   "generate routes from config and mocks (not required)"
-  [config & {:keys [mocks-path] :or {mocks-path nil}}]
+  [config & {:keys [mocks-path swagger?] :or {mocks-path nil
+                                              swagger? false}}]
   (atom (router/smart-router {::router/config config
+                              ::router/swagger? swagger?
                               ::router/mocks  (open-file mocks-path)})))

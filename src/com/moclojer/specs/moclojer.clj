@@ -72,3 +72,23 @@
            (generic-handler response webhook-config)
            :route-name (keyword route-name)]})))
    (mapcat identity)))
+
+(defn ->reitit
+  "generate the reitit routes"
+
+  [spec]
+  (->>
+   (for [[[host path method] endpoints] (group-by (juxt :host :path :method)
+                                                  (remove nil? (map :endpoint spec)))]
+     (let [method (generate-method method)
+           route-name (generate-route-name host path method)
+           response (:response (first endpoints))
+           webhook-config (:webhook (first endpoints))]
+       [path
+        {(keyword method)
+         {:swagger {:tags [(str method " - " path)]}
+          :handler (fn [req]
+                     {:status 200
+                      :body path})}}]))
+
+   (mapcat identity)))
