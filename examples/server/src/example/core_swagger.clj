@@ -1,6 +1,6 @@
 (ns example.core-swagger
   (:require
-   [com.moclojer.sserver :as s]))
+   [com.moclojer.reitit-server :as s]))
 
 (comment
 

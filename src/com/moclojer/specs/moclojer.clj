@@ -91,4 +91,5 @@
                      {:status 200
                       :body path})}}]))
 
-   (mapcat identity)))
+   (mapcat identity)
+   vec))

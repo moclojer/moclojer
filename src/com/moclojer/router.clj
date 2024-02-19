@@ -23,7 +23,7 @@
     ;; first I will keep pedestal because it is a big change
     ;; then we will remove pedestal and keep reitit 
     (if swagger?
-      (when-not mocks (spec/->reitit config))
+      (spec/->reitit config)
       (->> (if mocks
              (openapi/->moclojer config mocks)
              config)
