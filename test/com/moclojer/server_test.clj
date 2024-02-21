@@ -70,3 +70,10 @@
              :body
              (json/parse-string true)))))
 
+(deftest uri-with-multi-paths-fixed
+  (is (= {:hello-v1 "hello world!"}
+         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
+             (response-for :get "/v1/hello")
+             :body
+             (json/parse-string true)))))
+
