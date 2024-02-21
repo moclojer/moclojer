@@ -55,23 +55,52 @@
           "project": "{{json-params.project}}"
         }
 
-# This mock register route with multi paths GET /v1/hello/:username
+# This mock register route with multi paths GET /v1/hello/test/:username
 - endpoint:
     method: GET
-    path: /v1/hello/:username
+    path: /v1/hello/test/:username
     response:
       status: 200
       headers:
         Content-Type: application/json
       body: >
         {
-          "hello-v1": "{{path-params.username}}!"
+          "hello-v1": "{{path-params.username}}!",
+          "sufix": false
         }
+
+# This mock register route with multi paths GET /v1/hello/test/:username/with-sufix
+- endpoint:
+    method: GET
+    path: /v1/hello/test/:username/with-sufix
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "hello-v1": "{{path-params.username}}!",
+          "sufix": true
+        }
+
 
 # This mock register route with multi paths GET /v1/hello
 - endpoint:
     method: GET
     path: /v1/hello
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "hello-v1": "hello world!"
+        }
+
+# This mock register route with multi paths GET /v1/hello/
+- endpoint:
+    method: GET
+    path: /v1/hello/
     response:
       status: 200
       headers:
