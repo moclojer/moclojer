@@ -54,3 +54,17 @@
         {
           "project": "{{json-params.project}}"
         }
+
+# This mock register route with multi paths GET /v1/hello/:username
+- endpoint:
+    method: GET
+    path: /v1/hello/:username
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "hello-v1": "{{path-params.username}}!"
+        }
+
