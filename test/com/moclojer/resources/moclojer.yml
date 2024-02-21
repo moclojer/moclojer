@@ -109,3 +109,18 @@
         {
           "hello-v1": "hello world!"
         }
+
+# This mock register route: GET /multi-path-param/:username/more/:age
+- endpoint:
+    method: GET
+    path: /multi-path-param/:username/more/:age
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "username": "{{path-params.username}}",
+          "age": {{path-params.age}}
+        }
+
