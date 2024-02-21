@@ -64,16 +64,25 @@
                (json/parse-string true))))))
 
 (deftest uri-with-multi-paths
-  (is (= {:hello-v1 "world!"}
+  (is (= {:hello-v1 "world!"
+          :sufix false}
          (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
-             (response-for :get "/v1/hello/world")
+             (response-for :get "/v1/hello/test/world")
              :body
-             (json/parse-string true)))))
-
-(deftest uri-with-multi-paths-fixed
+             (json/parse-string true))))
+  (is (= {:hello-v1 "world!"
+          :sufix true}
+         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
+             (response-for :get "/v1/hello/test/world/with-sufix")
+             :body
+             (json/parse-string true))))
   (is (= {:hello-v1 "hello world!"}
          (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
              (response-for :get "/v1/hello")
              :body
+             (json/parse-string true))))
+   (is (= {:hello-v1 "hello world!"}
+         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
+             (response-for :get "/v1/hello/")
+             :body
              (json/parse-string true)))))
-
