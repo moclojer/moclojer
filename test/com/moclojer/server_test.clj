@@ -62,3 +62,11 @@
                (response-for :get "sub.moclojer.com/multihost-sub")
                :body
                (json/parse-string true))))))
+
+(deftest uri-with-multi-paths
+  (is (= {:hello-v1 "world!"}
+         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
+             (response-for :get "/v1/hello/world")
+             :body
+             (json/parse-string true)))))
+
