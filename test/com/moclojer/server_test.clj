@@ -86,3 +86,12 @@
              (response-for :get "/v1/hello/")
              :body
              (json/parse-string true)))))
+
+
+(deftest multi-path-param
+  (is (= {:username "moclojer-123"
+          :age 10}
+         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
+             (response-for :get "/multi-path-param/moclojer-123/more/10")
+             :body
+             (json/parse-string true)))))
