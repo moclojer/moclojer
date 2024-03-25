@@ -1,6 +1,10 @@
 (ns com.moclojer.specs.moclojer
   (:require [clojure.string :as string]
             [io.pedestal.http.route :as route]
+            [route-swagger.interceptor :as sw.int]
+            [route-swagger.doc :as doc]
+            [route-swagger.schema :as schema]
+            [io.pedestal.interceptor :as i]
             [com.moclojer.external-body.core :as ext-body]
             [com.moclojer.webhook :as webhook]
             [selmer.parser :as selmer]))
@@ -38,13 +42,19 @@
         :body (render-template (:body webhook-config) request)
         :headers (:headers webhook-config)
         :sleep-time (:sleep-time webhook-config)}))
-    {:body    (build-body response request)
-     :status  (:status response)
-     :headers (into
-               {}
-               (map (fn [[k v]]
-                      [(name k) (str v)]))
-               (:headers response))}))
+    (doc/annotate
+     {:description "testando"
+      :parameters {:query {:name "name"
+                           :in "query"
+                           :required true
+                           :type "string"}}}
+     {:body    (build-body response request)
+      :status  (:status response)
+      :headers (into
+                {}
+                (map (fn [[k v]]
+                       [(name k) (str v)]))
+                (:headers response))})))
 
 (defn generate-route-name
   [host path method]
@@ -65,10 +75,25 @@
            route-name (generate-route-name host path method)
            response (:response (first endpoints))
            webhook-config (:webhook (first endpoints))]
+       (prn :hosttttttttttttttttt host)
        (route/expand-routes
         #{{:host host}
           [path
            (keyword method)
            (generic-handler response webhook-config)
            :route-name (keyword route-name)]})))
+   ;; swagger
+   (mapcat (fn [host]
+             (route/expand-routes
+              #{{:host "127.0.0.1"}
+                ["/swagger.json"
+                 :get (i/interceptor (sw.int/swagger-json))
+                 :route-name (keyword (str host "swagger-json"))]})))
+   ;; swagger-ui
+   (mapcat (fn [host]
+             (route/expand-routes
+              #{{:host "127.0.0.1"}
+                ["/docs/*"
+                 :get (i/interceptor (sw.int/swagger-ui))
+                 :route-name (keyword (str host "swagger-ui"))]})))
    (mapcat identity)))

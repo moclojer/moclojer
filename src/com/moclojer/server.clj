@@ -6,7 +6,13 @@
             [com.moclojer.watcher :refer [start-watch]]
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.jetty])
+            [io.pedestal.http.jetty]
+            [io.pedestal.interceptor :as i]
+            [io.pedestal.interceptor.error :as error]
+            [route-swagger.interceptor :as sw.int]
+            [route-swagger.doc :as sw.doc]
+            [ring.swagger.middleware :refer [stringify-error]]
+            [clojure.set :as set])
   (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
            (org.eclipse.jetty.servlet ServletContextHandler)))
 
@@ -19,6 +25,28 @@
     (.setGzipHandler context gzip-handler))
   context)
 
+
+(def common-body
+  (i/interceptor
+   {:name  ::common-body
+    :enter (fn [context]
+             (update context :request set/rename-keys {:edn-params       :body-params
+                                                       :json-params      :body-params
+                                                       :transit-params   :body-params
+                                                       :multipart-params :form-params}))}))
+
+
+(def error-responses
+  (sw.doc/annotate
+   {:responses {400 {}
+                500 {}}}
+   (error/error-dispatch [ctx ex]
+                         [{:interceptor ::sw.int/coerce-request}]
+                         (assoc ctx :response {:status 400 :body (stringify-error (:error (ex-data ex)))})
+
+                         [{:interceptor ::sw.int/validate-response}]
+                         (assoc ctx :response {:status 500 :body (stringify-error (:error (ex-data ex)))}))))
+
 (defn get-interceptors
   "get pedestal default interceptors"
   [service-map]
@@ -26,7 +54,11 @@
       http/default-interceptors
       (update ::http/interceptors into [http/not-found
                                         http/json-body
-                                        (body-params/body-params)])))
+                                        error-responses
+                                        (body-params/body-params)
+                                        common-body
+                                        (sw.int/coerce-request)
+                                        (sw.int/validate-response)])))
 
 (defn build-config-map
   "build pedestal config map"
@@ -48,7 +80,7 @@
   [*router & {:keys [start?
                      join?] :or {start? true
                                  join? true}}]
-  (let [http-host (or (System/getenv "HOST") "0.0.0.0")
+  (let [http-host (or (System/getenv "HOST") "127.0.0.1")
         http-port (or (some-> (System/getenv "PORT")
                               Integer/parseInt)
                       8000)
