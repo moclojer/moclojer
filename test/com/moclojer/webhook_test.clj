@@ -27,3 +27,15 @@
                  :method :post
                  :body (json/generate-string body)})
                (json/parse-string true))))))
+
+(deftest call-request-after-delay-if
+  (do
+    (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/webhook.yml")
+                        :port 8000)
+    (is (= {}
+           (-> (webhook/request-after-delay
+                {:url "http://127.0.0.1:8000/with-webhook-if/empty-body"
+                 :condition false
+                 :method :post
+                 :body (json/generate-string body)})
+               (json/parse-string true))))))

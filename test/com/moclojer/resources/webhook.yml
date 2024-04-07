@@ -13,3 +13,19 @@
       method: GET
       body: >
         {"id": 123, "another-field": "it's working"}
+- endpoint:
+    method: POST
+    path: /with-webhook-if/:project-name
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {"id": 123}
+    webhook:
+      sleep-time: 60
+      if: path-params.project-name = "moclojer"
+      url: https://moclojer.com/api/webhook
+      method: GET
+      body: >
+        {"project-name": "{{path-params.project-name}}""}

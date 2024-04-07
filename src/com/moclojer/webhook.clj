@@ -13,7 +13,8 @@
   (let [req {:url url
              :method method
              :headers headers
-             :body body}]
+             :body body}
+        body-out (if condition body "{}")]
     (log/log :info :sleep sleep-time :webhook-start req)
     (if condition
       (a/go
@@ -23,4 +24,4 @@
             (client/request req)
             (log/log :info :sleep sleep-time :webhook-done req))))
       (log/log :info :sleep sleep-time :webhook-done req :condition condition))
-    body))
+    body-out))
