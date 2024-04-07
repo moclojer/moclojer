@@ -28,4 +28,4 @@
       url: https://moclojer.com/api/webhook
       method: GET
       body: >
-        {"project-name": "{{path-params.project-name}}""}
+        {"project-name": "{{path-params.project-name}}"}
