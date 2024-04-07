@@ -14,12 +14,13 @@
              :method method
              :headers headers
              :body body}]
+    (log/log :info :sleep sleep-time :webhook-start req)
     (if condition
       (a/go
         (a/thread
           (do
-            (log/log :info :sleep sleep-time :webhook-start req)
             (Thread/sleep (long sleep-time))
             (client/request req)
-            (log/log :info :sleep sleep-time :webhook-done req)))))
+            (log/log :info :sleep sleep-time :webhook-done req))))
+      (log/log :info :sleep sleep-time :webhook-done req :condition condition))
     body))
