@@ -32,9 +32,7 @@
   "check `if` condition and return boolean value, default is true"
   [condition request]
   (let [template (str "{% if " condition " %}true{% else %}false{% endif %}")]
-    (if condition
-      (boolean (Boolean/valueOf (selmer/render (ext-body/->str template) request)))
-      true)))
+    (boolean (Boolean/valueOf (selmer/render (ext-body/->str template) request)))))
 
 (defn generic-handler
   [response webhook-config]
