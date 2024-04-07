@@ -28,12 +28,21 @@
       :else (-> (:body response)
                 (render-template request)))))
 
+(defn webhook-condition
+  "check `if` condition and return boolean value, default is true"
+  [condition request]
+  (let [template (str "{% if " condition " %}true{% else %}false{% endif %}")]
+    (if condition
+      (boolean (Boolean/valueOf (selmer/render (ext-body/->str template) request)))
+      true)))
+
 (defn generic-handler
   [response webhook-config]
   (fn [request]
     (when webhook-config
       (webhook/request-after-delay
        {:url (:url webhook-config)
+        :condition (webhook-condition (:if webhook-config) request)
         :method (:method webhook-config)
         :body (render-template (:body webhook-config) request)
         :headers (:headers webhook-config)
