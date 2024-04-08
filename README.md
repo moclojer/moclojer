@@ -24,7 +24,10 @@
   <a aria-label="CI Tests" href="https://github.com/moclojer/moclojer/actions/workflows/tests.yml">
     <img src="https://github.com/moclojer/moclojer/actions/workflows/tests.yml/badge.svg?branch=main" alt="tests">
   </a>
+</p>
 
+<p align="center">
+  <a href="https://www.producthunt.com/posts/moclojer?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-moclojer" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=449961&theme=neutral" alt="moclojer - &#0032;Simple&#0032;and&#0032;efficient&#0032;HTTP&#0032;mock&#0032;server&#0032;with&#0032;easy&#0032;spec | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </p>
 
 Simple and efficient HTTP mock server with specification written in `yaml`, `edn` or `OpenAPI`.
