@@ -20,19 +20,19 @@ The specification is the main feature of moclojer, and it is the one that allows
 
 We distribute the library via [Clojars](https://clojars.org/com.moclojer/moclojer).
 
-**Clojure CLI/deps.edn**
+### Clojure CLI/deps.edn
 
 ```clojure
 com.moclojer/moclojer {:mvn/version "0.3.0"}
 ```
 
-**Leiningen/Boot**
+### Leiningen/Boot
 
 ```clojure
 [com.moclojer/moclojer "0.3.0"]
 ```
 
-**[`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`**
+### [`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`
 
 ```edn
 {:deps
