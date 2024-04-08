@@ -125,7 +125,21 @@ clj -A:dev -M --report stderr -m com.moclojer.build
 
 ## framework integrations
 
-We are unable to distribute **moclojer** via clojars because it is larger than `20MB`, if you need to use **moclojer** as a framework we recommend installing it via [`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`:
+We distribute the library via [Clojars](https://clojars.org/com.moclojer/moclojer).
+
+**Clojure CLI/deps.edn**
+
+```clojure
+com.moclojer/moclojer {:mvn/version "0.3.0"}
+```
+
+**Leiningen/Boot**
+
+```clojure
+[com.moclojer/moclojer "0.3.0"]
+```
+
+**[`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`**
 
 ```edn
 {:deps

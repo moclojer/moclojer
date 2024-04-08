@@ -17,6 +17,19 @@
        ~@body
        (str s#))))
 
+(def pom-template
+  [[:description "Simple and efficient HTTP mock server with specification written in `yaml`, `edn` or `OpenAPI`."]
+   [:url "https://moclojer.com"]
+   [:licenses
+    [:license
+     [:name "MIT License"]
+     [:url "https://opensource.org/licenses/MIT"]]]
+   [:scm
+    [:url "https://github.com/moclojer/moclojer"]
+    [:connection "scm:git:https://github.com/moclojer/moclojer.git"]
+    [:developerConnection "scm:git:ssh:git@github.com:moclojer/moclojer.git"]
+    [:tag (str "v" config/version)]]])
+
 (def options
   (let [basis (b/create-basis {:project "deps.edn"})]
     {:class-dir  class-dir
@@ -27,7 +40,9 @@
      :ns-compile '[com.moclojer.core]
      :uber-file  jar-file
      :jar-file   jar-file
+     :target     "target"
      :src-dirs   (:paths basis)
+     :pom-data   pom-template
      :exclude    ["docs/*" "META-INF/*" "test/*" "target/*"]}))
 
 (defn -main
