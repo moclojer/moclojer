@@ -127,19 +127,19 @@ clj -A:dev -M --report stderr -m com.moclojer.build
 
 We distribute the library via [Clojars](https://clojars.org/com.moclojer/moclojer).
 
-**Clojure CLI/deps.edn**
+### Clojure CLI/deps.edn
 
 ```clojure
 com.moclojer/moclojer {:mvn/version "0.3.0"}
 ```
 
-**Leiningen/Boot**
+### Leiningen/Boot
 
 ```clojure
 [com.moclojer/moclojer "0.3.0"]
 ```
 
-**[`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`**
+### [`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`
 
 ```edn
 {:deps
@@ -148,7 +148,7 @@ com.moclojer/moclojer {:mvn/version "0.3.0"}
                          :git/sha "84df7980a56789d1f0b03b9ee06086e4b33f28f1"}}}
 ```
 
-**example of use:**
+### example of use
 
 ```clj
 (ns my-app.core
