@@ -15,6 +15,7 @@
   * Ensured proper handling of not-found HTTP responses, improving user experience by providing clearer error messages and guidance on next steps
 * sentry support, if set `SENTRY_DSN` ([sentry doc](https://docs.sentry.io/platforms/node/guides/azure-functions/configuration/options/#dsn)) envvar send except to <sentry.io> by @avelino <https://github.com/moclojer/moclojer/issues/195>
 * webhook condition support `:if` by @avelino <https://github.com/moclojer/moclojer/issues/235>
+* clojars distribute by @avelino <https://github.com/moclojer/moclojer/issues/234>
 
 ## Contributors
 
