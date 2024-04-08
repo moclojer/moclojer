@@ -3,7 +3,7 @@
 
 (def version
   "get version from pom properties"
-  "0.3.0")
+  "0.3.1")
 
 ;; https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html
 (def get-home (System/getProperty "user.home"))
