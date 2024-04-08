@@ -18,13 +18,27 @@ The specification is the main feature of moclojer, and it is the one that allows
 
 ## Distribution
 
-We are unable to distribute **moclojer** via clojars because it is larger than `20MB`, if you need to use **moclojer** as a framework we recommend installing it via [`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`:
+We distribute the library via [Clojars](https://clojars.org/com.moclojer/moclojer).
+
+**Clojure CLI/deps.edn**
+
+```clojure
+com.moclojer/moclojer {:mvn/version "0.3.0"}
+```
+
+**Leiningen/Boot**
+
+```clojure
+[com.moclojer/moclojer "0.3.0"]
+```
+
+**[`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`**
 
 ```edn
 {:deps
  {com.moclojer/moclojer {:git/url "https://github.com/moclojer/moclojer.git"
                          :git/tag "v0.3.0"
-                         :git/sha "8bdb1b8ddcf76c527fea005dda50534ec08d3ae3"}}}
+                         :git/sha "84df7980a56789d1f0b03b9ee06086e4b33f28f1"}}}
 ```
 
 ## Example
