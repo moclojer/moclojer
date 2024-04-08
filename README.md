@@ -130,13 +130,13 @@ We distribute the library via [Clojars](https://clojars.org/com.moclojer/mocloje
 ### Clojure CLI/deps.edn
 
 ```clojure
-com.moclojer/moclojer {:mvn/version "0.3.0"}
+com.moclojer/moclojer {:mvn/version "0.3.1"}
 ```
 
 ### Leiningen/Boot
 
 ```clojure
-[com.moclojer/moclojer "0.3.0"]
+[com.moclojer/moclojer "0.3.1"]
 ```
 
 ### [`git`](https://clojure.org/guides/deps_and_cli#_using_git_libraries) in `deps.edn`
@@ -144,8 +144,8 @@ com.moclojer/moclojer {:mvn/version "0.3.0"}
 ```edn
 {:deps
  {com.moclojer/moclojer {:git/url "https://github.com/moclojer/moclojer.git"
-                         :git/tag "v0.3.0"
-                         :git/sha "84df7980a56789d1f0b03b9ee06086e4b33f28f1"}}}
+                         :git/tag "v0.3.1"
+                         :git/sha "c4ca0f2cfcfbe47de6eb0c601b26106190e20793"}}}
 ```
 
 ### example of use
