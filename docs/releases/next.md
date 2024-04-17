@@ -5,7 +5,7 @@
 
 ## What’s Changed
 
-* Enhanced logging capabilities now include the host of the request, contributed by @avelino. See issue #241 <https://github.com/moclojer/moclojer/issues/241> for more details.
+* Enhanced logging capabilities now include the host of the request, contributed by @avelino <https://github.com/moclojer/moclojer/issues/241>
 
 ## Contributors
 
