@@ -5,4 +5,8 @@
 
 ## What’s Changed
 
+* Enhanced logging capabilities to include the host of the request along by @avelino <https://github.com/moclojer/moclojer/issues/241>
+
 ## Contributors
+
+* @avelino
