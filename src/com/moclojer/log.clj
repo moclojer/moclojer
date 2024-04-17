@@ -52,8 +52,10 @@
   (interceptor/on-request
    ::log-request
    (fn [request]
+     (println :request-on request)
      (log :info
           :method (string/upper-case (name (:request-method request)))
+          :host (:server-name request)
           :uri (:uri request)
           :query-string (:query-string request))
      request)))
