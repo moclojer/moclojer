@@ -16,7 +16,7 @@
               :mocks (System/getenv "MOCKS")}
         config (adapters/inputs->config args-opts envs)]
 
-    (log/setup :info :auto (:format config))
+    (log/setup (:format config) :info :auto)
 
     (when (:version config)
       (log/log :error :version-not-found "moclojer" config/version)
