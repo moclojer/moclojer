@@ -5,7 +5,7 @@
 
 ## What’s Changed
 
-* Added json format logging support, contributed by @j0suetm <https://github.com/moclojer/moclojer/issues/244>
+* Added JSON format logging support, contributed by @j0suetm <https://github.com/moclojer/moclojer/issues/244>
 
 ## Contributors
 
