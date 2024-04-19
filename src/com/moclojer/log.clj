@@ -3,7 +3,8 @@
             [io.pedestal.interceptor.helpers :as interceptor]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :as core-appenders]
-            [taoensso.timbre.appenders.community.sentry :as sentry])
+            [taoensso.timbre.appenders.community.sentry :as sentry]
+            [timbre-json-appender.core :as tas])
   (:import (java.util.logging
             Filter
             Formatter
@@ -30,17 +31,27 @@
          (not (string/starts-with? (.getLoggerName record)
                                    "org.eclipse.jetty")))))))
 
+(def supported-appenders-fns
+  {:println core-appenders/println-appender
+   :json tas/json-appender})
+
+(defn format->appender
+  [fmt & args]
+  (let [fmt-key (or (keyword fmt) :println)
+        appender-fn (get supported-appenders-fns fmt-key)]
+    {fmt-key (apply appender-fn args)}))
+
 (defn setup
   "timbre setup for logging"
-  [level stream]
+  [level stream fmt]
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
   (let [config {:min-level level
                 :ns-filter {:allow #{"com.moclojer.*"}}
-                :appenders {:println (core-appenders/println-appender {:stream stream})}}
+                :appenders (format->appender fmt)}
         sentry-dsn (or (System/getenv "SENTRY_DSN") nil)]
-  (timbre/merge-config! config)
-  (when sentry-dsn
-    (timbre/merge-config! {:appenders {:sentry (sentry/sentry-appender sentry-dsn)}}))))
+    (timbre/merge-config! config)
+    (when sentry-dsn
+      (timbre/merge-config! {:appenders {:sentry (sentry/sentry-appender sentry-dsn)}}))))
 
 (defmacro log
   "log macro for logging with timbre"

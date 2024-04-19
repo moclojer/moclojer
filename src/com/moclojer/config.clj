@@ -28,6 +28,10 @@
             :alias   :m}
    :version {:desc   "Show version."
              :alias  :v}
+   :format {:ref     "<format>"
+            :desc    "Output format."
+            :alias   :f
+            :default "println"}
    :help    {:desc   "Show this Help."
              :alias  :h}})
 

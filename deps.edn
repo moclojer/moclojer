@@ -14,7 +14,8 @@
            org.slf4j/slf4j-simple        {:mvn/version "1.7.36"}
            selmer/selmer                 {:mvn/version "1.12.52"}
            com.github.kbosompem/bb-excel {:mvn/version "0.0.9"}
-           clj-http/clj-http             {:mvn/version "3.12.3"}}
+           clj-http/clj-http             {:mvn/version "3.12.3"}
+           viesti/timbre-json-appender {:mvn/version "0.2.13"}}
  :aliases {;; Run project
            ;; clj -M:run
            :run  {:main-opts ["-m" "babashka.cli.exec"]

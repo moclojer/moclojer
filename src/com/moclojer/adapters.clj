@@ -8,7 +8,8 @@
     {:config-path (or c config (:config envs) (:config opts))
      :mocks-path (or m mocks (:mocks envs) (:mocks opts))
      :version (or v version (:version opts))
-     :help (or h help (:help opts))}))
+     :help (or h help (:help opts))
+     :format (:format opts)}))
 
 (defn generate-routes
   "generate routes from config and mocks (not required)"

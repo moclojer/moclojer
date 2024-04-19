@@ -10,12 +10,13 @@
   "software entry point"
   {:org.babashka/cli {:collect {:args []}}}
   [& args]
-  (log/setup :info :auto)
   (let [args-opts (cli/parse-args args {:spec config/spec})
         envs {:config (or (System/getenv "CONFIG")
                           (config/with-xdg "moclojer.yml"))
               :mocks (System/getenv "MOCKS")}
         config (adapters/inputs->config args-opts envs)]
+
+    (log/setup :info :auto (:format config))
 
     (when (:version config)
       (log/log :error :version-not-found "moclojer" config/version)
