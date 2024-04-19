@@ -95,6 +95,7 @@ parameter | description
 --- | ---
 `-c, --config` | Config path or the CONFIG environment variable. \[**default:** `~/.config/moclojer.yml`\]
 `-m, --mocks` | OpenAPI v3 mocks path or the MOCKS environment variable.
+`-f, --format` | Output and logging format. Either `println` or `json`.
 `-h, --help` | Show help information
 `-v, --version` | Show version information
 
