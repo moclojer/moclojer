@@ -35,9 +35,9 @@
   {:println core-appenders/println-appender
    :json tas/json-appender})
 
-(defn format->appender
+(defn log-format->appender
   [fmt args]
-  (let [fmt-key (or (keyword fmt) :println)
+  (let [fmt-key (or fmt :println)
         appender-fn (get supported-appenders-fns fmt-key)]
     {fmt-key (apply appender-fn args)}))
 
@@ -47,7 +47,7 @@
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
   (let [config {:min-level level
                 :ns-filter {:allow #{"com.moclojer.*"}}
-                :appenders (format->appender fmt args)}
+                :appenders (log-format->appender fmt args)}
         sentry-dsn (or (System/getenv "SENTRY_DSN") nil)]
     (timbre/merge-config! config)
     (when sentry-dsn
