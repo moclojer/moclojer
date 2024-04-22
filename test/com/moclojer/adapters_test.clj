@@ -10,14 +10,14 @@
        :mocks-path "mocks.yaml"
        :version true
        :help true
-       :format "println"}
+       :log-format :println}
       (adapters/inputs->config {:args [{:config "config.yaml"
                                         :mocks "mocks.yaml"
                                         :version true
                                         :help true}]
                                 :opts {:config "opts-config.yaml"
                                        :mocks "opts-mocks.yaml"
-                                       :format "println"}}
+                                       :log-format "println"}}
                                {:config "default-config.yaml"
                                 :mocks "default-mocks.yaml"})
 
@@ -25,23 +25,23 @@
        :mocks-path "opts-mocks.yaml"
        :version true
        :help true
-       :format "json"}
+       :log-format :json}
       (adapters/inputs->config {:args []
                                 :opts {:config "opts-config.yaml"
                                        :mocks "opts-mocks.yaml"
                                        :version true
                                        :help true
-                                       :format "json"}}
+                                       :log-format "json"}}
                                {})
 
       {:config-path "env-config.yaml"
        :mocks-path "env-mocks.yaml"
        :version true
        :help true
-       :format "println"}
+       :log-format :println}
       (adapters/inputs->config {:args [{:version true
                                         :help true
-                                        :format "println"}]
+                                        :log-format "println"}]
                                 :opts {:config "opts-config.yaml"
                                        :mocks "opts-mocks.yaml"}}
                                {:config "env-config.yaml"
@@ -51,9 +51,9 @@
        :mocks-path "env-mocks.yaml"
        :version true
        :help true
-       :format "println"}
+       :log-format :println}
       (adapters/inputs->config {:args [{:version true
                                         :help true
-                                        :format "println"}]}
+                                        :log-format "println"}]}
                                {:config "env-config.yaml"
                                 :mocks "env-mocks.yaml"}))))
