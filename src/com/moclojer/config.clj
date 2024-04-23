@@ -31,7 +31,7 @@
    :log-format {:ref     "<log-format>"
                 :desc    "Log output format."
                 :alias   :l
-                :default "println"}
+                :default "default"}
    :help    {:desc   "Show this Help."
              :alias  :h}})
 
