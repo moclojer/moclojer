@@ -31,23 +31,24 @@
          (not (string/starts-with? (.getLoggerName record)
                                    "org.eclipse.jetty")))))))
 
-(def supported-appenders-fns
-  {:println core-appenders/println-appender
-   :json tas/json-appender})
+(def supported-log-fmts-cfg
+  {:default
+   {:appenders
+    {:println (core-appenders/println-appender :auto)}}
+   :json (tas/install)})
 
-(defn log-format->appender
-  [fmt args]
-  (let [fmt-key (or fmt :println)
-        appender-fn (get supported-appenders-fns fmt-key)]
-    {fmt-key (apply appender-fn args)}))
+(defn log-format->mergeable-cfg
+  [fmt]
+  (get supported-log-fmts-cfg (or fmt :println)))
 
 (defn setup
   "timbre setup for logging"
-  [level fmt & args]
+  [level fmt]
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
-  (let [config {:min-level level
-                :ns-filter {:allow #{"com.moclojer.*"}}
-                :appenders (log-format->appender fmt args)}
+  (let [config (merge
+                 {:min-level level
+                  :ns-filter {:allow #{"com.moclojer.*"}}}
+                 (log-format->mergeable-cfg fmt))
         sentry-dsn (or (System/getenv "SENTRY_DSN") nil)]
     (timbre/merge-config! config)
     (when sentry-dsn
