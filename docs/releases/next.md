@@ -16,4 +16,3 @@
 * @eggyhead (contributed to dependency updates)
 * @robherley (added deprecation notice)
 * @andrewakim (fixed migration README)
-
