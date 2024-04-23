@@ -41,9 +41,18 @@
   [fmt]
   (get supported-log-fmts-cfg (or fmt :println)))
 
+(defn clean-timbre-appenders []
+  (->> (reduce-kv
+        (fn [acc k _]
+          (assoc acc k nil))
+        {} (:appenders timbre/*config*))
+       (assoc nil :appenders)
+       timbre/merge-config!))
+
 (defn setup
   "timbre setup for logging"
   [level fmt]
+  (clean-timbre-appenders)
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
   (let [config (merge
                  {:min-level level
