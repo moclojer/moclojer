@@ -64,6 +64,7 @@ To access this field in the template, simply use the following syntax: `{{query-
 Parameter passed via **JSON**, generally used in the http verbs `POST`, `PUT` and `DELETE`.
 To access this field in the template, simply use the following syntax: `{{json-params.field-name}}`.
 
+
 **Sample:**
 
 ```yaml
@@ -86,4 +87,33 @@ To access this field in the template, simply use the following syntax: `{{json-p
 curl -X POST http://.../
    -H 'Content-Type: application/json'
    -d '{"field-name":"dynamic field name"}'
+```
+
+## HTTP header request `headers`
+
+All parameters received in the request **header** are passed as template variables, making it possible to use the header data to create logic *(verification)* and/or put it in the return *(in the body)*.
+To access this field in the template, simply use the following syntax: `{{headers.field-name}}`.
+
+**Sample:**
+
+```yaml
+- endpoint:
+    method: POST
+    path: /
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "header-params": "{{headers.field-name}}"
+        }
+```
+
+**Sending data:**
+
+```sh
+curl -X POST http://.../
+   -H 'Content-Type: application/json'
+   -H 'Field-Name: dynamic field via header'
 ```
