@@ -1,6 +1,7 @@
 (ns com.moclojer.server-test
   (:require [cheshire.core :as json]
             [clojure.test :refer [deftest is]]
+            [clojure.string :as string]
             [com.moclojer.helpers-test :as helpers]
             [io.pedestal.test :refer [response-for]]
             [yaml.core :as yaml]))
@@ -101,7 +102,7 @@
          (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/mock-syntax-error.yml"))
              (response-for :get "/helloo/moclojer")
              :status)))
-  (is (clojure.string/includes?
+  (is (string/includes?
         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/mock-syntax-error.yml"))
             (response-for :get "/helloo/moclojer")
             :body)
