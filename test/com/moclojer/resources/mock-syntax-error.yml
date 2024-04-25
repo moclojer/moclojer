@@ -1,0 +1,15 @@
+- endpoint:
+    # Note: the method could be omitted because GET is the default
+    method: GET
+    path: /helloo/:username
+    response:
+      # Note: the status could be omitted because 200 is the default
+      status: 200
+      headers:
+        Content-Type: application/json
+      # Note: the body will receive the value passed in the url using the
+      # :username placeholder
+      body: |
+        {{}
+          "hello": "{{path-params.username}}!"
+        }

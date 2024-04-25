@@ -95,3 +95,14 @@
              (response-for :get "/multi-path-param/moclojer-123/more/10")
              :body
              (json/parse-string true)))))
+
+(deftest mock-syntax-error
+  (is (= 500
+         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/mock-syntax-error.yml"))
+             (response-for :get "/helloo/moclojer")
+             :status)))
+  (is (clojure.string/includes?
+        (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/mock-syntax-error.yml"))
+            (response-for :get "/helloo/moclojer")
+            :body)
+        "error")))
