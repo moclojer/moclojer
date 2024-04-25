@@ -43,7 +43,7 @@
 (defn build-config-map
   "build pedestal config map"
   [*router & {:keys [http-host http-port join?]}]
-  {:env                     (config/get-moclojer-run)
+  {:env                     config/get-moclojer-run
    ::http/request-logger    log/request
    ::http/routes            (fn [] @*router)
    ::http/type              :jetty
