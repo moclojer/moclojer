@@ -1,5 +1,6 @@
 (ns com.moclojer.server
-  (:require [com.moclojer.adapters :as adapters]
+  (:require [clojure.data.json :as json]
+            [com.moclojer.adapters :as adapters]
             [com.moclojer.config :as config]
             [com.moclojer.io-utils :refer [open-file]]
             [com.moclojer.log :as log]
@@ -7,8 +8,7 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.jetty]
-            [io.pedestal.interceptor.error :refer [error-dispatch]]
-            [clojure.data.json :as json])
+            [io.pedestal.interceptor.error :refer [error-dispatch]])
   (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
            (org.eclipse.jetty.servlet ServletContextHandler)))
 
@@ -25,10 +25,10 @@
 (def interceptor-error-handler
   "capture and format in json exception Internal Server Error"
   (error-dispatch [context error]
-    :else
-    (assoc context :response {:status 500
-                              :headers {"Content-type" "application/json"}
-                              :body (->> error .toString (hash-map :error) json/write-str)})))
+                  :else
+                  (assoc context :response {:status 500
+                                            :headers {"Content-type" "application/json"}
+                                            :body (->> error .toString (hash-map :error) json/write-str)})))
 
 (defn get-interceptors
   "get pedestal default interceptors"
@@ -43,7 +43,7 @@
 (defn build-config-map
   "build pedestal config map"
   [*router & {:keys [http-host http-port join?]}]
-  {:env                     :prod
+  {:env                     (config/get-moclojer-run)
    ::http/request-logger    log/request
    ::http/routes            (fn [] @*router)
    ::http/type              :jetty

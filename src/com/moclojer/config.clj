@@ -17,6 +17,11 @@
   "Will prefix with the XDG home."
   [s] (str get-xdg-config-home "/" s))
 
+(def get-moclojer-run
+  "defines the moclojer environment (:prod or :dev) that moclojer will run under."
+  (or (keyword (System/getenv "MOCLOJER_ENV"))
+      :prod))
+
 (def spec
   "Configuration Parameters"
   {:config {:ref     "<file>"
