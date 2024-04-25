@@ -6,7 +6,9 @@
             [com.moclojer.watcher :refer [start-watch]]
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.jetty])
+            [io.pedestal.http.jetty]
+            [io.pedestal.interceptor.error :refer [error-dispatch]]
+            [clojure.data.json :as json])
   (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
            (org.eclipse.jetty.servlet ServletContextHandler)))
 
@@ -19,6 +21,14 @@
     (.setGzipHandler context gzip-handler))
   context)
 
+(def error-handler
+  "capture and format in json exception Internal Server Error"
+  (error-dispatch [context error]
+    :else
+    (assoc context :response {:status 500
+                              :headers {"Content-type" "application/json"}
+                              :body (->> error .toString (hash-map :error) json/write-str)})))
+
 (defn get-interceptors
   "get pedestal default interceptors"
   [service-map]
@@ -26,7 +36,8 @@
       http/default-interceptors
       (update ::http/interceptors into [http/not-found
                                         http/json-body
-                                        (body-params/body-params)])))
+                                        (body-params/body-params)
+                                        error-handler])))
 
 (defn build-config-map
   "build pedestal config map"
