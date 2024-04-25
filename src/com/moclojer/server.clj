@@ -21,7 +21,7 @@
     (.setGzipHandler context gzip-handler))
   context)
 
-(def error-handler
+(def interceptor-error-handler
   "capture and format in json exception Internal Server Error"
   (error-dispatch [context error]
     :else
@@ -37,7 +37,7 @@
       (update ::http/interceptors into [http/not-found
                                         http/json-body
                                         (body-params/body-params)
-                                        error-handler])))
+                                        interceptor-error-handler])))
 
 (defn build-config-map
   "build pedestal config map"
