@@ -21,6 +21,7 @@
     (.setGzipHandler context gzip-handler))
   context)
 
+#_:clj-kondo/ignore
 (def interceptor-error-handler
   "capture and format in json exception Internal Server Error"
   (error-dispatch [context error]
