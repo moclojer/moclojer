@@ -13,7 +13,7 @@ description: >-
 
 ## Clojure
 
-Has an alias created in `edn` with the name _“run”_
+Has an alias created in `edn` with the name *“run”*
 
 ```shell
 CONFIG=moclojer.yml clojure -X:run
