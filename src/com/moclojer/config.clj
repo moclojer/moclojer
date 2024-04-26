@@ -9,7 +9,7 @@
 (def home-path (System/getProperty "user.home"))
 
 (def xdg-config-home
-  "Get the XDG_CONFIG_HOME or HOME/.config if its not defined."
+  "Get the XDG_CONFIG_HOME environment variable or default to HOME/.config if it's not defined."
   (or (System/getenv "XDG_CONFIG_HOME")
       (str home-path "/.config")))
 
@@ -18,7 +18,7 @@
   [s] (str xdg-config-home "/" s))
 
 (def moclojer-environment
-  "defines the moclojer environment (:prod or :dev) that moclojer will run under."
+  "Defines the Moclojer environment (:prod or :dev) that the application will run under."
   (or (keyword (System/getenv "MOCLOJER_ENV"))
       :prod))
 
