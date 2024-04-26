@@ -1,10 +1,11 @@
 (ns com.moclojer.external-body.core-test
-  (:require [clojure.data.json :as jsond]
-            [clojure.test :refer [deftest is testing]]
-            [com.moclojer.external-body.core :as core]
-            [com.moclojer.helpers-test :as helpers]
-            [io.pedestal.test :refer [response-for]]
-            [yaml.core :as yaml]))
+  (:require
+   [clojure.data.json :as jsond]
+   [clojure.test :refer [deftest is testing]]
+   [com.moclojer.external-body.core :as core]
+   [com.moclojer.helpers-test :as helpers]
+   [io.pedestal.test :refer [response-for]]
+   [yaml.core :as yaml]))
 
 (def data-text
   {:provider "json"

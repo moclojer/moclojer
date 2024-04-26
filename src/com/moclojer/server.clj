@@ -1,16 +1,18 @@
 (ns com.moclojer.server
-  (:require [clojure.data.json :as json]
-            [com.moclojer.adapters :as adapters]
-            [com.moclojer.config :as config]
-            [com.moclojer.io-utils :refer [open-file]]
-            [com.moclojer.log :as log]
-            [com.moclojer.watcher :refer [start-watch]]
-            [io.pedestal.http :as http]
-            [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.jetty]
-            [io.pedestal.interceptor.error :refer [error-dispatch]])
-  (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)))
+  (:require
+   [clojure.data.json :as json]
+   [com.moclojer.adapters :as adapters]
+   [com.moclojer.config :as config]
+   [com.moclojer.io-utils :refer [open-file]]
+   [com.moclojer.log :as log]
+   [com.moclojer.watcher :refer [start-watch]]
+   [io.pedestal.http :as http]
+   [io.pedestal.http.body-params :as body-params]
+   [io.pedestal.http.jetty]
+   [io.pedestal.interceptor.error :refer [error-dispatch]])
+  (:import
+   (org.eclipse.jetty.server.handler.gzip GzipHandler)
+   (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
   "http container options, active gzip"

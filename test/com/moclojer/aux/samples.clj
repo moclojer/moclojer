@@ -1,8 +1,9 @@
 (ns com.moclojer.aux.samples
-  (:require [io.pedestal.http :as http]
-            [io.pedestal.http.ring-middlewares :as middlewares]
-            [ring.util.mime-type :as mime]
-            [yaml.core :as yaml]))
+  (:require
+   [io.pedestal.http :as http]
+   [io.pedestal.http.ring-middlewares :as middlewares]
+   [ring.util.mime-type :as mime]
+   [yaml.core :as yaml]))
 
 (def yaml-sample
   (yaml/parse-string "
@@ -27,7 +28,6 @@
                              :headers {:content-type "applicantion/json"}
                              :body    {:id 1 :name "chico"}}
                :router-name :get-pet-by-id}}])
-
 
 (defonce *http-state (atom nil))
 

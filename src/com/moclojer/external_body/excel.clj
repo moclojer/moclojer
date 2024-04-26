@@ -1,5 +1,6 @@
 (ns com.moclojer.external-body.excel
-  (:require [bb-excel.core :as excel]))
+  (:require
+   [bb-excel.core :as excel]))
 
 (defn ->map
   "converts excel (xlsx and xls) tab/sheet name to map"

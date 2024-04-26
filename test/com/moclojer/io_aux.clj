@@ -1,10 +1,12 @@
 (ns com.moclojer.io-aux
   (:refer-clojure :exclude [load])
-  (:require [clojure.string :as string]
-            [yaml.core :as yaml])
-  (:import (java.io File)
-           (java.nio.file Files)
-           (java.nio.file.attribute FileAttribute)))
+  (:require
+   [clojure.string :as string]
+   [yaml.core :as yaml])
+  (:import
+   (java.io File)
+   (java.nio.file Files)
+   (java.nio.file.attribute FileAttribute)))
 
 (defn write-config
   "write configuration file with receiving data type (yaml or edn) and structure"

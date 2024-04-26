@@ -1,9 +1,10 @@
 (ns com.moclojer.framework-test
-  (:require [cheshire.core :as json]
-            [clojure.test :refer [deftest is]]
-            [com.moclojer.adapters :as adapters]
-            [com.moclojer.server :as server]
-            [io.pedestal.test :refer [response-for]]))
+  (:require
+   [cheshire.core :as json]
+   [clojure.test :refer [deftest is]]
+   [com.moclojer.adapters :as adapters]
+   [com.moclojer.server :as server]
+   [io.pedestal.test :refer [response-for]]))
 
 (def *router
   "create a router from a config map"

@@ -1,5 +1,6 @@
 (ns com.moclojer.config
-  (:require [babashka.cli :as cli]))
+  (:require
+   [babashka.cli :as cli]))
 
 (def version
   "get version from pom properties"

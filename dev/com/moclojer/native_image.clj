@@ -1,8 +1,8 @@
 (ns com.moclojer.native-image
-  (:require [clojure.data.json :as json]
-            [clojure.java.io :as io]
-            [clojure.string :as string]))
-
+  (:require
+   [clojure.data.json :as json]
+   [clojure.java.io :as io]
+   [clojure.string :as string]))
 
 (def initialize-at-build-time
   "list of classes to initialize at build time"

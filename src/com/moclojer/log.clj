@@ -1,16 +1,18 @@
 (ns com.moclojer.log
-  (:require [clojure.string :as string]
-            [io.pedestal.interceptor.helpers :as interceptor]
-            [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :as core-appenders]
-            [taoensso.timbre.appenders.community.sentry :as sentry]
-            [timbre-json-appender.core :as tas])
-  (:import (java.util.logging
-            Filter
-            Formatter
-            Handler
-            LogRecord
-            Logger)))
+  (:require
+   [clojure.string :as string]
+   [io.pedestal.interceptor.helpers :as interceptor]
+   [taoensso.timbre :as timbre]
+   [taoensso.timbre.appenders.community.sentry :as sentry]
+   [taoensso.timbre.appenders.core :as core-appenders]
+   [timbre-json-appender.core :as tas])
+  (:import
+   (java.util.logging
+    Filter
+    Formatter
+    Handler
+    LogRecord
+    Logger)))
 
 (set! *warn-on-reflection* true)
 
@@ -55,9 +57,9 @@
   (clean-timbre-appenders)
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
   (let [config (merge
-                 {:min-level level
-                  :ns-filter {:allow #{"com.moclojer.*"}}}
-                 (log-format->mergeable-cfg fmt))
+                {:min-level level
+                 :ns-filter {:allow #{"com.moclojer.*"}}}
+                (log-format->mergeable-cfg fmt))
         sentry-dsn (or (System/getenv "SENTRY_DSN") nil)]
     (timbre/merge-config! config)
     (when sentry-dsn

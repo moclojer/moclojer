@@ -1,9 +1,11 @@
 (ns com.moclojer.io-utils
-  (:require [clojure.edn :as edn]
-            [clojure.string :as string]
-            [com.moclojer.log :as log]
-            [yaml.core :as yaml])
-  (:import [java.io FileNotFoundException]))
+  (:require
+   [clojure.edn :as edn]
+   [clojure.string :as string]
+   [com.moclojer.log :as log]
+   [yaml.core :as yaml])
+  (:import
+   [java.io FileNotFoundException]))
 
 (defn open-file [path]
   (if (empty? path)

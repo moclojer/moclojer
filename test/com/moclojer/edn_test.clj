@@ -1,10 +1,10 @@
 (ns com.moclojer.edn-test
-  (:require [cheshire.core :as json]
-            [clojure.edn :as edn]
-            [clojure.test :refer [deftest is testing]]
-            [com.moclojer.helpers-test :as helpers]
-            [io.pedestal.test :refer [response-for]]))
-
+  (:require
+   [cheshire.core :as json]
+   [clojure.edn :as edn]
+   [clojure.test :refer [deftest is testing]]
+   [com.moclojer.helpers-test :as helpers]
+   [io.pedestal.test :refer [response-for]]))
 
 (deftest dynamic-endpoint-edn
   (let [service-fn (helpers/service-fn (edn/read-string (str "[" (slurp "test/com/moclojer/resources/moclojer.edn") "]")))]

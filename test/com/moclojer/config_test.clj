@@ -1,6 +1,7 @@
 (ns com.moclojer.config-test
-  (:require [clojure.test :refer [deftest is testing]]
-            [com.moclojer.config :as config]))
+  (:require
+   [clojure.test :refer [deftest is testing]]
+   [com.moclojer.config :as config]))
 
 (deftest with-xdg-test
   (testing "It generates an rc name as expected."

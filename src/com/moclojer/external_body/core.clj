@@ -1,6 +1,7 @@
 (ns com.moclojer.external-body.core
-  (:require [cheshire.core :as cheshire]
-            [com.moclojer.external-body.excel :as xlsx]))
+  (:require
+   [cheshire.core :as cheshire]
+   [com.moclojer.external-body.excel :as xlsx]))
 
 (defn ->str
   "convert body to string, if it is edn it will be converted to json->str"

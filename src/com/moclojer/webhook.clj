@@ -1,7 +1,8 @@
 (ns com.moclojer.webhook
-  (:require [clj-http.client :as client]
-            [clojure.core.async :as a]
-            [com.moclojer.log :as log]))
+  (:require
+   [clj-http.client :as client]
+   [clojure.core.async :as a]
+   [com.moclojer.log :as log]))
 
 (defn request-after-delay
   "after a delay call http-request, return body"

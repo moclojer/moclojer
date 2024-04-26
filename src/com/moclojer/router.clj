@@ -1,8 +1,9 @@
 (ns com.moclojer.router
-  (:require [clojure.data.json :as json]
-            [com.moclojer.log :as log]
-            [com.moclojer.specs.moclojer :as spec]
-            [com.moclojer.specs.openapi :as openapi]))
+  (:require
+   [clojure.data.json :as json]
+   [com.moclojer.log :as log]
+   [com.moclojer.specs.moclojer :as spec]
+   [com.moclojer.specs.openapi :as openapi]))
 
 (def home-endpoint
   "initial/home endpoint URL: /"

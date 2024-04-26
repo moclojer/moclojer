@@ -1,7 +1,8 @@
 (ns com.moclojer.helpers-test
-  (:require [com.moclojer.router :as router]
-            [com.moclojer.server :as server]
-            [io.pedestal.http :as http]))
+  (:require
+   [com.moclojer.router :as router]
+   [com.moclojer.server :as server]
+   [io.pedestal.http :as http]))
 
 (defn service-fn
   "create a service function of pedestal from a config map"

@@ -1,6 +1,7 @@
 (ns com.moclojer.adapters-test
-  (:require [clojure.test :refer [are deftest testing]]
-            [com.moclojer.adapters :as adapters]))
+  (:require
+   [clojure.test :refer [are deftest testing]]
+   [com.moclojer.adapters :as adapters]))
 
 (deftest inputs-config-test
   (testing "inputs->config can read data from all data sources"

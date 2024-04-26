@@ -1,7 +1,8 @@
 (ns com.moclojer.router-test
-  (:require [clojure.test :refer [deftest is testing]]
-            [com.moclojer.aux.samples :as aux.samples]
-            [com.moclojer.router :as router]))
+  (:require
+   [clojure.test :refer [deftest is testing]]
+   [com.moclojer.aux.samples :as aux.samples]
+   [com.moclojer.router :as router]))
 
 (deftest smart-router-test
   (testing "should make edn routers"

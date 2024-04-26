@@ -1,10 +1,11 @@
 (ns com.moclojer.server-test
-  (:require [cheshire.core :as json]
-            [clojure.test :refer [deftest is]]
-            [clojure.string :as string]
-            [com.moclojer.helpers-test :as helpers]
-            [io.pedestal.test :refer [response-for]]
-            [yaml.core :as yaml]))
+  (:require
+   [cheshire.core :as json]
+   [clojure.string :as string]
+   [clojure.test :refer [deftest is]]
+   [com.moclojer.helpers-test :as helpers]
+   [io.pedestal.test :refer [response-for]]
+   [yaml.core :as yaml]))
 
 (deftest hello-world
   (is (= {:hello "Hello, World!"}
@@ -82,12 +83,11 @@
              (response-for :get "/v1/hello")
              :body
              (json/parse-string true))))
-   (is (= {:hello-v1 "hello world!"}
+  (is (= {:hello-v1 "hello world!"}
          (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
              (response-for :get "/v1/hello/")
              :body
              (json/parse-string true)))))
-
 
 (deftest multi-path-param
   (is (= {:username "moclojer-123"
@@ -103,7 +103,7 @@
              (response-for :get "/helloo/moclojer")
              :status)))
   (is (string/includes?
-        (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/mock-syntax-error.yml"))
-            (response-for :get "/helloo/moclojer")
-            :body)
-        "error")))
+       (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/mock-syntax-error.yml"))
+           (response-for :get "/helloo/moclojer")
+           :body)
+       "error")))

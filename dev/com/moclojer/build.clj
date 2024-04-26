@@ -1,9 +1,10 @@
 (ns com.moclojer.build
   (:refer-clojure :exclude [test])
-  (:require [clojure.string :as string]
-            [clojure.tools.build.api :as b]
-            [com.moclojer.config :as config]
-            [com.moclojer.native-image :as native-image]))
+  (:require
+   [clojure.string :as string]
+   [clojure.tools.build.api :as b]
+   [com.moclojer.config :as config]
+   [com.moclojer.native-image :as native-image]))
 
 (def class-dir "target/classes")
 (def jar-file "target/moclojer.jar")
