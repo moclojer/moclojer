@@ -9,7 +9,7 @@ description: >-
 ## Environment vars
 
 * `XDG_CONFIG_HOME`: to fetch the default moclojer configuration file *(default: `$HOME/.config`)*
-* `MOCLOJER_ENV`: define the environment where the moclojer is running, we accept﻿`prod` or `dev` *(default: `prod`)*
+* `MOCLOJER_ENV`: define the environment where the moclojer is running, we accept `prod` or `dev` *(default: `prod`)*
 
 ## Clojure
 
