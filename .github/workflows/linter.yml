@@ -6,9 +6,15 @@ jobs:
   linter:
     runs-on: ubuntu-latest
     steps:
-      - uses: DeLaGuardo/setup-clj-kondo@master
-        with:
-          version: '2022.05.31'
       - uses: actions/checkout@v4
-      - name: clj-kondo
-        run: clj-kondo --lint src test
+      - uses: DeLaGuardo/setup-clojure@master
+        with:
+          cli: '1.11.3'
+      - uses: clojure-lsp/setup-clojure-lsp@test-action
+        with:
+          clojure-lsp-version: 2024.04.22-11.50.26
+      - name: clojure-lsp
+        run: |
+          clojure-lsp clean-ns --dry && \
+          clojure-lsp format --dry
+ 
