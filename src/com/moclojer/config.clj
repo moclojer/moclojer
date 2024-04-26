@@ -6,18 +6,18 @@
   "0.3.2")
 
 ;; https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html
-(def get-home (System/getProperty "user.home"))
+(def home-path (System/getProperty "user.home"))
 
-(def get-xdg-config-home
+(def xdg-config-home
   "Get the XDG_CONFIG_HOME or HOME/.config if its not defined."
   (or (System/getenv "XDG_CONFIG_HOME")
-      (str get-home "/.config")))
+      (str home-path "/.config")))
 
 (defn with-xdg
   "Will prefix with the XDG home."
-  [s] (str get-xdg-config-home "/" s))
+  [s] (str xdg-config-home "/" s))
 
-(def get-moclojer-run
+(def moclojer-environment
   "defines the moclojer environment (:prod or :dev) that moclojer will run under."
   (or (keyword (System/getenv "MOCLOJER_ENV"))
       :prod))
