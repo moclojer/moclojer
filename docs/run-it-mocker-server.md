@@ -25,11 +25,11 @@ CONFIG=moclojer.yml clojure -X:run
 
 You don’t have the binary file yet? [Download it here](https://github.com/avelino/moclojer/releases/latest). The moclojer is distributed as follows:
 
-* Binary format: `moclojer_<OS>` - _in binary format (you don’t need anything additional on your operating system to run it)_
+* Binary format: `moclojer_<OS>` - *in binary format (you don’t need anything additional on your operating system to run it)*
   * Linux `moclojer_Linux`
   * macOS `moclojer_macOS`
-* `moclojer.jar` - _in java format (you need to install java to run it)_
-* Docker image - _in docker format (you need to install docker to run it)_
+* `moclojer.jar` - _in java format *(you need to install java to run it)*
+* Docker image - _in docker format *(you need to install docker to run it)*
 
 After creating the file you must run moclojer passing the configuration file by the `CONFIG` environment variable:
 
