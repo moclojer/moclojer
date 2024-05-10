@@ -66,7 +66,7 @@
 
     ;; build `.jar` used uberjar (distribute software) or jar (distribute library)
     (println "args" args)
-    (let [uberjar-flag (or (some #(= % "--uberjar") args) false)]
+    (let [uberjar-flag (some #(= % "--uberjar") args)]
       (if uberjar-flag
         (do
           (println "Building uberjar")
