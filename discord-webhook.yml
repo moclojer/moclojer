@@ -1,0 +1,18 @@
+- endpoint:
+    method: POST
+    path: /supabase-auth/:test-field
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {"reciver": true, "test": "{{json-params.test-field}}"}
+    webhook:
+      sleep-time: 0
+      if: json-params.test-field = "avelino"
+      url: https://discord.com/api/webhooks/1225389817374965802/k6sSfK4RAkh8aXOuHt1ssj1U-HqdMBSCfBUsSu1OCV-GJG7nifc-_0L1jEgzMyRgsOBp
+      method: POST
+      headers:
+        Content-Type: application/json
+      body: >
+        {"username": "SupaAuth", "content": "Usando moclojer cloud para enviar msg no discord via moclojer webhook spec!"}
