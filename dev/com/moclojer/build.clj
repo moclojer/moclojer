@@ -46,7 +46,7 @@
      :exclude    ["docs/*" "META-INF/*" "test/*" "target/*"]}))
 
 (defn -main
-  [& _]
+  [& args]
   (let [basis (b/create-basis {:project "deps.edn"})]
     (println "Clearing target directory")
     (b/delete {:path "target"})
@@ -64,11 +64,16 @@
     (println "Compile sources to classes")
     (b/compile-clj options)
 
-    (println "Packaging classes into jar")
-    (b/jar options)
-
-    ;; (println "Building uberjar")
-    ;; (b/uber options)
+    ;; build `.jar` used uberjar (distribute software) or jar (distribute library)
+    (println "args" args)
+    (let [uberjar-flag (or (some #(= % "--uberjar") args) false)]
+      (if uberjar-flag
+        (do
+          (println "Building uberjar")
+          (b/uber options))
+        (do
+          (println "Packaging classes into jar")
+          (b/jar options))))
 
     ;; prepare file for native image
     ;; TODO: commented feature, see why https://github.com/moclojer/moclojer/issues/158
