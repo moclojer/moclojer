@@ -1,12 +1,11 @@
 language: "en-US"
-early_access: false
+early_access: true
 reviews:
   review_status: true
-  profile: "chill"
+  profile: "assertive"
   request_changes_workflow: false
   high_level_summary: true
   poem: true
-  review_status: true
   collapse_walkthrough: false
   auto_review:
     enabled: true
