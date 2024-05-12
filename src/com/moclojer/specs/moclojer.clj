@@ -1,9 +1,14 @@
 (ns com.moclojer.specs.moclojer
-  (:require [clojure.string :as string]
-            [io.pedestal.http.route :as route]
-            [com.moclojer.external-body.core :as ext-body]
-            [com.moclojer.webhook :as webhook]
-            [selmer.parser :as selmer]))
+  (:require
+   [clojure.string :as string]
+   [com.moclojer.external-body.core :as ext-body]
+   [com.moclojer.webhook :as webhook]
+   [io.pedestal.http.route :as route]
+   [reitit.swagger :as swagger]
+   [selmer.parser :as selmer]
+   [com.moclojer.log :as log]
+   [clojure.data.json :as json]
+   [clojure.edn :as edn]))
 
 (defn render-template
   [template request]
@@ -55,6 +60,19 @@
                       [(name k) (str v)]))
                (:headers response))}))
 
+(defn generic-reitit-handler [response webhook-config]
+  (fn [{path :parameters}]
+    (log/log :info :request path)
+    (let [body (build-body response path)]
+      (log/log :info :body (json/read-str body :key-fn keyword))
+      {:body  (json/read-str body :key-fn keyword)
+       :status (:status response)
+       :headers (into
+                 {}
+                 (map (fn [[k v]]
+                        [(name k) (str v)]))
+                 (:headers response))})))
+
 (defn generate-route-name
   [host path method]
   (str method "-" (or host "localhost") "-" (string/replace (string/replace path "/" "") ":" "--")))
@@ -81,3 +99,32 @@
            (generic-handler response webhook-config)
            :route-name (keyword route-name)]})))
    (mapcat identity)))
+
+(defn make-parameters [url]
+  (let [parts (clojure.string/split url #"/")
+        param-specs (map (fn [part]
+                           (when (clojure.string/starts-with? part ":")
+                             (let [param-name (clojure.string/replace part ":" "")]
+                               {:path {(keyword param-name) any?}}))) parts)]
+    (into {} (filter some? param-specs))))
+
+(defn ->reitit
+  [spec]
+  (concat
+   [["/swagger.json"
+     {:get {:no-doc true
+            :swagger {:info {:title "moclojer-mock"
+                             :description "my mock"}}
+            :handler (swagger/create-swagger-handler)}}]]
+   (for [[[host path method tag] endpoints]
+         (group-by (juxt :host :path :method)
+                   (remove nil? (map :endpoint spec)))]
+     (let [method (generate-method method)
+           route-name (generate-route-name host path method)
+           response (:response (first endpoints))]
+       [path
+        {:swagger {:tags [(or tag route-name)]}
+         :parameters (make-parameters path)
+         :responses {(:status response) {:body {:hello string?}}}
+         (keyword method) {:summary (str "Generated from " route-name)
+                           :handler (generic-reitit-handler response nil)}}]))))
