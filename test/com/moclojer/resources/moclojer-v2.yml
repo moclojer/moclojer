@@ -1,0 +1,13 @@
+- endpoint:
+    # Note: the method could be omitted because GET is the default
+    method: GET
+    path: /with-params/:param1|int
+    response:
+      # Note: the status could be omitted because 200 is the default
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "path-params": "{{path-params.param1}}",
+          "query-params": "{{query-params.param1}}"

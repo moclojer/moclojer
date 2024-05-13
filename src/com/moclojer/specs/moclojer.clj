@@ -100,13 +100,30 @@
            :route-name (keyword route-name)]})))
    (mapcat identity)))
 
-(defn make-parameters [url]
-  (let [parts (clojure.string/split url #"/")
-        param-specs (map (fn [part]
-                           (when (clojure.string/starts-with? part ":")
-                             (let [param-name (clojure.string/replace part ":" "")]
-                               {:path {(keyword param-name) any?}}))) parts)]
-    (into {} (filter some? param-specs))))
+(defn make-parameters [path]
+  (reduce
+   (fn [query-types s]
+     (if (string/starts-with? s ":")
+       (let [[param-name param-type] (-> (string/replace s #":" "") (string/split  #"\|"))
+             fun (condp = param-type
+                   "int" int?
+                   "string" string?
+                   "bool" boolean?
+                   "float" float?
+                   "double" double?
+                   nil string?)]
+         (assoc query-types param-name fun))
+       query-types))
+   {} (string/split path #"/")))
+
+(defn create-url [pattern]
+  (let [segments (string/split pattern #"/")
+        processed-segments (map (fn [segment]
+                                  (if (re-find #":" segment)
+                                    (first (string/split segment #"\|"))
+                                    segment))
+                                segments)]
+    (string/join "/" processed-segments)))
 
 (defn ->reitit
   [spec]
@@ -122,7 +139,7 @@
      (let [method (generate-method method)
            route-name (generate-route-name host path method)
            response (:response (first endpoints))]
-       [path
+       [(create-url path)
         {:swagger {:tags [(or tag route-name)]}
          :parameters (make-parameters path)
          :responses {(:status response) {:body {:hello string?}}}
