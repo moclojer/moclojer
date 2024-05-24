@@ -60,12 +60,20 @@
                       [(name k) (str v)]))
                (:headers response))}))
 
-(defn generic-reitit-handler [response webhook-config]
-  (fn [{path :parameters}]
-    (log/log :info :request path)
-    (let [body (build-body response path)]
+(defn generic-reitit-handler [response
+                              webhook-config]
+  (fn [request]
+    (when webhook-config
+      (webhook/request-after-delay
+       {:url (:url webhook-config)
+        :condition (webhook-condition (:if webhook-config) request)
+        :method (:method webhook-config)
+        :body (render-template (:body webhook-config) request)
+        :headers (:headers webhook-config)
+        :sleep-time (:sleep-time webhook-config)}))
+    (let [body (build-body response (:parameters request))]
       (log/log :info :body (json/read-str body :key-fn keyword))
-      {:body  (json/read-str body :key-fn keyword)
+      {:body  body
        :status (:status response)
        :headers (into
                  {}
@@ -112,7 +120,7 @@
                    "float" float?
                    "double" double?
                    nil string?)]
-         (assoc query-types param-name fun))
+         (assoc query-types (keyword param-name) fun))
        query-types))
    {} (string/split path #"/")))
 
@@ -124,6 +132,36 @@
                                     segment))
                                 segments)]
     (string/join "/" processed-segments)))
+
+(defn assoc-if [m k v]
+  (if (seq v)
+    (assoc m k v)
+    m))
+
+(defn create-swagger-parameters [path query body]
+  (-> (assoc-if {} :path path)
+      (assoc-if :query query)
+      (assoc-if :body body)))
+
+(defn make-query-parameters [query]
+  (reduce-kv (fn [acc k v]
+               (assoc acc (keyword k) (condp = v
+                                        "int" int?
+                                        "string" string?
+                                        "bool" boolean?
+                                        "float" float?
+                                        "double" double?
+                                        nil string?))) {} query))
+
+(defn make-body-parameters [body]
+  (reduce-kv (fn [acc k v]
+               (assoc acc (keyword k) (condp = v
+                                        "int" int?
+                                        "string" string?
+                                        "bool" boolean?
+                                        "float" float?
+                                        "double" double?
+                                        nil string?))) {} body))
 
 (defn ->reitit
   [spec]
@@ -138,10 +176,16 @@
                    (remove nil? (map :endpoint spec)))]
      (let [method (generate-method method)
            route-name (generate-route-name host path method)
-           response (:response (first endpoints))]
-       [(create-url path)
-        {:swagger {:tags [(or tag route-name)]}
-         :parameters (make-parameters path)
-         :responses {(:status response) {:body {:hello string?}}}
-         (keyword method) {:summary (str "Generated from " route-name)
+           response (:response (first endpoints))
+           real-path (create-url path)]
+
+       [real-path
+        {:host (or host "localhost")
+         :swagger {:tags [(or tag route-name)]}
+         :parameters (create-swagger-parameters (make-parameters path)
+                                                (make-query-parameters (:query (first endpoints)))
+                                                (make-body-parameters (:body (first endpoints))))
+         :responses {(or (:status response) 200) {:body string?}}
+         (keyword method) {:summary (str "Generated from " real-path)
                            :handler (generic-reitit-handler response nil)}}]))))
+

@@ -13,9 +13,9 @@
 
 (deftest make-parameters-teste
   (testing "make the parameters for path"
-    (is (= {"id" string?} (make-parameters "/pets/:id|string")))
-    (is (= {"id" string? "testing" string?} (make-parameters "/pets/:id/:testing")))
-    (is (= {"id" string?} (make-parameters "/pets/dog/:id")))
-    (is (= {"number" int? "id" string?} (make-parameters "/pets/:number|int/:id|string")))
-    (is (= {"number" int? "id" string?} (make-parameters "/pets/:number|int/:id|string/test")))))
+    (is (= {:id string?} (make-parameters "/pets/:id|string")))
+    (is (= {:id string? :testing string?} (make-parameters "/pets/:id/:testing")))
+    (is (= {:id string?} (make-parameters "/pets/dog/:id")))
+    (is (= {:number int? :id string?} (make-parameters "/pets/:number|int/:id|string")))
+    (is (= {:number int? :id string?} (make-parameters "/pets/:number|int/:id|string/test")))))
 

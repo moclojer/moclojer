@@ -1,16 +1,23 @@
 (ns com.moclojer.helpers-test
-  (:require [com.moclojer.router :as router]
-            [com.moclojer.server :as server]
-            [io.pedestal.http :as http]))
+  (:require
+   [com.moclojer.router :as router]
+   [com.moclojer.server :refer [reitit-router]]
+   [io.pedestal.http :as http]
+   [reitit.pedestal :as pedestal]))
 
 (defn service-fn
   "create a service function of pedestal from a config map"
-  [config & {:keys [mocks port]}]
-  (-> {::http/routes (router/smart-router (merge {::router/config config}
-                                                 {::router/mocks mocks}))
+  [config & {:keys [mocks port]
+             :or {port 8000}}]
+  (-> {::http/routes []
+       ::http/type              :jetty
        ::http/port port}
-      server/get-interceptors
-      http/dev-interceptors
-      http/default-interceptors
-      http/create-servlet
+
+      (http/default-interceptors)
+      (pedestal/replace-last-interceptor
+       (reitit-router (atom (router/smart-router (merge {::router/config config}
+                                                        {::router/mocks mocks})))))
+
+      (http/dev-interceptors)
+      (http/create-server)
       ::http/service-fn))

@@ -19,17 +19,12 @@
   "Identifies configuration type (moclojer or openapi spec)"
   [{:keys [::config ::mocks]}]
   (let [mode (if mocks :openapi :moclojer)
-        route-type (or (System/getenv "SWAGGER") false)
         routes (->> (if mocks
                       (openapi/->moclojer config mocks)
                       config))]
 
     (log/log :info :spec-mode :mode mode)
-    (cond
-      (= (boolean route-type) true) (->> routes
-                                         (cons home-endpoint)
-                                         (spec/->reitit)
-                                         vec)
-      :else (->> routes
-                 (cons home-endpoint)
-                 (spec/->pedestal)))))
+    (->> routes
+         (cons home-endpoint)
+         (spec/->reitit)
+         vec)))

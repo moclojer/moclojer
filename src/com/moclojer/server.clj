@@ -56,20 +56,25 @@
                                         (body-params/body-params)
                                         interceptor-error-handler])))
 
-(defn build-config-map
-  "build pedestal config map"
-  [*router & {:keys [http-host http-port join?]}]
-  {:env                     config/moclojer-environment
-   ::http/request-logger    log/request
-   ::http/routes            (fn [] @*router)
-   ::http/type              :jetty
-   ::http/join?              join?
-   ::http/allowed-origins   {:creds true
-                             :allowed-origins (constantly true)}
-   ::http/container-options {:h2c?                 true
-                             :context-configurator context-configurator}
-   ::http/host              http-host
-   ::http/port              http-port})
+(defn hosting-interceptor
+  []
+  {:name :hosting-redirect
+   :enter (fn [{:keys [request] :as context}]
+            (let [host (-> request :headers (get "host"))
+                  is-local-dev (string/includes? (-> request :headers (get "host")) ":")
+                  incoming-host (if is-local-dev
+                                  (-> host
+                                      (string/split  #":")
+                                      (first))
+                                  host)
+                  expected-host (-> request :reitit.core/match :data :host)]
+              (if (nil? expected-host)
+                context
+                (if (= incoming-host expected-host)
+                  context
+                  (throw (ex-info "Invalid host" {:status 403
+                                                  :expected-host expected-host
+                                                  :host incoming-host}))))))})
 
 (defn reitit-router [*router]
   (-> (pedestal/routing-interceptor
@@ -97,6 +102,8 @@
                                (coercion/coerce-response-interceptor)
                              ;; coercing request parameters
                                (coercion/coerce-request-interceptor)
+                               ;; hosting interceptor
+                               (hosting-interceptor)
                              ;; multipart
                                (multipart/multipart-interceptor)]}})
        (ring/routes
@@ -116,8 +123,7 @@
         http-port (or (some-> (System/getenv "PORT")
                               Integer/parseInt)
                       8000)
-        http-start (if start? http/start ::http/service-fn)
-        swagger? (or (System/getenv "SWAGGER") false)]
+        http-start (if start? http/start ::http/service-fn)]
     (log/log :info
              :moclojer-start
              "-> moclojer"
@@ -126,38 +132,28 @@
              :port http-port
              :url (str "http://" http-host ":" http-port)
              :version config/version)
-    (if swagger?
-      (let [router (reitit-router *router)]
-        (-> {:env                     config/moclojer-environment
-             ::http/request-logger    log/request
-             ::http/routes            []
-             ::http/type              :jetty
-             ::http/join?              join?
-             ::http/container-options {:h2c?                 true
-                                       :context-configurator context-configurator}
+    (let [router (reitit-router *router)]
+      (-> {:env                     config/moclojer-environment
+           ::http/request-logger    log/request
+           ::http/routes            []
+           ::http/type              :jetty
+           ::http/join?              join?
+           ::http/container-options {:h2c?                 true
+                                     :context-configurator context-configurator}
  ;; allow serving the swagger-ui styles & scripts from self
-             ::http/secure-headers {:content-security-policy-settings
-                                    {:default-src "'self'"
-                                     :style-src "'self' 'unsafe-inline'"
-                                     :script-src "'self' 'unsafe-inline'"}}
-             ::http/host              http-host
-             ::http/port              http-port}
+           ::http/secure-headers {:content-security-policy-settings
+                                  {:default-src "'self'"
+                                   :style-src "'self' 'unsafe-inline'"
+                                   :script-src "'self' 'unsafe-inline'"}}
+           ::http/host              http-host
+           ::http/port              http-port}
 
-            (http/default-interceptors)
-            (pedestal/replace-last-interceptor router)
+          (http/default-interceptors)
+          (pedestal/replace-last-interceptor router)
 
-            (http/dev-interceptors)
-            (http/create-server)
-            http-start))
-
-      (->
-       *router
-       (build-config-map  {:http-host http-host
-                           :http-port http-port
-                           :join? join?})
-       get-interceptors
-       http/create-server
-       http-start))))
+          (http/dev-interceptors)
+          (http/create-server)
+          http-start))))
 
 (defn create-watcher [*router & {:keys [config-path mocks-path]}]
   (start-watch [{:file config-path
@@ -184,6 +180,5 @@
   [{:keys [config-path mocks-path]}]
   (let [*router (adapters/generate-routes (open-file config-path)
                                           :mocks-path mocks-path)]
-    (clojure.pprint/pprint *router)
     (create-watcher *router {:config-path config-path :mocks-path mocks-path})
     (start-server! *router)))

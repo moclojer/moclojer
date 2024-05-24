@@ -1,13 +1,28 @@
 - endpoint:
-    # Note: the method could be omitted because GET is the default
     method: GET
-    path: /with-params/:param1|int
+    path: /users/:age|int
+    query:
+      name: string
+      children: int
     response:
-      # Note: the status could be omitted because 200 is the default
       status: 200
       headers:
         Content-Type: application/json
       body: >
         {
-          "path-params": "{{path-params.param1}}",
-          "query-params": "{{query-params.param1}}"
+          "user": "avelino is {{path.age}} years old and has {{path.children}} children" 
+        }
+
+- endpoint:
+    method: POST
+    path: /users
+    body:
+      age: int
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "text": "my age is {{body.age}} years old" 
+        }
