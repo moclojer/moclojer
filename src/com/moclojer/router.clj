@@ -1,7 +1,6 @@
 (ns com.moclojer.router
   (:require
    [clojure.data.json :as json]
-   [clojure.string :as string]
    [com.moclojer.log :as log]
    [com.moclojer.specs.moclojer :as spec]
    [com.moclojer.specs.openapi :as openapi]))

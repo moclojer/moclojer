@@ -3,8 +3,7 @@
             [clojure.test :refer [deftest is]]
             [com.moclojer.helpers-test :as helpers]
             [com.moclojer.webhook :as webhook]
-            [io.pedestal.test :refer [response-for]]
-            [yaml.core :as yaml]))
+            [io.pedestal.test :refer [response-for]]))
 
 (def body {:id 123})
 

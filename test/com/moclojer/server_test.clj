@@ -3,8 +3,7 @@
             [clojure.test :refer [deftest is]]
             [clojure.string :as string]
             [com.moclojer.helpers-test :as helpers]
-            [io.pedestal.test :refer [response-for]]
-            [yaml.core :as yaml]))
+            [io.pedestal.test :refer [response-for]]))
 
 (deftest hello-world
   (is (= {:hello "Hello, World!"}
