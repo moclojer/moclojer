@@ -60,29 +60,29 @@
   []
   {:name :hosting-redirect
    :enter (fn [{:keys [request] :as context}]
-            (let [host (-> request :headers (get "host"))
-                  is-local-dev (string/includes? (-> request :headers (get "host")) ":")
-                  incoming-host (if is-local-dev
-                                  (-> host
-                                      (string/split  #":")
-                                      (first))
-                                  host)
-                  expected-host (-> request :reitit.core/match :data :host)]
-              (if (nil? expected-host)
-                context
-                (if (= incoming-host expected-host)
+            (if-let [expected (-> request :reitit.core/match :data :host)]
+              (let [host (or (-> request :headers (get "host")) "localhost")
+                    incoming-host (cond
+                                    (string/includes? host ":") (-> host
+                                                                    (string/split  #":")
+                                                                    (first))
+
+                                    :else host)]
+                (if (= incoming-host expected)
                   context
                   (throw (ex-info "Invalid host" {:status 403
-                                                  :expected-host expected-host
-                                                  :host incoming-host}))))))})
+                                                  :expected-host expected
+                                                  :host incoming-host}))))
+
+              context))})
 
 (defn reitit-router [*router]
   (-> (pedestal/routing-interceptor
        (r-http/router
         @*router
         {;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
-                  ;;:validate spec/validate ;; enable spec validation for route data
-                  ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
+         ;;:validate spec/validate ;; enable spec validation for route data
+         ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
          :exception pretty/exception
          :data {:coercion reitit.coercion.spec/coercion
                 :muuntaja m/instance
@@ -123,7 +123,8 @@
         http-port (or (some-> (System/getenv "PORT")
                               Integer/parseInt)
                       8000)
-        http-start (if start? http/start ::http/service-fn)]
+        http-start (if start? http/start ::http/service-fn)
+        create-server (if start? http/create-server http/create-servlet)]
     (log/log :info
              :moclojer-start
              "-> moclojer"
@@ -152,7 +153,7 @@
           (pedestal/replace-last-interceptor router)
 
           (http/dev-interceptors)
-          (http/create-server)
+          create-server
           http-start))))
 
 (defn create-watcher [*router & {:keys [config-path mocks-path]}]

@@ -1,23 +1,46 @@
 (ns com.moclojer.helpers-test
   (:require
-   [com.moclojer.router :as router]
-   [com.moclojer.server :refer [reitit-router]]
-   [io.pedestal.http :as http]
+   [com.moclojer.adapters :as adapters]
+   [com.moclojer.io-utils :refer [open-file]]
+   [com.moclojer.server :refer [start-server!]]
+   [io.pedestal.http :as p.http]
+   [reitit.http :as http]
+   [io.pedestal.test :refer [response-for]]
+   [reitit.http.interceptors.exception :as exception]
    [reitit.pedestal :as pedestal]))
 
 (defn service-fn
   "create a service function of pedestal from a config map"
-  [config & {:keys [mocks port]
-             :or {port 8000}}]
-  (-> {::http/routes []
-       ::http/type              :jetty
-       ::http/port port}
+  [config & {:keys [mocks] :as opts}]
+  (let [*router (adapters/generate-routes (open-file config)
+                                          :mocks-path mocks)]
+    (start-server! *router opts)))
 
-      (http/default-interceptors)
-      (pedestal/replace-last-interceptor
-       (reitit-router (atom (router/smart-router (merge {::router/config config}
-                                                        {::router/mocks mocks})))))
+(comment
 
-      (http/dev-interceptors)
-      (http/create-server)
-      ::http/service-fn))
+  (def server (-> (service-fn "test/com/moclojer/resources/moclojer-v2.yml"
+                              {:start? true :join? false :port 8000})))
+
+  (p.http/stop server)
+
+  (let [router (pedestal/routing-interceptor
+                (http/router
+                 [""
+                  {:interceptors [{:name :nop} (exception/exception-interceptor)]}
+                  ["/ok" (fn [_] {:status 200, :body "ok"})]
+                  ["/fail" (fn [_] (throw (ex-info "kosh" {})))]]))
+        service (-> {:io.pedestal.http/request-logger nil
+                     :io.pedestal.http/routes []}
+                    (io.pedestal.http/default-interceptors)
+                    (pedestal/replace-last-interceptor router)
+                    (io.pedestal.http/create-servlet)
+                    (:io.pedestal.http/service-fn))]
+    (:body (io.pedestal.test/response-for service :get "/ok")))
+
+  (-> (service-fn "test/com/moclojer/resources/moclojer-v2.yml"
+                  {:start? false :join? true})
+      (response-for :get "/users/1"))
+  ;
+  )
+
+

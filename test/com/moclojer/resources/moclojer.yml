@@ -12,7 +12,7 @@
       # :username placeholder
       body: >
         {
-          "hello": "{{path-params.username}}!"
+          "hello": "{{path.username}}!"
         }
 
 # This mock register route: GET /hello/world
@@ -33,6 +33,8 @@
     # Note: the method could be omitted because GET is the default
     method: GET
     path: /with-params/:param1
+    query:
+      param1: string
     response:
       # Note: the status could be omitted because 200 is the default
       status: 200
@@ -40,19 +42,21 @@
         Content-Type: application/json
       body: >
         {
-          "path-params": "{{path-params.param1}}",
-          "query-params": "{{query-params.param1}}"
+          "path-params": "{{path.param1}}",
+          "query-params": "{{query.param1}}"
         }
 - endpoint:
     method: POST
     path: /first-post-route
+    body:
+      project: string
     response:
       status: 200
       headers:
         Content-Type: application/json
       body: >
         {
-          "project": "{{json-params.project}}"
+          "project": "{{body.project}}"
         }
 
 # This mock register route with multi paths GET /v1/hello/test/:username
@@ -65,7 +69,7 @@
         Content-Type: application/json
       body: >
         {
-          "hello-v1": "{{path-params.username}}!",
+          "hello-v1": "{{path.username}}!",
           "sufix": false
         }
 
@@ -79,7 +83,7 @@
         Content-Type: application/json
       body: >
         {
-          "hello-v1": "{{path-params.username}}!",
+          "hello-v1": "{{path.username}}!",
           "sufix": true
         }
 
@@ -107,7 +111,7 @@
         Content-Type: application/json
       body: >
         {
-          "username": "{{path-params.username}}",
-          "age": {{path-params.age}}
+          "username": "{{path.username}}",
+          "age": {{path.age}}
         }
 

@@ -1,16 +1,13 @@
 - endpoint:
     method: GET
     path: /users/:age|int
-    query:
-      name: string
-      children: int
     response:
       status: 200
       headers:
         Content-Type: application/json
       body: >
         {
-          "user": "avelino is {{path.age}} years old and has {{path.children}} children" 
+          "user": "avelino is {{path.age}} years old and has children" 
         }
 
 - endpoint:
@@ -24,5 +21,5 @@
         Content-Type: application/json
       body: >
         {
-          "text": "my age is {{body.age}} years old" 
+          "user": "avelino is {{body.age}} years old and has children" 
         }

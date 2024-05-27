@@ -15,7 +15,6 @@
                           (config/with-xdg "moclojer.yml"))
               :mocks (System/getenv "MOCKS")}
         config (adapters/inputs->config args-opts envs)]
-
     (log/setup :info (:log-format config))
 
     (when (:version config)
@@ -27,3 +26,4 @@
       (System/exit 0))
 
     (server/start-server-with-file-watcher! config)))
+

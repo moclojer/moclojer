@@ -7,10 +7,11 @@
   (testing "should make edn routers"
     (let [routers (router/smart-router
                    {::router/config aux.samples/edn-sample})]
-      (is (= (count routers) 2))
-      (is (= (:path (first routers)) "/"))
-      (is (= (:path (second routers)) "/users")))
+      (is (= (count routers) 3))
+      (is (= (ffirst routers) "/swagger.json"))
+      (is (= (first (get routers 2)) "/users"))
+      (is (= (first (get routers 1)) "")))
     (testing "should make yaml routers"
       (let [yaml-routers (router/smart-router
                           {::router/config aux.samples/yaml-sample})]
-        (is (= (count yaml-routers) 2))))))
+        (is (= (count yaml-routers) 3))))))
