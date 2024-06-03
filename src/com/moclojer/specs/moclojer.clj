@@ -31,6 +31,11 @@
       :else (-> (:body response)
                 (render-template request)))))
 
+(defn assoc-if [m k v]
+  (if (seq v)
+    (assoc m k v)
+    m))
+
 (defn webhook-condition
   "check `if` condition and return boolean value, default is true"
   [condition request]
@@ -38,6 +43,14 @@
     (if (empty? condition)
       true
       (boolean (Boolean/valueOf (selmer/render (ext-body/->str template) request))))))
+
+(defn build-parameters [request-values]
+  (let [query (:query request-values)
+        path (:path request-values)
+        body (:body request-values)]
+    (-> (assoc-if {} :query-params query)
+        (assoc-if :path-params path)
+        (assoc-if :json-params body))))
 
 (defn generic-reitit-handler [response
                               webhook-config]
@@ -51,7 +64,8 @@
         :body (render-template (:body webhook-config) request)
         :headers (:headers webhook-config)
         :sleep-time (:sleep-time webhook-config)}))
-    (let [body (build-body response (:parameters request))]
+    (let [parameters (build-parameters (:parameters request))
+          body (build-body response parameters)]
       (log/log :info :body (json/read-str body :key-fn keyword))
       {:body  body
        :status 200
@@ -94,11 +108,6 @@
                                     segment))
                                 segments)]
     (string/join "/" processed-segments)))
-
-(defn assoc-if [m k v]
-  (if (seq v)
-    (assoc m k v)
-    m))
 
 (defn create-swagger-parameters [path query body]
   (-> (assoc-if {} :path path)

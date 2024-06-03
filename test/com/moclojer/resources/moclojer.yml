@@ -12,7 +12,7 @@
       # :username placeholder
       body: >
         {
-          "hello": "{{path.username}}!"
+          "hello": "{{path-params.username}}!"
         }
 
 # This mock register route: GET /hello/world
@@ -42,8 +42,8 @@
         Content-Type: application/json
       body: >
         {
-          "path-params": "{{path.param1}}",
-          "query-params": "{{query.param1}}"
+          "path-params": "{{path-params.param1}}",
+          "query-params": "{{query-params.param1}}"
         }
 - endpoint:
     method: POST
@@ -56,7 +56,7 @@
         Content-Type: application/json
       body: >
         {
-          "project": "{{body.project}}"
+          "project": "{{json-params.project}}"
         }
 
 # This mock register route with multi paths GET /v1/hello/test/:username
@@ -69,7 +69,7 @@
         Content-Type: application/json
       body: >
         {
-          "hello-v1": "{{path.username}}!",
+          "hello-v1": "{{path-params.username}}!",
           "sufix": false
         }
 
@@ -83,7 +83,7 @@
         Content-Type: application/json
       body: >
         {
-          "hello-v1": "{{path.username}}!",
+          "hello-v1": "{{path-params.username}}!",
           "sufix": true
         }
 
@@ -111,7 +111,7 @@
         Content-Type: application/json
       body: >
         {
-          "username": "{{path.username}}",
-          "age": {{path.age}}
+          "username": "{{path-params.username}}",
+          "age": {{path-params.age}}
         }
 
