@@ -31,7 +31,7 @@ jobs:
           ${{ runner.os }}-buildx-
 
     - name: Build and push
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         push: false
@@ -48,7 +48,7 @@ jobs:
 
     - name: ghcr.io push moclojer:dev @ branch main
       if: github.ref_name == 'main'
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         cache-from: type=local,src=/tmp/.buildx-cache
@@ -61,7 +61,7 @@ jobs:
       run: echo "RELEASE_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
     - name: ghcr.io push by git tag
       if: startsWith(github.event.ref, 'refs/tags/v')
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         cache-from: type=local,src=/tmp/.buildx-cache
