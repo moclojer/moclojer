@@ -28,7 +28,6 @@
                              :body    {:id 1 :name "chico"}}
                :router-name :get-pet-by-id}}])
 
-
 (defonce *http-state (atom nil))
 
 (defn sample-upload-server

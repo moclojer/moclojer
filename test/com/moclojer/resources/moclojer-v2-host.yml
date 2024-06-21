@@ -1,0 +1,12 @@
+- endpoint:
+    host: sub.moclojer.com
+    method: GET
+    path: /multihost-sub
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "domain": "sub.moclojer.com"
+        }
