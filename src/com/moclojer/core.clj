@@ -1,9 +1,10 @@
 (ns com.moclojer.core
-  (:require [babashka.cli :as cli]
-            [com.moclojer.adapters :as adapters]
-            [com.moclojer.config :as config]
-            [com.moclojer.log :as log]
-            [com.moclojer.server :as server])
+  (:require
+   [babashka.cli :as cli]
+   [com.moclojer.adapters :as adapters]
+   [com.moclojer.config :as config]
+   [com.moclojer.log :as log]
+   [com.moclojer.server :as server])
   (:gen-class))
 
 (defn -main
@@ -26,4 +27,3 @@
       (System/exit 0))
 
     (server/start-server-with-file-watcher! config)))
-

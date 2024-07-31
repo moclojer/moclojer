@@ -1,6 +1,7 @@
 (ns com.moclojer.adapters
-  (:require [com.moclojer.io-utils :refer [open-file]]
-            [com.moclojer.router :as router]))
+  (:require
+   [com.moclojer.io-utils :refer [open-file]]
+   [com.moclojer.router :as router]))
 
 (defn inputs->config
   [{:keys [args opts]} envs]

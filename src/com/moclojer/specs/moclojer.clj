@@ -1,12 +1,33 @@
 (ns com.moclojer.specs.moclojer
   (:require
+   [clojure.data.json :as json]
    [clojure.string :as string]
    [com.moclojer.external-body.core :as ext-body]
+   [com.moclojer.log :as log]
    [com.moclojer.webhook :as webhook]
    [reitit.swagger :as swagger]
-   [selmer.parser :as selmer]
-   [com.moclojer.log :as log]
-   [clojure.data.json :as json]))
+   [selmer.parser :as selmer]))
+
+(def primitives
+  [int? string? boolean? float? double?])
+
+(def wrapped-primitive-fns
+  "Wrappes primitive functions so they return themselves incase of truthness.
+
+  Useful with `some`."
+  (map (fn [primitive-fn]
+         #(when (primitive-fn %)
+            primitive-fn))
+       primitives))
+
+(def malli-primitives
+  [:int :string :boolean :float :double])
+
+(defn ->primitive-malli
+  [primitive]
+  (or (get (zipmap primitives malli-primitives) primitive)
+      (throw (ex-info "primitive not supported"
+                      {:primitive primitive}))))
 
 (defn render-template
   [template request]
@@ -124,15 +145,23 @@
                                         "double" double?
                                         nil string?))) {} query))
 
-(defn make-body-parameters [body]
-  (reduce-kv (fn [acc k v]
-               (assoc acc (keyword k) (condp = v
-                                        "int" int?
-                                        "string" string?
-                                        "bool" boolean?
-                                        "float" float?
-                                        "double" double?
-                                        nil string?))) {} body))
+(defn make-body-parameters
+  "Given a `body`, maps each value to a malli primitive.
+
+  {:hello \"123\"
+   :bye {:bye2 123
+         :bye3 true}} => {:hello :string, :bye {:bye2 :int :bye3 :boolean}}"
+  [body]
+  (reduce-kv
+   (fn [acc k v]
+     (assoc acc
+            (keyword k)
+            (if (map? v)
+              (make-body-parameters v)
+              (-> (some #(% v) wrapped-primitive-fns)
+                  (->primitive-malli)))))
+   {}
+   body))
 
 (defn ->reitit
   [spec]
