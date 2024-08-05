@@ -1,8 +1,8 @@
 (ns com.moclojer.specs.moclojer-test
   (:require
    [clojure.test :refer [deftest is testing]]
-   [com.moclojer.specs.moclojer :refer [create-url make-body-parameters
-                                        make-parameters]]))
+   [com.moclojer.specs.moclojer :refer [->reitit create-url
+                                        make-body-parameters make-parameters]]))
 
 (deftest create-url-test
   (testing "make the url from path"
@@ -25,24 +25,20 @@
      (is (= {:number int? :id string?} (make-parameters "/pets/:number|int/:id|string/test")))]))
 
 (deftest make-body-parameters-test
-  (is (= {:hello :string
-          :bye :int
-          :hello2 {:adult :boolean
-                   :name :string}}
-         (make-body-parameters {:hello "hellooo"
-                                :bye 123
-                                :hello2 {:adult false
-                                         :name "hello"}}))))
-;; TODO
-#_(deftest ->reitit-test
-    (is (= ["/pets/:id"
-            {:host "localhost"
-             :swagger {:tags ["get-localhost-pets--id|string"]}
-             :parameters {:path {:id :string}}
-             :responses {200 {:body {:id :int
-                                     :name :string}}}
-             :get {:summary "Generated from /pets/:id"}}]
-           (second (->reitit [{:endpoint {:path "/pets/:id"
-                                          :response {:status 400
-                                                     :body {:pet {:id 123
-                                                                  :name "rex"}}}}}])))))
+  (testing "request body"
+    (is (= {:hello :string
+            :bye :int
+            :hello2 {:adult :boolean
+                     :name :string}}
+           (make-body-parameters {:hello "hellooo"
+                                  :bye 123
+                                  :hello2 {:adult false
+                                           :name "hello"}}))))
+  (testing "response body"
+    (is (= {:body {:pet {:id :int
+                         :name :string}}}
+           (-> (second (->reitit [{:endpoint {:path "/pets/:id"
+                                              :response {:status 200
+                                                         :body {:pet {:id 123
+                                                                      :name "rex"}}}}}]))
+               (get-in [1 :responses 200]))))))
