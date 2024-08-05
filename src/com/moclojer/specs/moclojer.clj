@@ -185,7 +185,14 @@
          :parameters (create-swagger-parameters (make-parameters path)
                                                 (make-query-parameters (:query (first endpoints)))
                                                 (make-body-parameters (:body (first endpoints))))
-         :responses {(or (:status response) 200) (make-body-parameters (select-keys response [:body]))}
+         :responses {(or (:status response) 200)
+                     (try
+                       (-> (:body response)
+                           (json/read-str :key-fn keyword)
+                           (make-body-parameters))
+                       (catch Exception e
+                         (log/log :error ::bad-response-body (.getMessage e))
+                         {:body :string}))}
          (keyword method) {:summary (str "Generated from " real-path)
                            :handler (generic-reitit-handler response nil)}}]))))
 

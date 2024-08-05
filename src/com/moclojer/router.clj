@@ -18,9 +18,9 @@
   "Identifies configuration type (moclojer or openapi spec)"
   [{:keys [::config ::mocks]}]
   (let [mode (if mocks :openapi :moclojer)
-        routes (->> (if mocks
-                      (openapi/->moclojer config mocks)
-                      config))]
+        routes (if mocks
+                 (openapi/->moclojer config mocks)
+                 config)]
 
     (log/log :info :spec-mode :mode mode)
     (->> routes

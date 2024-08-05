@@ -16,4 +16,4 @@
   "generate routes from config and mocks (not required)"
   [config & {:keys [mocks-path] :or {mocks-path nil}}]
   (atom (router/smart-router {::router/config config
-                              ::router/mocks  (open-file mocks-path)})))
+                              ::router/mocks (open-file mocks-path)})))
