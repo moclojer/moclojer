@@ -1,16 +1,33 @@
 (ns com.moclojer.server
-  (:require [clojure.data.json :as json]
-            [com.moclojer.adapters :as adapters]
-            [com.moclojer.config :as config]
-            [com.moclojer.io-utils :refer [open-file]]
-            [com.moclojer.log :as log]
-            [com.moclojer.watcher :refer [start-watch]]
-            [io.pedestal.http :as http]
-            [io.pedestal.http.body-params :as body-params]
-            [io.pedestal.http.jetty]
-            [io.pedestal.interceptor.error :refer [error-dispatch]])
-  (:import (org.eclipse.jetty.server.handler.gzip GzipHandler)
-           (org.eclipse.jetty.servlet ServletContextHandler)))
+  (:require
+   [clojure.data.json :as json]
+   [clojure.string :as string]
+   [com.moclojer.adapters :as adapters]
+   [com.moclojer.config :as config]
+   [com.moclojer.io-utils :refer [open-file]]
+   [com.moclojer.log :as log]
+   [com.moclojer.watcher :refer [start-watch]]
+   [io.pedestal.http :as http]
+   [io.pedestal.http.body-params :as body-params]
+   [io.pedestal.http.jetty]
+   [io.pedestal.interceptor.error :refer [error-dispatch]]
+   [muuntaja.core :as m]
+   [reitit.coercion.malli :as reitit-malli]
+   [reitit.coercion.spec]
+   [reitit.dev.pretty :as pretty]
+   [reitit.http :as r-http]
+   [reitit.http.coercion :as coercion]
+   [reitit.http.interceptors.exception :as exception]
+   [reitit.http.interceptors.multipart :as multipart]
+   [reitit.http.interceptors.muuntaja :as muuntaja]
+   [reitit.http.interceptors.parameters :as parameters]
+   [reitit.pedestal :as pedestal]
+   [reitit.ring :as ring]
+   [reitit.swagger :as swagger]
+   [reitit.swagger-ui :as swagger-ui])
+  (:import
+   (org.eclipse.jetty.server.handler.gzip GzipHandler)
+   (org.eclipse.jetty.servlet ServletContextHandler)))
 
 (defn context-configurator
   "http container options, active gzip"
@@ -40,20 +57,63 @@
                                         (body-params/body-params)
                                         interceptor-error-handler])))
 
-(defn build-config-map
-  "build pedestal config map"
-  [*router & {:keys [http-host http-port join?]}]
-  {:env                     config/moclojer-environment
-   ::http/request-logger    log/request
-   ::http/routes            (fn [] @*router)
-   ::http/type              :jetty
-   ::http/join?              join?
-   ::http/allowed-origins   {:creds true
-                             :allowed-origins (constantly true)}
-   ::http/container-options {:h2c?                 true
-                             :context-configurator context-configurator}
-   ::http/host              http-host
-   ::http/port              http-port})
+(defn hosting-interceptor
+  []
+  {:name :hosting-redirect
+   :enter (fn [{:keys [request] :as context}]
+            (if-let [expected (-> request :reitit.core/match :data :host)]
+              (let [host (or (-> request :headers (get "host")) "localhost")
+                    incoming-host (cond
+                                    (string/includes? host ":") (-> host
+                                                                    (string/split  #":")
+                                                                    (first))
+
+                                    :else host)]
+                (if (= incoming-host expected)
+                  context
+                  (throw (ex-info "Invalid host" {:status 403
+                                                  :expected-host expected
+                                                  :host incoming-host}))))
+
+              context))})
+
+(defn reitit-router [*router]
+  (-> (pedestal/routing-interceptor
+       (r-http/router
+        @*router
+        {;:reitit.interceptor/transform dev/print-context-diffs ;; pretty context diffs
+         ;;:validate spec/validate ;; enable spec validation for route data
+         ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
+         :exception pretty/exception
+         :data {:coercion reitit-malli/coercion
+                :muuntaja m/instance
+                :interceptors [;; swagger feature
+                               swagger/swagger-feature
+                               ;; query-params & form-params
+                               (parameters/parameters-interceptor)
+                               ;; content-negotiation
+                               (muuntaja/format-negotiate-interceptor)
+                               ;; encoding response body
+                               (muuntaja/format-response-interceptor)
+                               ;; exception handling
+                               (exception/exception-interceptor)
+                               ;; decoding request body
+                               (muuntaja/format-request-interceptor)
+                               ;; coercing response bodys
+                               (coercion/coerce-response-interceptor)
+                               ;; coercing request parameters
+                               (coercion/coerce-request-interceptor)
+                               ;; hosting interceptor
+                               (hosting-interceptor)
+                               ;; multipart
+                               (multipart/multipart-interceptor)]}})
+       (ring/routes
+        (swagger-ui/create-swagger-ui-handler
+         {:path "/docs"
+          :config {:validatorUrl nil
+                   :operationsSorter "alpha"}})
+        (ring/create-resource-handler)
+        (ring/create-default-handler)))))
 
 (defn start-server!
   "start moclojer server"
@@ -64,7 +124,8 @@
         http-port (or (some-> (System/getenv "PORT")
                               Integer/parseInt)
                       8000)
-        http-start (if start? http/start ::http/service-fn)]
+        http-start (if start? http/start ::http/service-fn)
+        create-server (if start? http/create-server http/create-servlet)]
     (log/log :info
              :moclojer-start
              "-> moclojer"
@@ -73,20 +134,33 @@
              :port http-port
              :url (str "http://" http-host ":" http-port)
              :version config/version)
-    (->
-     *router
-     (build-config-map  {:http-host http-host
-                         :http-port http-port
-                         :join? join?})
-     get-interceptors
-     http/create-server
-     http-start)))
+    (let [router (reitit-router *router)]
+      (-> {:env                     config/moclojer-environment
+           ::http/request-logger    log/request
+           ::http/routes            []
+           ::http/type              :jetty
+           ::http/join?              join?
+           ::http/container-options {:h2c?                 true
+                                     :context-configurator context-configurator}
+ ;; allow serving the swagger-ui styles & scripts from self
+           ::http/secure-headers {:content-security-policy-settings
+                                  {:default-src "'self'"
+                                   :style-src "'self' 'unsafe-inline'"
+                                   :script-src "'self' 'unsafe-inline'"}}
+           ::http/host              http-host
+           ::http/port              http-port}
+
+          (http/default-interceptors)
+          (pedestal/replace-last-interceptor router)
+
+          (http/dev-interceptors)
+          create-server
+          http-start))))
 
 (defn create-watcher [*router & {:keys [config-path mocks-path]}]
   (start-watch [{:file config-path
                  :event-types [:create :modify :delete]
                  :callback (fn [_event file]
-                             (prn file config-path)
                              (when (and (= file config-path)
                                         (not (nil? config-path)))
                                (log/log :info :moclojer-reload :router file :config config-path)
@@ -108,6 +182,5 @@
   [{:keys [config-path mocks-path]}]
   (let [*router (adapters/generate-routes (open-file config-path)
                                           :mocks-path mocks-path)]
-
     (create-watcher *router {:config-path config-path :mocks-path mocks-path})
     (start-server! *router)))

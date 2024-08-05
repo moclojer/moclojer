@@ -1,6 +1,7 @@
 (ns com.moclojer.adapters
-  (:require [com.moclojer.io-utils :refer [open-file]]
-            [com.moclojer.router :as router]))
+  (:require
+   [com.moclojer.io-utils :refer [open-file]]
+   [com.moclojer.router :as router]))
 
 (defn inputs->config
   [{:keys [args opts]} envs]
@@ -15,4 +16,4 @@
   "generate routes from config and mocks (not required)"
   [config & {:keys [mocks-path] :or {mocks-path nil}}]
   (atom (router/smart-router {::router/config config
-                              ::router/mocks  (open-file mocks-path)})))
+                              ::router/mocks (open-file mocks-path)})))

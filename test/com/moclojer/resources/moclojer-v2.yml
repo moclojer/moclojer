@@ -1,0 +1,25 @@
+- endpoint:
+    method: GET
+    path: /users/:age|int
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "user": "avelino is {{path-params.age}} years old and has children" 
+        }
+
+- endpoint:
+    method: POST
+    path: /users
+    body:
+      age: int
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "user": "avelino is {{json-params.age}} years old and has children" 
+        }
