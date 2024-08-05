@@ -1,8 +1,8 @@
-(ns com.moclojer.specs.moclojer-spec
+(ns com.moclojer.specs.moclojer-test
   (:require
    [clojure.test :refer [deftest is testing]]
-   [com.moclojer.specs.moclojer :refer [->reitit create-url
-                                        make-body-parameters make-parameters]]))
+   [com.moclojer.specs.moclojer :refer [create-url make-body-parameters
+                                        make-parameters]]))
 
 (deftest create-url-test
   (testing "make the url from path"
@@ -33,7 +33,6 @@
                                 :bye 123
                                 :hello2 {:adult false
                                          :name "hello"}}))))
-
 ;; TODO
 #_(deftest ->reitit-test
     (is (= ["/pets/:id"

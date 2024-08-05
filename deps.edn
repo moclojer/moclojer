@@ -37,7 +37,7 @@
            ;; Run specific test
            ;; clj -M:test -n com.moclojer.external-body.excel-test
            :test      {:extra-paths ["test"]
-                       :resource-paths ["test/com/moclojer/resources"]
+                       :resource-paths ["META-INF" "test/com/moclojer/resources"]
                        :extra-deps {io.github.cognitect-labs/test-runner {:git/tag "v0.5.1"
                                                                           :git/sha "dfb30dd"}
                                     clj-kondo/clj-kondo                  {:mvn/version "2023.10.20"}

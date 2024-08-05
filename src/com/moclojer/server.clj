@@ -12,6 +12,7 @@
    [io.pedestal.http.jetty]
    [io.pedestal.interceptor.error :refer [error-dispatch]]
    [muuntaja.core :as m]
+   [reitit.coercion.malli :as reitit-malli]
    [reitit.coercion.spec]
    [reitit.dev.pretty :as pretty]
    [reitit.http :as r-http]
@@ -84,27 +85,27 @@
          ;;:validate spec/validate ;; enable spec validation for route data
          ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
          :exception pretty/exception
-         :data {:coercion reitit.coercion.spec/coercion
+         :data {:coercion reitit-malli/coercion
                 :muuntaja m/instance
                 :interceptors [;; swagger feature
                                swagger/swagger-feature
-                             ;; query-params & form-params
+                               ;; query-params & form-params
                                (parameters/parameters-interceptor)
-                             ;; content-negotiation
+                               ;; content-negotiation
                                (muuntaja/format-negotiate-interceptor)
-                             ;; encoding response body
+                               ;; encoding response body
                                (muuntaja/format-response-interceptor)
-                             ;; exception handling
+                               ;; exception handling
                                (exception/exception-interceptor)
-                             ;; decoding request body
+                               ;; decoding request body
                                (muuntaja/format-request-interceptor)
-                             ;; coercing response bodys
+                               ;; coercing response bodys
                                (coercion/coerce-response-interceptor)
-                             ;; coercing request parameters
+                               ;; coercing request parameters
                                (coercion/coerce-request-interceptor)
                                ;; hosting interceptor
                                (hosting-interceptor)
-                             ;; multipart
+                               ;; multipart
                                (multipart/multipart-interceptor)]}})
        (ring/routes
         (swagger-ui/create-swagger-ui-handler
