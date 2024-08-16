@@ -37,8 +37,8 @@
 
 (deftest openapi->moclojer->pedestal
   (is (= {:id 0, :name "caramelo"}
-         (-> (helpers/service-fn (yaml/from-file (:config petstore))
-                                 :mocks (yaml/from-file (:mocks petstore)))
+         (-> (helpers/service-fn (:config petstore)
+                                 :mocks (:mocks petstore))
              (response-for :get "/pets/1")
              :body
              (json/parse-string true)))))
