@@ -1,5 +1,6 @@
 (ns com.moclojer.specs.moclojer-test
   (:require
+   [clojure.data.json :as json]
    [clojure.test :refer [deftest is testing]]
    [com.moclojer.specs.moclojer :refer [->reitit create-url
                                         make-body-parameters make-parameters]]))
@@ -37,8 +38,10 @@
   (testing "response body"
     (is (= {:body {:pet {:id :int
                          :name :string}}}
-           (-> (second (->reitit [{:endpoint {:path "/pets/:id"
-                                              :response {:status 200
-                                                         :body {:pet {:id 123
-                                                                      :name "rex"}}}}}]))
+           (-> (second (->reitit [{:endpoint
+                                   {:path "/pets/:id"
+                                    :response (json/write-str
+                                               {:status 200
+                                                :body {:pet {:id 123
+                                                             :name "rex"}}})}}]))
                (get-in [1 :responses 200]))))))

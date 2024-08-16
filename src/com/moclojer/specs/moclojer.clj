@@ -182,14 +182,15 @@
        [real-path
         {:host (or host "localhost")
          :swagger {:tags [(or tag route-name)]}
-         :parameters (create-swagger-parameters (make-parameters path)
-                                                (make-query-parameters (:query (first endpoints)))
-                                                (make-body-parameters (:body (first endpoints))))
+         :parameters (create-swagger-parameters
+                      (make-parameters path)
+                      (make-query-parameters (:query (first endpoints)))
+                      (make-body-parameters (:body (first endpoints))))
          :responses {(or (:status response) 200)
                      (try
-                       (-> (:body response)
-                           (json/read-str :key-fn keyword)
-                           (make-body-parameters))
+                       {:body (-> (json/read-str response :key-fn keyword)
+                                  (:body)
+                                  (make-body-parameters))}
                        (catch Exception e
                          (log/log :error ::bad-response-body (.getMessage e))
                          {:body :string}))}
