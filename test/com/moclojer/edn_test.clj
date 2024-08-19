@@ -5,7 +5,6 @@
             [com.moclojer.helpers-test :as helpers]
             [io.pedestal.test :refer [response-for]]))
 
-
 (deftest dynamic-endpoint-edn
   (let [service-fn (helpers/service-fn (edn/read-string (str "[" (slurp "test/com/moclojer/resources/moclojer.edn") "]")))]
     (testing "get all pets"
