@@ -1,9 +1,10 @@
 (ns com.moclojer.specs.moclojer
-  (:require [clojure.string :as string]
-            [io.pedestal.http.route :as route]
-            [com.moclojer.external-body.core :as ext-body]
-            [com.moclojer.webhook :as webhook]
-            [selmer.parser :as selmer]))
+  (:require
+   [clojure.string :as string]
+   [com.moclojer.external-body.core :as ext-body]
+   [com.moclojer.webhook :as webhook]
+   [io.pedestal.http.route :as route]
+   [selmer.parser :as selmer]))
 
 (defn render-template
   [template request]
