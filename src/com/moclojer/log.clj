@@ -55,9 +55,9 @@
   (clean-timbre-appenders)
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
   (let [config (merge
-                 {:min-level level
-                  :ns-filter {:allow #{"com.moclojer.*"}}}
-                 (log-format->mergeable-cfg fmt))
+                {:min-level level
+                 :ns-filter {:allow #{"com.moclojer.*"}}}
+                (log-format->mergeable-cfg fmt))
         sentry-dsn (or (System/getenv "SENTRY_DSN") nil)]
     (timbre/merge-config! config)
     (when sentry-dsn

@@ -11,10 +11,10 @@
             :msg "testing"
             :hello "moclojer"}
            (select-keys
-             (-> (log/log :info :testing :hello :moclojer)
-                 with-out-str
-                 (json/read-str :key-fn keyword))
-             [:msg :hello :level])))))
+            (-> (log/log :info :testing :hello :moclojer)
+                with-out-str
+                (json/read-str :key-fn keyword))
+            [:msg :hello :level])))))
 
 (deftest default-format-logging-test
   (testing "stdout content is formatted as default (println)"

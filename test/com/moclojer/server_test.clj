@@ -82,12 +82,11 @@
              (response-for :get "/v1/hello")
              :body
              (json/parse-string true))))
-   (is (= {:hello-v1 "hello world!"}
+  (is (= {:hello-v1 "hello world!"}
          (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/moclojer.yml"))
              (response-for :get "/v1/hello/")
              :body
              (json/parse-string true)))))
-
 
 (deftest multi-path-param
   (is (= {:username "moclojer-123"
@@ -103,7 +102,7 @@
              (response-for :get "/helloo/moclojer")
              :status)))
   (is (string/includes?
-        (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/mock-syntax-error.yml"))
-            (response-for :get "/helloo/moclojer")
-            :body)
-        "error")))
+       (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/mock-syntax-error.yml"))
+           (response-for :get "/helloo/moclojer")
+           :body)
+       "error")))
