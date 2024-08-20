@@ -17,7 +17,7 @@
    (for [[path methods] paths]
      (for [[method {:keys [operationId]}] methods]
        (let [path (convert-path path)]
-         {:endpoint {:method (name method)
+         {:endpoint {:method (str/upper-case (name method))
                      :path path
                      :response (get mocks (keyword operationId))}})))
    (mapcat identity)))

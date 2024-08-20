@@ -10,6 +10,19 @@
           "user": "avelino is {{path-params.age}} years old and has children" 
         }
 
+# adding this here to test if our specs group matching paths together
+- endpoint:
+    method: DELETE
+    path: /users/:age|int
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: |
+        {
+          "message": "avelino deleted"
+        }
+
 - endpoint:
     method: POST
     path: /users

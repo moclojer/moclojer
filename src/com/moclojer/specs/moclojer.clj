@@ -165,35 +165,43 @@
 
 (defn ->reitit
   [spec]
-  (concat
-   [["/swagger.json"
-     {:get {:no-doc true
-            :swagger {:info {:title "moclojer-mock"
-                             :description "my mock"}}
-            :handler (swagger/create-swagger-handler)}}]]
-   (for [[[host path method tag] endpoints]
-         (group-by (juxt :host :path :method)
-                   (remove nil? (map :endpoint spec)))]
-     (let [method (generate-method method)
-           route-name (generate-route-name host path method)
-           response (:response (first endpoints))
-           real-path (create-url path)]
+  (->> (for [[[host path method tag] endpoints]
+             (group-by (juxt :host :path :method)
+                       (remove nil? (map :endpoint spec)))]
+         (let [method (generate-method method)
+               route-name (generate-route-name host path method)
+               response (:response (first endpoints))
+               real-path (create-url path)]
 
-       [real-path
-        {:host (or host "localhost")
-         :swagger {:tags [(or tag route-name)]}
-         :parameters (create-swagger-parameters
-                      (make-parameters path)
-                      (make-query-parameters (:query (first endpoints)))
-                      (make-body-parameters (:body (first endpoints))))
-         :responses {(or (:status response) 200)
-                     (try
-                       {:body (-> (json/read-str response :key-fn keyword)
-                                  (:body)
-                                  (make-body-parameters))}
-                       (catch Exception e
-                         (log/log :error ::bad-response-body (.getMessage e))
-                         {:body :string}))}
-         (keyword method) {:summary (str "Generated from " real-path)
-                           :handler (generic-reitit-handler response nil)}}]))))
-
+           [real-path
+            {:host (or host "localhost")
+             :swagger {:tags [(or tag route-name)]}
+             :parameters (create-swagger-parameters
+                          (make-parameters path)
+                          (make-query-parameters (:query (first endpoints)))
+                          (make-body-parameters (:body (first endpoints))))
+             :responses {(or (:status response) 200)
+                         (try
+                           {:body (-> (json/read-str response :key-fn keyword)
+                                      (:body)
+                                      (make-body-parameters))}
+                           (catch Exception e
+                             (log/log :error ::bad-response-body (.getMessage e))
+                             {:body :string}))}
+             (keyword method) {:summary (if real-path
+                                          (str "Generated from " real-path)
+                                          "Auto-generated")
+                               :handler (generic-reitit-handler response nil)}}]))
+       (concat [["/swagger.json"
+                 {:get {:no-doc true
+                        :swagger {:info {:title "moclojer-mock"
+                                         :description "my mock"}}
+                        :handler (swagger/create-swagger-handler)}}]])
+       (reduce
+        (fn [routes [route-name route-definition]]
+          (let [?existing-definitions (get routes route-name)]
+            (assoc routes route-name
+                   (merge ?existing-definitions route-definition))))
+        {})
+       (map identity)
+       (vec)))

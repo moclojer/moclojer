@@ -6,6 +6,7 @@
    [com.moclojer.specs.openapi :as openapi]
    [io.pedestal.test :refer [response-for]]
    [yaml.core :as yaml]))
+
 (def petstore
   {:config "META-INF/openapi-spec/v3.0/petstore-expanded.yaml"
    :mocks "test/com/moclojer/resources/petstore-expanded-mocks.yaml"})
@@ -16,20 +17,20 @@
         endpoints (openapi/->moclojer config mocks)]
     (testing "Should convert openapi spec to moclojer spec"
       (is (=
-           [{:endpoint {:method "get"
+           [{:endpoint {:method "GET"
                         :path "/pets"
                         :response {:status 200
                                    :body "[{\"id\":0,\"name\":\"caramelo\"}]"
                                    :headers {:Content-Type "application/json"}}}},
-            {:endpoint {:method "post"
+            {:endpoint {:method "POST"
                         :path "/pets"
                         :response {:status 303}}},
-            {:endpoint {:method "get"
+            {:endpoint {:method "GET"
                         :path "/pets/:id"
                         :response {:status 200
                                    :body "{\"id\":0,\"name\":\"caramelo\"}"
                                    :headers {:Content-Type "application/json"}}}},
-            {:endpoint {:method "delete"
+            {:endpoint {:method "DELETE"
                         :path "/pets/:id"
                         :response {:status 202}}}]
            endpoints)))))
