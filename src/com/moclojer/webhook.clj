@@ -15,7 +15,8 @@
        (log/log :error :webhook-warning
                 :invalid-body body
                 :message (.getMessage e))
-       "{}"))))
+       {:error "failed to read and parse request body"
+        :message (.getMessage e)}))))
 
 (defn request-after-delay
   "after a delay call http-request, return body"
@@ -41,7 +42,7 @@
               (client/request req)
               (log/log :info :sleep sleep-time :webhook-done hashed-req)
               (catch Exception e
-                (log/log :error :webhook-failed hashed-req)
+                (log/log :error :webhook-failed hashed-req :message (.getMessage e))
                 (.printStackTrace e))))))
       (log/log :info :sleep sleep-time :webhook-done hashed-req :condition condition))
 
