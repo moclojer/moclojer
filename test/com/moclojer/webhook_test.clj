@@ -1,15 +1,18 @@
 (ns com.moclojer.webhook-test
-  (:require [cheshire.core :as json]
-            [clojure.test :refer [deftest is]]
-            [com.moclojer.helpers-test :as helpers]
-            [com.moclojer.webhook :as webhook]
-            [io.pedestal.test :refer [response-for]]))
+  (:require
+   [cheshire.core :as json]
+   [clojure.test :refer [deftest is]]
+   [com.moclojer.helpers-test :as helpers]
+   [com.moclojer.webhook :as webhook]
+   [io.pedestal.test :refer [response-for]]))
 
 (def body {:id 123})
 
 (deftest server-with-webhook
   (is (= body
-         (-> (helpers/service-fn "test/com/moclojer/resources/webhook.yml" {:start? false})
+         (-> (helpers/service-fn
+              "test/com/moclojer/resources/webhook.yml"
+              {:start? false :join? false})
              (response-for :post "/with-webhook")
              :body
              (json/parse-string true)))))
@@ -18,7 +21,9 @@
   (do
     ;; upload the server to test on the internal endpoint
     ;; without the need for an external request
-    (helpers/service-fn "test/com/moclojer/resources/webhook.yml" {:start? false})
+    (helpers/service-fn
+     "test/com/moclojer/resources/webhook.yml"
+     {:start? false :join? false})
     (is (= body
            (-> (webhook/request-after-delay
                 {:url "http://127.0.0.1:8080/with-webhook"

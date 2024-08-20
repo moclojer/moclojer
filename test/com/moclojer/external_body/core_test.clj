@@ -1,10 +1,11 @@
 (ns com.moclojer.external-body.core-test
-  (:require [clojure.data.json :as jsond]
-            [clojure.test :refer [deftest is testing]]
-            [com.moclojer.external-body.core :as core]
-            [com.moclojer.helpers-test :as helpers]
-            [io.pedestal.test :refer [response-for]]
-            [yaml.core :as yaml]))
+  (:require
+   [clojure.data.json :as jsond]
+   [clojure.test :refer [deftest is testing]]
+   [com.moclojer.external-body.core :as core]
+   [com.moclojer.helpers-test :as helpers]
+   [io.pedestal.test :refer [response-for]]
+   [yaml.core :as yaml]))
 
 (def data-text
   {:provider "json"
@@ -33,16 +34,18 @@
 
 (deftest text-config-test
   (is (= ret-text
-         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/external-body-json.yml"))
+         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/external-body-json.yml")
+                                 {:start? false :join? false})
              (response-for :get "/external-body-text")
              :body
              (jsond/read-str :key-fn keyword)))))
 
 (deftest url-external-config-test
-    ;; loop to simplify implementation - no N assert `(is(=))`
-  (for [name ["kabuto"
-              "marowak"]]
+  ;; loop to simplify implementation - no N assert `(is(=))`
+  (for [name ["kabuto" "marowak"]]
     (is (= 200
-           (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/external-body-json.yml"))
+           (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/external-body-json.yml")
+                                   {:start? true
+                                    :join? true})
                (response-for :get (str "/pokemon/" name))
                :status)))))

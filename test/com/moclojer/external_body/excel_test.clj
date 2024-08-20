@@ -8,7 +8,8 @@
 (deftest xlsx-config-test
   (is (= [{:name "avelino", :langs "golang"}
           {:name "chicao", :langs "python"}]
-         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/xlsx.yml"))
+         (-> (helpers/service-fn (yaml/from-file "test/com/moclojer/resources/xlsx.yml")
+                                 {:start? false :join? false})
              (response-for :get "/xlsx")
              :body
              (json/parse-string true)))))

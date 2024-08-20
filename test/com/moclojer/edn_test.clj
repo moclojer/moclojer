@@ -1,11 +1,14 @@
 (ns com.moclojer.edn-test
-  (:require [cheshire.core :as json]
-            [clojure.test :refer [deftest is testing]]
-            [com.moclojer.helpers-test :as helpers]
-            [io.pedestal.test :refer [response-for]]))
+  (:require
+   [cheshire.core :as json]
+   [clojure.test :refer [deftest is testing]]
+   [com.moclojer.helpers-test :as helpers]
+   [io.pedestal.test :refer [response-for]]))
 
 (deftest dynamic-endpoint-edn
-  (let [service-fn (helpers/service-fn "test/com/moclojer/resources/moclojer.edn" {:start? false})]
+  (let [service-fn (helpers/service-fn "test/com/moclojer/resources/moclojer.edn"
+                                       {:start? false
+                                        :join? false})]
     (testing "get all pets"
       (is (= {:pets [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
              (-> service-fn

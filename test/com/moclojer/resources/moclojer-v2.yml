@@ -26,8 +26,10 @@
 - endpoint:
     method: POST
     path: /users
-    body:
-      age: int
+    body: |
+      {
+        "age": 0
+      }
     response:
       status: 200
       headers:

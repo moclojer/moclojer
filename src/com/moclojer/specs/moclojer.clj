@@ -179,7 +179,9 @@
              :parameters (create-swagger-parameters
                           (make-parameters path)
                           (make-query-parameters (:query (first endpoints)))
-                          (make-body-parameters (:body (first endpoints))))
+                          (-> (or (:body (first endpoints)) "{}")
+                              (json/read-str :key-fn keyword)
+                              (make-body-parameters)))
              :responses {(or (:status response) 200)
                          (try
                            {:body (-> (json/read-str response :key-fn keyword)
