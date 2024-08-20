@@ -1,8 +1,8 @@
 (ns com.moclojer.webhook
   (:require
-   [clojure.data.json :as json]
    [clj-http.client :as client]
    [clojure.core.async :as a]
+   [clojure.data.json :as json]
    [clojure.edn :as edn]
    [com.moclojer.log :as log]))
 
@@ -21,7 +21,7 @@
   "after a delay call http-request, return body"
   [request]
   (let [req (-> request
-                (update :condition #(or % true))
+                (update :condition #(if (boolean? %) % true))
                 (update :headers #(or % {"Content-Type" "application/json"}))
                 (update :sleep-time #(or % 60))
                 (update :body #(read-body (or % "{}"))))
@@ -45,4 +45,6 @@
                 (.printStackTrace e))))))
       (log/log :info :sleep sleep-time :webhook-done hashed-req :condition condition))
 
-    body))
+    (if condition
+      (:body request)
+      "{}")))

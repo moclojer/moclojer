@@ -1,10 +1,11 @@
 (ns com.moclojer.webhook-test
-  (:require [cheshire.core :as json]
-            [clojure.test :refer [deftest is]]
-            [com.moclojer.helpers-test :as helpers]
-            [com.moclojer.webhook :as webhook]
-            [io.pedestal.test :refer [response-for]]
-            [yaml.core :as yaml]))
+  (:require
+   [cheshire.core :as json]
+   [clojure.test :refer [deftest is]]
+   [com.moclojer.helpers-test :as helpers]
+   [com.moclojer.webhook :as webhook]
+   [io.pedestal.test :refer [response-for]]
+   [yaml.core :as yaml]))
 
 (def body {:id 123})
 
