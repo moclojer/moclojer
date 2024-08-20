@@ -4,8 +4,8 @@
    [com.moclojer.io-utils :refer [open-file]]
    [com.moclojer.server :refer [start-server!]]
    [io.pedestal.http :as p.http]
-   [reitit.http :as http]
    [io.pedestal.test :refer [response-for]]
+   [reitit.http :as http]
    [reitit.http.interceptors.exception :as exception]
    [reitit.pedestal :as pedestal]))
 
@@ -15,6 +15,11 @@
   (let [*router (adapters/generate-routes (open-file config)
                                           :mocks-path mocks)]
     (start-server! *router opts)))
+
+(defn wait-for-server!
+  [service sleep-time]
+  (while (not @service)
+    (Thread/sleep sleep-time)))
 
 (comment
 

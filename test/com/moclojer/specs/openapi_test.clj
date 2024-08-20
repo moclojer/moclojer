@@ -4,6 +4,7 @@
    [clojure.test :refer [deftest is testing]]
    [com.moclojer.helpers-test :as helpers]
    [com.moclojer.specs.openapi :as openapi]
+   [io.pedestal.http :as p.http]
    [io.pedestal.test :refer [response-for]]
    [yaml.core :as yaml]))
 
@@ -35,10 +36,19 @@
                         :response {:status 202}}}]
            endpoints)))))
 
+(helpers/service-fn (:config petstore)
+                    :mocks (:mocks petstore))
+
 (deftest openapi->moclojer->pedestal
-  (is (= {:id 0, :name "caramelo"}
-         (-> (helpers/service-fn (:config petstore)
-                                 :mocks (:mocks petstore))
-             (response-for :get "/pets/1")
-             :body
-             (json/parse-string true)))))
+  (let [server (helpers/service-fn (:config petstore)
+                                   :mocks (:mocks petstore))]
+    (is (= {:id 0, :name "caramelo"}
+           (try
+             (-> (response-for server :get "/pets/1")
+                 :body
+                 (json/parse-string true))
+             (catch Exception e
+               (.printStackTrace e)
+               (.getMessage e)))))
+
+    (p.http/stop server)))

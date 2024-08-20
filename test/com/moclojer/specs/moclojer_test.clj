@@ -1,9 +1,13 @@
 (ns com.moclojer.specs.moclojer-test
   (:require
+   [clojure.core.async :as async]
    [clojure.data.json :as json]
    [clojure.test :refer [deftest is testing]]
+   [com.moclojer.helpers-test :as helpers]
    [com.moclojer.specs.moclojer :refer [->reitit create-url
-                                        make-body-parameters make-parameters]]))
+                                        make-body-parameters make-parameters]]
+   [io.pedestal.http :as p.http]
+   [io.pedestal.test :refer [response-for]]))
 
 (deftest create-url-test
   (testing "make the url from path"
@@ -45,3 +49,21 @@
                                                 :body {:pet {:id 123
                                                              :name "rex"}}})}}]))
                (get-in [1 :responses 200]))))))
+
+(deftest ->moclojer->pedestal-test
+  (let [server (atom nil)]
+
+    (async/go
+      (reset! server (helpers/service-fn "test/com/moclojer/resources/moclojer-v2.yaml")))
+    (Thread/sleep 500)
+
+    (is (= {:user "avelino is 77 years old and has children"}
+           (try
+             (some-> @server
+                     (response-for :get "/users/avelino/77")
+                     (json/read-str :key-fn keyword))
+             (catch Exception e
+               (.printStackTrace e)
+               (.getMessage e)))))
+
+    (p.http/stop @server)))
