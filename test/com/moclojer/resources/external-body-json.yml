@@ -8,3 +8,10 @@
       external-body:
         provider: json
         path: test/com/moclojer/resources/text-plan.json
+- endpoint:
+    method: GET
+    path: /pokemon/:name
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
