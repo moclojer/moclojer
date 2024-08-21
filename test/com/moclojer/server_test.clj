@@ -8,7 +8,8 @@
 
 (deftest hello-world
   (is (= {:hello "Hello, World!"}
-         (-> (helpers/service-fn "test/com/moclojer/resources/moclojer.yml"  {:start? false :join? false})
+         (-> (helpers/service-fn "test/com/moclojer/resources/moclojer.yml"
+                                 {:start? false :join? false})
              (response-for :get "/hello-world")
              :body
              (json/parse-string true)))))

@@ -25,7 +25,7 @@
       status: 200
       headers:
         Content-Type: application/json
-      body: >
+      body: |
         {
           "hello": "Hello, World!"
         }
@@ -48,8 +48,10 @@
 - endpoint:
     method: POST
     path: /first-post-route
-    body:
-      project: string
+    body: |
+      {
+        "project": "example"
+      }
     response:
       status: 200
       headers:

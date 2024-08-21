@@ -16,12 +16,17 @@
                                           :mocks-path mocks)]
     (start-server! *router opts)))
 
-(defn wait-for-server!
-  [service sleep-time]
-  (while (not @service)
-    (Thread/sleep sleep-time)))
-
 (comment
+  (clojure.pprint/pprint
+   (get
+    @(adapters/generate-routes
+      (open-file "test/com/moclojer/resources/moclojer.yml"))
+    2))
+
+  (clojure.pprint/pprint
+   (last
+    @(adapters/generate-routes
+      (open-file "test/com/moclojer/resources/moclojer-v2.yml"))))
 
   (def server (-> (service-fn "test/com/moclojer/resources/moclojer-v2.yml"
                               {:start? true :join? false :port 8000})))

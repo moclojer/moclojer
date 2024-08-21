@@ -5,6 +5,7 @@
    [com.moclojer.external-body.core :as ext-body]
    [com.moclojer.log :as log]
    [com.moclojer.webhook :as webhook]
+   [malli.provider :as mp]
    [reitit.swagger :as swagger]
    [selmer.parser :as selmer]))
 
@@ -53,7 +54,7 @@
                 (render-template request)))))
 
 (defn assoc-if [m k v]
-  (if (seq v)
+  (if v
     (assoc m k v)
     m))
 
@@ -145,24 +146,6 @@
                                         "double" double?
                                         nil string?))) {} query))
 
-(defn make-body-parameters
-  "Given a `body`, maps each value to a malli primitive.
-
-  {:hello \"123\"
-   :bye {:bye2 123
-         :bye3 true}} => {:hello :string, :bye {:bye2 :int :bye3 :boolean}}"
-  [body]
-  (reduce-kv
-   (fn [acc k v]
-     (assoc acc
-            (keyword k)
-            (if (map? v)
-              (make-body-parameters v)
-              (-> (some #(% v) wrapped-primitive-fns)
-                  (->primitive-malli)))))
-   {}
-   body))
-
 (defn ->reitit
   [spec]
   (->> (for [[[host path method tag] endpoints]
@@ -179,17 +162,26 @@
              :parameters (create-swagger-parameters
                           (make-parameters path)
                           (make-query-parameters (:query (first endpoints)))
-                          (-> (or (:body (first endpoints)) "{}")
-                              (json/read-str :key-fn keyword)
-                              (make-body-parameters)))
+                          (try
+                            (mp/provide
+                             [((json/read-str :key-fn keyword)
+                               (:body (first endpoints)))])
+                            (catch Exception e
+                              (log/log :error :bad-request-body
+                                       :body (:body (first endpoints))
+                                       :message (.getMessage e))
+                              nil)))
              :responses {(or (:status response) 200)
-                         (try
-                           {:body (-> (json/read-str response :key-fn keyword)
-                                      (:body)
-                                      (make-body-parameters))}
-                           (catch Exception e
-                             (log/log :error ::bad-response-body (.getMessage e))
-                             {:body :string}))}
+                         {:body (or (when-let [?body (:body response)]
+                                      (try
+                                        (->> (json/read-str ?body :key-fn keyword)
+                                             (conj [])
+                                             (mp/provide))
+                                        (catch Exception e
+                                          (log/log :error :bad-response-body
+                                                   :body ?body
+                                                   :message (.getMessage e)))))
+                                    {})}}
              (keyword method) {:summary (if real-path
                                           (str "Generated from " real-path)
                                           "Auto-generated")
