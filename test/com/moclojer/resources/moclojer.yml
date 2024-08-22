@@ -106,7 +106,7 @@
 # This mock register route: GET /multi-path-param/:username/more/:age
 - endpoint:
     method: GET
-    path: /multi-path-param/:username/more/:age
+    path: /multi-path-param/:username/more/:age|int
     response:
       status: 200
       headers:

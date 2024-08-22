@@ -86,7 +86,12 @@
          ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
          :exception pretty/exception
          :data {:coercion reitit-malli/coercion
-                :muuntaja m/instance
+                :muuntaja (m/create
+                           (assoc-in
+                            m/default-options
+                            [:formats "application/json"
+                             :decoder-opts :bigdecimals]
+                            true))
                 :interceptors [;; swagger feature
                                swagger/swagger-feature
                                ;; query-params & form-params
@@ -103,8 +108,6 @@
                                (coercion/coerce-response-interceptor)
                                ;; coercing request parameters
                                (coercion/coerce-request-interceptor)
-                               ;; hosting interceptor
-                               (hosting-interceptor)
                                ;; multipart
                                (multipart/multipart-interceptor)]}})
        (ring/routes
@@ -117,9 +120,9 @@
 
 (defn start-server!
   "start moclojer server"
-  [*router & {:keys [start?
-                     join?] :or {start? true
-                                 join? true}}]
+  [*router & {:keys [start? join?]
+              :or {start? true
+                   join? true}}]
   (let [http-host (or (System/getenv "HOST") "0.0.0.0")
         http-port (or (some-> (System/getenv "PORT")
                               Integer/parseInt)
@@ -142,7 +145,7 @@
            ::http/join?              join?
            ::http/container-options {:h2c?                 true
                                      :context-configurator context-configurator}
- ;; allow serving the swagger-ui styles & scripts from self
+           ;; allow serving the swagger-ui styles & scripts from self
            ::http/secure-headers {:content-security-policy-settings
                                   {:default-src "'self'"
                                    :style-src "'self' 'unsafe-inline'"

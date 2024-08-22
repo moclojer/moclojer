@@ -1,34 +1,15 @@
 (ns com.moclojer.specs.moclojer
   (:require
    [clojure.data.json :as json]
+   [clojure.set :refer [rename-keys]]
    [clojure.string :as string]
    [com.moclojer.external-body.core :as ext-body]
    [com.moclojer.log :as log]
    [com.moclojer.webhook :as webhook]
+   [malli.generator :as mg]
    [malli.provider :as mp]
    [reitit.swagger :as swagger]
    [selmer.parser :as selmer]))
-
-(def primitives
-  [int? string? boolean? float? double?])
-
-(def wrapped-primitive-fns
-  "Wrappes primitive functions so they return themselves incase of truthness.
-
-  Useful with `some`."
-  (map (fn [primitive-fn]
-         #(when (primitive-fn %)
-            primitive-fn))
-       primitives))
-
-(def malli-primitives
-  [:int :string :boolean :float :double])
-
-(defn ->primitive-malli
-  [primitive]
-  (or (get (zipmap primitives malli-primitives) primitive)
-      (throw (ex-info "primitive not supported"
-                      {:primitive primitive}))))
 
 (defn render-template
   [template request]
@@ -74,10 +55,9 @@
         (assoc-if :path-params path)
         (assoc-if :json-params body))))
 
-(defn generic-reitit-handler [response
-                              webhook-config]
+(defn generic-reitit-handler
+  [response webhook-config]
   (fn [request]
-    (prn request)
     (when webhook-config
       (webhook/request-after-delay
        {:url (:url webhook-config)
@@ -87,9 +67,14 @@
         :headers (:headers webhook-config)
         :sleep-time (:sleep-time webhook-config)}))
     (let [parameters (build-parameters (:parameters request))
-          body (build-body response parameters)]
-      (log/log :info :body (json/read-str body :key-fn keyword))
-      {:body  body
+          ?body (try
+                  (-> (build-body response parameters)
+                      (json/read-str :key-fn keyword))
+                  (catch Exception e
+                    (log/log :error (.getMessage e))
+                    {}))]
+      (log/log :info :body ?body)
+      {:body ?body
        :status 200
        :headers (into
                  {}
@@ -106,21 +91,40 @@
       name
       string/lower-case))
 
-(defn make-parameters [path]
-  (reduce
-   (fn [query-types s]
-     (if (string/starts-with? s ":")
-       (let [[param-name param-type] (-> (string/replace s #":" "") (string/split  #"\|"))
-             fun (condp = param-type
-                   "int" int?
-                   "string" string?
-                   "bool" boolean?
-                   "float" float?
-                   "double" double?
-                   nil string?)]
-         (assoc query-types (keyword param-name) fun))
-       query-types))
-   {} (string/split path #"/")))
+(defn provide [val & [cond forced-type]]
+  (if cond
+    (or forced-type (mp/provide [val]))
+    val))
+
+(defn make-path-parameters [path gen?]
+  (-> (fn [query-types s]
+        (if (string/starts-with? s ":")
+          (let [[param-name
+                 param-type] (-> (string/replace s #":" "") (string/split  #"\|"))
+                fun (condp = param-type
+                      "int" (provide (int 0) gen?)
+                      "string" (provide "example" gen?)
+                      "bool" (provide true gen?)
+                      "float" (provide (float 0.0) gen? :float)
+                      "double" (provide (double 0.0) gen? :double)
+                      nil (provide "example" gen?))]
+            (assoc query-types (keyword param-name) fun))
+          query-types))
+      (reduce {} (string/split path #"/"))))
+
+(defn inspect [a]
+  (clojure.pprint/pprint a)
+  a)
+
+(defn mock-response-body-request
+  "Given a `body`, generates a request based on the used
+  variables."
+  [?body parameters]
+  (when ?body
+    (select-keys
+     (rename-keys parameters {:path :path-params
+                              :body :json-params})
+     (seq (selmer/known-variables (ext-body/->str ?body))))))
 
 (defn create-url [pattern]
   (let [segments (string/split pattern #"/")
@@ -136,15 +140,31 @@
       (assoc-if :query query)
       (assoc-if :body body)))
 
-(defn make-query-parameters [query]
-  (reduce-kv (fn [acc k v]
-               (assoc acc (keyword k) (condp = v
-                                        "int" int?
-                                        "string" string?
-                                        "bool" boolean?
-                                        "float" float?
-                                        "double" double?
-                                        nil string?))) {} query))
+(defn make-query-parameters [query gen?]
+  (reduce-kv
+   (fn [acc k v]
+     (assoc acc (keyword k)
+            (condp = v
+              "int" (provide (int 0) gen?)
+              "string" (provide "example" gen?)
+              "bool" (provide gen? true)
+              "float" (provide (float 0.0) gen? :float)
+              "double" (provide (double 0.0) gen? :double)
+              nil (provide "example"))))
+   {}
+   query))
+
+(defn make-body
+  [?body type]
+  (when ?body
+    (try
+      (mp/provide
+       [(json/read-str ?body :key-fn keyword)])
+      (catch Exception e
+        (log/log :error :bad-body
+                 :type type
+                 :body ?body
+                 :message (.getMessage e))))))
 
 (defn ->reitit
   [spec]
@@ -154,35 +174,27 @@
          (let [method (generate-method method)
                route-name (generate-route-name host path method)
                response (:response (first endpoints))
-               real-path (create-url path)]
+               real-path (create-url path)
+               create-params-fn #(create-swagger-parameters
+                                  (make-path-parameters path %)
+                                  (make-query-parameters (:query (first endpoints)) %)
+                                  (make-body (:body (first endpoints)) :request))]
 
            [real-path
             {:host (or host "localhost")
              :swagger {:tags [(or tag route-name)]}
-             :parameters (create-swagger-parameters
-                          (make-parameters path)
-                          (make-query-parameters (:query (first endpoints)))
-                          (try
-                            (mp/provide
-                             [((json/read-str :key-fn keyword)
-                               (:body (first endpoints)))])
-                            (catch Exception e
-                              (log/log :error :bad-request-body
-                                       :body (:body (first endpoints))
-                                       :message (.getMessage e))
-                              nil)))
+             :parameters (create-params-fn true)
              :responses {(or (:status response) 200)
-                         {:body (or (when-let [?body (:body response)]
-                                      (try
-                                        (->> (json/read-str ?body :key-fn keyword)
-                                             (conj [])
-                                             (mp/provide))
-                                        (catch Exception e
-                                          (log/log :error :bad-response-body
-                                                   :body ?body
-                                                   :message (.getMessage e)))))
+                         {:body (or (let [body (:body response)]
+                                      (make-body
+                                       (->> (update
+                                             (create-params-fn false)
+                                             :body #(when % (mg/generate %)))
+                                            (mock-response-body-request body)
+                                            (render-template body))
+                                       :response))
                                     {})}}
-             (keyword method) {:summary (if real-path
+             (keyword method) {:summary (if-not (string/blank? real-path)
                                           (str "Generated from " real-path)
                                           "Auto-generated")
                                :handler (generic-reitit-handler response nil)}}]))
@@ -198,4 +210,5 @@
                    (merge ?existing-definitions route-definition))))
         {})
        (map identity)
-       (vec)))
+       (vec)
+       inspect))
