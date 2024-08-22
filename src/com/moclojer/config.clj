@@ -2,8 +2,7 @@
   (:require [babashka.cli :as cli]))
 
 (def version
-  "get version from pom properties"
-  "0.3.3")
+  "0.3.3.1")
 
 ;; https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html
 (def home-path (System/getProperty "user.home"))
