@@ -106,7 +106,7 @@
        (-> (helpers/service-fn "test/com/moclojer/resources/mock-syntax-error.yml" {:start? false :join? false})
            (response-for :get "/helloo/moclojer")
            :body)
-       "exception")))
+       "malformed tag arguments")))
 
 (deftest moclojer-v2
   [(is (= 200 (-> (helpers/service-fn

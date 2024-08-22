@@ -83,7 +83,7 @@
       status: 200
       headers:
         Content-Type: application/json
-      body: >
+      body: |
         {
           "hello-v1": "{{path-params.username}}!",
           "sufix": true

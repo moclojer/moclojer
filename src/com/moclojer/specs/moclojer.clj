@@ -13,26 +13,31 @@
 
 (defn render-template
   [template request]
-  (selmer/render (ext-body/->str template) request))
+  (try
+    {:content (selmer/render (ext-body/->str template) request)}
+    (catch Exception e
+      (log/log :error :bad-body
+               :body template
+               :message (.getMessage e))
+      {:error? true
+       :content (json/write-str {:message (.getMessage e)})})))
 
 (defn enrich-external-body
   "Enriches the external body with a resolved path."
   [external-body request]
-  (let [path (render-template (:path external-body) request)]
-    (assoc external-body :path path)))
+  (let [{:keys [content]} (render-template (:path external-body) request)]
+    (assoc external-body :path content)))
 
 (defn build-body
   "Builds the body from the response."
   [response request]
-  (let [external-body (:external-body response)]
-    (cond
-      external-body
-      (-> external-body
-          (enrich-external-body request)
-          ext-body/type-identification
-          (render-template request))
-      :else (-> (:body response)
-                (render-template request)))))
+  (render-template
+   (if-let [?external-body (:external-body response)]
+     (-> ?external-body
+         (enrich-external-body request)
+         ext-body/type-identification)
+     (:body response))
+   request))
 
 (defn assoc-if [m k v]
   (if v
@@ -63,19 +68,14 @@
        {:url (:url webhook-config)
         :condition (webhook-condition (:if webhook-config) request)
         :method (:method webhook-config)
-        :body (render-template (:body webhook-config) request)
+        :body (:content (render-template (:body webhook-config) request))
         :headers (:headers webhook-config)
         :sleep-time (:sleep-time webhook-config)}))
     (let [parameters (build-parameters (:parameters request))
-          ?body (try
-                  (-> (build-body response parameters)
-                      (json/read-str :key-fn keyword))
-                  (catch Exception e
-                    (log/log :error (.getMessage e))
-                    {}))]
-      (log/log :info :body ?body)
-      {:body ?body
-       :status 200
+          {:keys [error? content]} (build-body response parameters)]
+      (log/log :info :body content)
+      {:body content
+       :status (if error? 500 (:status response))
        :headers (into
                  {}
                  (map (fn [[k v]]
@@ -112,10 +112,6 @@
           query-types))
       (reduce {} (string/split path #"/"))))
 
-(defn inspect [a]
-  (clojure.pprint/pprint a)
-  a)
-
 (defn mock-response-body-request
   "Given a `body`, generates a request based on the used
   variables."
@@ -124,7 +120,13 @@
     (select-keys
      (rename-keys parameters {:path :path-params
                               :body :json-params})
-     (seq (selmer/known-variables (ext-body/->str ?body))))))
+     (try
+       (seq (selmer/known-variables (ext-body/->str ?body)))
+       (catch Exception e
+         (log/log :error :bad-body
+                  :body ?body
+                  :message (.getMessage e))
+         [])))))
 
 (defn create-url [pattern]
   (let [segments (string/split pattern #"/")
@@ -191,7 +193,8 @@
                                              (create-params-fn false)
                                              :body #(when % (mg/generate %)))
                                             (mock-response-body-request body)
-                                            (render-template body))
+                                            (render-template body)
+                                            (:content))
                                        :response))
                                     {})}}
              (keyword method) {:summary (if-not (string/blank? real-path)
@@ -210,5 +213,4 @@
                    (merge ?existing-definitions route-definition))))
         {})
        (map identity)
-       (vec)
-       inspect))
+       (vec)))
