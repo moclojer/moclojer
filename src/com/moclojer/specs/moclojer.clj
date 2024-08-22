@@ -96,7 +96,7 @@
     (or forced-type (mp/provide [val]))
     val))
 
-(defn make-path-parameters [path gen?]
+(defn make-path-parameters [path & [gen?]]
   (-> (fn [query-types s]
         (if (string/starts-with? s ":")
           (let [[param-name
@@ -142,7 +142,7 @@
       (assoc-if :query query)
       (assoc-if :body body)))
 
-(defn make-query-parameters [query gen?]
+(defn make-query-parameters [query & [gen?]]
   (reduce-kv
    (fn [acc k v]
      (assoc acc (keyword k)
