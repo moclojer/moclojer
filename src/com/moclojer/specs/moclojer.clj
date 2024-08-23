@@ -1,5 +1,6 @@
 (ns com.moclojer.specs.moclojer
   (:require
+   [clojure.data.json :as json]
    [clojure.string :as string]
    [com.moclojer.external-body.core :as ext-body]
    [com.moclojer.webhook :as webhook]
@@ -46,7 +47,15 @@
         :condition (webhook-condition (:if webhook-config) request)
         :method (:method webhook-config)
         :body (render-template (:body webhook-config) request)
-        :headers (:headers webhook-config)
+        :headers (or (json/read-str
+                      (render-template
+                       (reduce-kv
+                        (fn [acc k v]
+                          (assoc acc k (string/lower-case v)))
+                        {}
+                        (:headers webhook-config))
+                       request))
+                     (:headers request))
         :sleep-time (:sleep-time webhook-config)}))
     {:body    (build-body response request)
      :status  (:status response)
