@@ -68,7 +68,7 @@ docker run -it \
   ghcr.io/moclojer/moclojer:latest
 ```
 
-**we Two available versions:**
+**We have two versions available:**
 
 * `dev`: main branch docker image
 * `latest`: latest stable version image
