@@ -11,7 +11,7 @@ We use the [Selmer](https://github.com/yogthos/Selmer) template engine _(is insp
 **it is possible to use template rendering in:**
 
 * `endpoint.response.body`
-* `endpoint.response.external-body.path` _understand what **extended body** is [here](external-body.md)_
+* `endpoint.response.external-body.path` _understand what **external body** is [here](external-body.md)_
 
 ## Path params `path-params`
 
