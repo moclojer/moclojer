@@ -87,11 +87,12 @@
          :exception pretty/exception
          :data {:coercion reitit-malli/coercion
                 :muuntaja (m/create
-                           (assoc-in
-                            m/default-options
-                            [:formats "application/json"
-                             :decoder-opts :bigdecimals]
-                            true))
+                           (-> (assoc-in
+                                m/default-options
+                                [:formats "application/json"
+                                 :decoder-opts :bigdecimals]
+                                true)
+                               (assoc :default-format "application/json")))
                 :interceptors [;; swagger feature
                                swagger/swagger-feature
                                ;; query-params & form-params
@@ -104,8 +105,6 @@
                                (exception/exception-interceptor)
                                ;; decoding request body
                                (muuntaja/format-request-interceptor)
-                               ;; coercing response bodys
-                               (coercion/coerce-response-interceptor)
                                ;; coercing request parameters
                                (coercion/coerce-request-interceptor)
                                ;; multipart

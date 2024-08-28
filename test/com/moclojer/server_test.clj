@@ -11,7 +11,7 @@
          (-> (helpers/service-fn "test/com/moclojer/resources/moclojer.yml"
                                  {:start? false :join? false})
              (response-for :get "/hello-world")
-             :body
+             (:body)
              (json/parse-string true)))))
 
 (deftest hello-world-different-origin
