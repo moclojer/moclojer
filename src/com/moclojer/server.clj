@@ -1,5 +1,6 @@
 (ns com.moclojer.server
   (:require
+   [clojure.string :as str]
    [com.moclojer.adapters :as adapters]
    [com.moclojer.config :as config]
    [com.moclojer.io-utils :refer [open-file]]
@@ -18,6 +19,7 @@
    [reitit.swagger :as swagger]
    [reitit.swagger-ui :as swagger-ui]
    [ring.adapter.jetty :as jetty]))
+
 ;; (defn context-configurator
 ;;   "http container options, active gzip"
 ;;   [^ServletContextHandler context]
@@ -46,25 +48,22 @@
 ;;                                         (body-params/body-params)
 ;;                                         interceptor-error-handler]))
 ;; 
-;;  (defn hosting-interceptor
-;;    []
-;;    {:name :hosting-redirect
-;;     :enter (fn [{:keys [request] :as context}]
-;;              (if-let [expected (-> request :reitit.core/match :data :host)]
-;;                (let [host (or (-> request :headers (get "host")) "localhost")
-;;                      incoming-host (cond
-;;                                      (string/includes? host ":") (-> host
-;;                                                                      (string/split  #":")
-;;                                                                      (first))
-;; 
-;;                                      :else host)]
-;;                  (if (= incoming-host expected)
-;;                    context
-;;                    (throw (ex-info "Invalid host" {:status 403
-;;                                                    :expected-host expected
-;;                                                    :host incoming-host}))))
-;; 
-;;                context))}))
+
+(defn host-middleware
+  [handler-fn]
+  (fn [request]
+    (handler-fn
+     (let [server-host (get-in request [:reitit.core/match :data :host])
+           header-host (get-in request [:headers "host"] "localhost")
+           host (if (str/includes? header-host ":")
+                  (first (str/split header-host #":"))
+                  header-host)]
+       (if (or (nil? server-host) (= host server-host))
+         request
+         (throw (ex-info "Invalid host"
+                         {:status 403
+                          :value host
+                          :expected server-host})))))))
 
 (defn reitit-router [*router]
   (ring/ring-handler
@@ -79,7 +78,8 @@
                              :decoder-opts :bigdecimals]
                             true)
                            (assoc :default-format "application/json")))
-            :middleware [log/log-request-middleware
+            :middleware [host-middleware
+                         log/log-request-middleware
                          swagger/swagger-feature
                          parameters/parameters-middleware
                          muuntaja/format-negotiate-middleware
