@@ -5,6 +5,7 @@
 
 ## What’s Changed
 
+* Switching from Pedestal to Reitit [PR #277](https://github.com/moclojer/moclojer/pull/277)
 * Adding swagger to moclojer [PR #262](https://github.com/moclojer/moclojer/pull/262)
 
 ## Contributors
