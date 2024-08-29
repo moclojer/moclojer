@@ -20,35 +20,6 @@
    [reitit.swagger-ui :as swagger-ui]
    [ring.adapter.jetty :as jetty]))
 
-;; (defn context-configurator
-;;   "http container options, active gzip"
-;;   [^ServletContextHandler context]
-;;   (let [gzip-handler (GzipHandler.)]
-;;     (.addIncludedMethods gzip-handler (make-array String 0))
-;;     (.setExcludedAgentPatterns gzip-handler (make-array String 0))
-;;     (.setGzipHandler context gzip-handler))
-;;   context)
-;;  
-;; #_:clj-kondo/ignore
-;; (def interceptor-error-handler
-;;   "capture and format in json exception Internal Server Error"
-;;   (error-dispatch [context error]
-;;                   :else
-;;                   (assoc context :response {:status 500
-;;                                             :headers {"Content-type" "application/json"}
-;;                                             :body (->> error .toString (hash-map :error) json/write-str)})))
-;;  
-;; (defn get-interceptors
-;;   "get pedestal default interceptors"
-;;   [service-map]
-;;   (-> service-map
-;;       http/default-interceptors
-;;       (update ::http/interceptors into [http/not-found
-;;                                         http/json-body
-;;                                         (body-params/body-params)
-;;                                         interceptor-error-handler]))
-;; 
-
 (defn host-middleware
   [handler-fn]
   (fn [request]
