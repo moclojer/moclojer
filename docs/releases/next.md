@@ -5,8 +5,10 @@
 
 ## What’s Changed
 
-*
+* Adding swagger to moclojer [PR #262](https://github.com/moclojer/moclojer/pull/262)
 
 ## Contributors
 
-* @
+* @matheusfrancisco
+* @j0suetm
+* @avelino
