@@ -1,5 +1,6 @@
 (ns com.moclojer.helpers-test
   (:require
+   [clojure.core.async :as async]
    [com.moclojer.adapters :as adapters]
    [com.moclojer.io-utils :refer [open-file]]
    [com.moclojer.server :as server]))
@@ -16,14 +17,11 @@
   [config & {:keys [mocks] :as opts}]
   (let [*router (adapters/generate-routes (open-file config)
                                           :mocks-path mocks)]
-    (server/start-server!
-     (server/reitit-router *router)
-     opts)))
+    (async/thread
+      (server/start-server! *router opts))))
 
 (comment
-  (.stop
-   (start-server!
-    "test/com/moclojer/resources/external-body-json.yml"))
+  (start-server! "test/com/moclojer/resources/external-body-json.yml")
 
   (require '[clojure.pprint])
   (clojure.pprint/pprint
