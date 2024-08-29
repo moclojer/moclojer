@@ -105,6 +105,7 @@
         http-port (or (some-> (System/getenv "PORT")
                               Integer/parseInt)
                       8000)]
+
     (log/log :info
              :moclojer-start
              "-> moclojer"
@@ -113,9 +114,10 @@
              :port http-port
              :url (str "http://" http-host ":" http-port)
              :version config/version)
-    (let [router (reitit-router *router)]
-      (jetty/run-jetty router {:port http-port
-                               :join? join?}))))
+
+    (jetty/run-jetty (reitit-router *router)
+                     {:port http-port
+                      :join? join?})))
 
 (defn create-watcher [*router & {:keys [config-path mocks-path]}]
   (start-watch [{:file config-path

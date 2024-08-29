@@ -2,22 +2,33 @@
   (:require
    [com.moclojer.adapters :as adapters]
    [com.moclojer.io-utils :refer [open-file]]
-   [com.moclojer.server :refer [reitit-router]]))
+   [com.moclojer.server :as server]))
 
 (defn service-fn
-  "create a service function of pedestal from a config map"
+  "create a service function of reitit from a config map"
   [config & {:keys [mocks]}]
   (let [*router (adapters/generate-routes (open-file config)
                                           :mocks-path mocks)]
-    (reitit-router *router)))
+    (server/reitit-router *router)))
+
+(defn start-server!
+  "create a running server of reitit from a config map"
+  [config & {:keys [mocks] :as opts}]
+  (let [*router (adapters/generate-routes (open-file config)
+                                          :mocks-path mocks)]
+    (server/start-server!
+     (server/reitit-router *router)
+     opts)))
 
 (comment
+  (.stop
+   (start-server!
+    "test/com/moclojer/resources/external-body-json.yml"))
+
   (require '[clojure.pprint])
   (clojure.pprint/pprint
-   (get
-    @(adapters/generate-routes
-      (open-file "test/com/moclojer/resources/moclojer-v2.yml"))
-    2))
+   @(adapters/generate-routes
+     (open-file "test/com/moclojer/resources/external-body-json.yml")))
 
   (clojure.pprint/pprint
    (last

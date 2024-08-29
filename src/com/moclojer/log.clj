@@ -72,7 +72,6 @@
 (defn log-request-middleware
   [handler-fn]
   (fn [request]
-    (clojure.pprint/pprint request)
     (log :info
          :method (string/upper-case (name (:request-method request)))
          :host (:server-name request)
