@@ -17,6 +17,7 @@
     (start-server! *router opts)))
 
 (comment
+  (require '[clojure.pprint])
   (clojure.pprint/pprint
    (get
     @(adapters/generate-routes

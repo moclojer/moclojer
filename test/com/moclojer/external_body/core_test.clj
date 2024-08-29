@@ -1,7 +1,7 @@
 (ns com.moclojer.external-body.core-test
   (:require
    [clojure.data.json :as jsond]
-   [clojure.test :refer [deftest is testing]]
+   [clojure.test :refer [are deftest is testing]]
    [com.moclojer.external-body.core :as core]
    [com.moclojer.helpers-test :as helpers]
    [io.pedestal.test :refer [response-for]]))
@@ -42,10 +42,10 @@
              (jsond/read-str :key-fn keyword)))))
 
 (deftest url-external-config-test
-  ;; loop to simplify implementation - no N assert `(is (=))`
-  (for [name ["kabuto" "marowak"]]
-    (is (= 200
-           (-> (helpers/service-fn "test/com/moclojer/resources/external-body-json.yml"
-                                   {:start? false :join? false})
-               (response-for :get (str "/pokemon/" name))
-               :status)))))
+  (are [name] (= 200
+                 (-> (helpers/service-fn
+                      "test/com/moclojer/resources/external-body-json.yml"
+                      {:start? false :join? false})
+                     (response-for :get (str "/pokemon/" name))
+                     (:status)))
+    ["kabuto" "marowak"]))
