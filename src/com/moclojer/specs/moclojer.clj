@@ -82,7 +82,7 @@
     (let [parameters (build-parameters (:parameters request))
           {:keys [error? content]} (build-body response parameters)]
       (log/log :info :body content)
-      {:body content
+      {:body (json/read-str content :key-fn keyword)
        :status (if error? 500 (:status response))
        :headers (into
                  {}

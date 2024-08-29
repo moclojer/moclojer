@@ -1,9 +1,6 @@
 {:paths   ["src"]
  :deps    {cheshire/cheshire             {:mvn/version "5.11.0"}
            io.forward/yaml               {:mvn/version "1.0.11"}
-           io.pedestal/pedestal.jetty    {:mvn/version "0.6.3"}
-           io.pedestal/pedestal.route    {:mvn/version "0.6.3"}
-           io.pedestal/pedestal.service  {:mvn/version "0.6.3"}
            org.babashka/cli              {:mvn/version "0.7.53"}
            org.clojure/clojure           {:mvn/version "1.11.1"}
            org.clojure/core.async        {:mvn/version "1.5.648"}
@@ -17,8 +14,8 @@
            clj-http/clj-http             {:mvn/version "3.12.3"}
            viesti/timbre-json-appender   {:mvn/version "0.2.13"}
 
-           metosin/reitit-pedestal       {:mvn/version "0.7.0"}
-           metosin/reitit                {:mvn/version "0.7.0"}}
+           metosin/reitit                {:mvn/version "0.7.0"}
+           ring/ring-jetty-adapter       {:mvn/version "1.12.2"}}
 
  :aliases {;; Run project
            ;; clj -M:run
