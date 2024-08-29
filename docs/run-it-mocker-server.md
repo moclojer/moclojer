@@ -46,10 +46,10 @@ CONFIG=moclojer.yml java -jar moclojer.jar
 ## **Docker**
 
 ```shell
-docker pull ghcr.io/avelino/moclojer:latest
+docker pull ghcr.io/moclojer/moclojer:latest
 docker run -it \
-  -v $(pwd)/moclojer.yml:/app/moclojer.yml \
-  ghcr.io/avelino/moclojer:latest
+  -p 8000:8000 -v $(pwd)/moclojer.yml:/app/moclojer.yml \
+  ghcr.io/moclojer/moclojer:latest
 ```
 
 to use the `edn` format, you must pass the following parameters to docker:

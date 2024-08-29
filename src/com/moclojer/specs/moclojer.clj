@@ -69,7 +69,15 @@
         :condition (webhook-condition (:if webhook-config) request)
         :method (:method webhook-config)
         :body (:content (render-template (:body webhook-config) request))
-        :headers (:headers webhook-config)
+        :headers (or (json/read-str
+                      (render-template
+                       (reduce-kv
+                        (fn [acc k v]
+                          (assoc acc k (string/lower-case v)))
+                        {}
+                        (:headers webhook-config))
+                       request))
+                     (:headers request))
         :sleep-time (:sleep-time webhook-config)}))
     (let [parameters (build-parameters (:parameters request))
           {:keys [error? content]} (build-body response parameters)]

@@ -62,7 +62,7 @@ jobs:
           fi
       # save binary generated for OS (by native image) in artifact
       # used in release
-      - uses: "actions/upload-artifact@v4.3.3"
+      - uses: "actions/upload-artifact@v4.3.6"
         with:
           name: moclojer_bin_${{ runner.os }}
           path: target/native/moclojer_${{ runner.os }}
