@@ -192,22 +192,22 @@
 
            [real-path
             {:host (or host "localhost")
-             :swagger {:tags [(or tag route-name)]}
-             :parameters (create-params-fn true)
-             :responses {(or (:status response) 200)
-                         {:body (or (let [body (:body response)]
-                                      (make-body
-                                       (->> (update
-                                             (create-params-fn false)
-                                             :body #(when % (mg/generate %)))
-                                            (mock-response-body-request body)
-                                            (render-template body)
-                                            (:content))
-                                       :response))
-                                    {})}}
              (keyword method) {:summary (if-not (string/blank? real-path)
                                           (str "Generated from " real-path)
                                           "Auto-generated")
+                               :swagger {:tags [(or tag route-name)]}
+                               :parameters (create-params-fn true)
+                               :responses {(or (:status response) 200)
+                                           {:body (or (let [body (:body response)]
+                                                        (make-body
+                                                         (->> (update
+                                                               (create-params-fn false)
+                                                               :body #(when % (mg/generate %)))
+                                                              (mock-response-body-request body)
+                                                              (render-template body)
+                                                              (:content))
+                                                         :response))
+                                                      {})}}
                                :handler (generic-reitit-handler response nil)}}]))
        (concat [["/swagger.json"
                  {:get {:no-doc true
