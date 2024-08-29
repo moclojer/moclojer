@@ -1,16 +1,17 @@
 (ns com.moclojer.log
-  (:require [clojure.string :as string]
-            [io.pedestal.interceptor.helpers :as interceptor]
-            [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :as core-appenders]
-            [taoensso.timbre.appenders.community.sentry :as sentry]
-            [timbre-json-appender.core :as tas])
-  (:import (java.util.logging
-            Filter
-            Formatter
-            Handler
-            LogRecord
-            Logger)))
+  (:require
+   [clojure.string :as string]
+   [taoensso.timbre :as timbre]
+   [taoensso.timbre.appenders.community.sentry :as sentry]
+   [taoensso.timbre.appenders.core :as core-appenders]
+   [timbre-json-appender.core :as tas])
+  (:import
+   (java.util.logging
+    Filter
+    Formatter
+    Handler
+    LogRecord
+    Logger)))
 
 (set! *warn-on-reflection* true)
 
@@ -68,14 +69,12 @@
   [level & args]
   `(timbre/log! ~level :p ~args ~{:?line (:line (meta &form))}))
 
-(def request
-  "Log the request's method and uri."
-  (interceptor/on-request
-   ::log-request
-   (fn [request]
-     (log :info
-          :method (string/upper-case (name (:request-method request)))
-          :host (:server-name request)
-          :uri (:uri request)
-          :query-string (:query-string request))
-     request)))
+(defn log-request-middleware
+  [handler-fn]
+  (fn [request]
+    (log :info
+         :method (string/upper-case (name (:request-method request)))
+         :host (:server-name request)
+         :uri (:uri request)
+         :query-string (:query-string request))
+    (handler-fn request)))
