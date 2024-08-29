@@ -3,8 +3,7 @@
    [clojure.data.json :as jsond]
    [clojure.test :refer [are deftest is testing]]
    [com.moclojer.external-body.core :as core]
-   [com.moclojer.helpers-test :as helpers]
-   [io.pedestal.test :refer [response-for]]))
+   [com.moclojer.helpers-test :as helpers]))
 
 (def data-text
   {:provider "json"
@@ -34,18 +33,16 @@
             :key-fn keyword)))))
 
 (deftest text-config-test
-  (is (= ret-text
-         (-> (helpers/service-fn "test/com/moclojer/resources/external-body-json.yml"
-                                 {:start? false :join? false})
-             (response-for :get "/external-body-text")
-             :body
-             (jsond/read-str :key-fn keyword)))))
+  (let [server (helpers/service-fn
+                "test/com/moclojer/resources/external-body-json.yml")]
+    (is (= ret-text
+           (:body (server {:request-method :get
+                           :uri "/external-body-text"}))))))
 
 (deftest url-external-config-test
-  (are [name] (= 200
-                 (-> (helpers/service-fn
-                      "test/com/moclojer/resources/external-body-json.yml"
-                      {:start? false :join? false})
-                     (response-for :get (str "/pokemon/" name))
-                     (:status)))
-    ["kabuto" "marowak"]))
+  (let [server (helpers/service-fn
+                "test/com/moclojer/resources/external-body-json.yml")]
+    (are [name] (= 200
+                   (:status (server {:request-method :get
+                                     :uri (str "/pokemon/" name)})))
+      ["kabuto" "marowak"])))

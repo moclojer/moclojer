@@ -1,23 +1,26 @@
 (ns com.moclojer.edn-test
   (:require
-   [cheshire.core :as json]
+   [clojure.data.json :as json]
    [clojure.test :refer [deftest is testing]]
-   [com.moclojer.helpers-test :as helpers]
-   [io.pedestal.test :refer [response-for]]))
+   [com.moclojer.helpers-test :as helpers]))
 
 (deftest dynamic-endpoint-edn
-  (let [service-fn (helpers/service-fn "test/com/moclojer/resources/moclojer.edn"
-                                       {:start? false
-                                        :join? false})]
-    (testing "get all pets"
-      (is (= {:pets [{:name "Uber" :type "dog"} {:name "Pinpolho" :type "cat"}]}
-             (-> service-fn
-                 (response-for :get "/pets")
-                 :body
-                 (json/parse-string true)))))
-    (testing "get pet by id"
-      (is (= {:id 1 :name "uber" :type "dog"}
-             (-> service-fn
-                 (response-for :get "/pet/1")
-                 :body
-                 (json/parse-string true)))))))
+  (let [server (helpers/service-fn
+                "test/com/moclojer/resources/moclojer.edn")]
+    [(testing "get all pets"
+       (is (= {:pets [{:name "Uber" :type "dog"}
+                      {:name "Pinpolho" :type "cat"}]}
+              (json/read-str
+               (slurp
+                (:body (server {:request-method :get
+                                :uri "/pets"})))
+               :key-fn keyword))))
+     (testing "get pet by id"
+       (is (= {:id 1
+               :name "uber"
+               :type "dog"}
+              (json/read-str
+               (slurp
+                (:body (server {:request-method :get
+                                :uri "/pet/1"})))
+               :key-fn keyword))))]))

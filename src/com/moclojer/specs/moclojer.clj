@@ -198,7 +198,7 @@
                                :swagger {:tags [(or tag route-name)]}
                                :parameters (create-params-fn true)
                                :responses {(or (:status response) 200)
-                                           {:body (or (let [body (:body response)]
+                                           {:body (or (when-let [body (:body response)]
                                                         (make-body
                                                          (->> (update
                                                                (create-params-fn false)
@@ -207,7 +207,7 @@
                                                               (render-template body)
                                                               (:content))
                                                          :response))
-                                                      {})}}
+                                                      any?)}}
                                :handler (generic-reitit-handler response nil)}}]))
        (concat [["/swagger.json"
                  {:get {:no-doc true
