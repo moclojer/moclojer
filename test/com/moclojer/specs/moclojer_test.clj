@@ -32,7 +32,7 @@
          (make-body "{\"username\": \"avelino\"}"
                     :request))))
 
-(deftest ->moclojer->pedestal-test
+(deftest moclojer->reitit-test
   (let [server (helpers/service-fn
                 "test/com/moclojer/resources/moclojer-v2.yml"
                 {:start? false :join? false})]
