@@ -3,15 +3,16 @@
    [clojure.string :as str]))
 
 (defn convert-path
-  "converts OpenAPI path to moclojer path
-  e.g.: /pets/{id} -> /pets/:id"
+  "Converts OpenAPI path to moclojer path.
+
+  Example: /pets/{id} -> /pets/:id"
   [path]
   (str "/" (str/replace
             (name path)
             #"\{([^\}]+)\}" ":$1")))
 
 (defn ->moclojer
-  "converts OpenAPI spec to moclojer spec"
+  "Converts OpenAPI spec to moclojer spec."
   [{:keys [paths]} mocks]
   (->>
    (for [[path methods] paths]

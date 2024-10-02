@@ -4,12 +4,13 @@
    [com.moclojer.external-body.excel :as xlsx]))
 
 (defn ->str
-  "convert body to string, if it is edn it will be converted to json->str"
+  "If not already a string, parses `body` to a stringified json of `body`."
   [body]
   (if (string? body) body (cheshire/generate-string body)))
 
 (defn type-identification
-  "identify type of external body"
+  "Identifies `external-body`'s file format type. Currently supports
+  only `json` and `xlsx`."
   [external-body]
   (let [path (:path external-body)
         body (case (:provider external-body)
