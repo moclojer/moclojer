@@ -30,7 +30,7 @@
 
   `request` should be a map containing (all optional):
     - `:condition`  If false, the request won't be sent         (default: true)
-    - `:sleep-time` Delay in seconds before sending the request (default: 60)
+    - `:sleep-time` Delay in milliseconds before sending the request (default: 60000)
     - `:body`       The request body                            (default: `{}`)
 
   Example:
