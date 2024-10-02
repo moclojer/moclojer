@@ -26,7 +26,20 @@
 
   Be cautious that the returned content is the pre-defined response body,
   not the webhook response. Since there's a delay between definition and
-  execution, it's not possible to return it."
+  execution, it's not possible to return it.
+
+  `request` should be a map containing (all optional):
+    - `:condition`  If false, the request won't be sent         (default: true)
+    - `:sleep-time` Delay in seconds before sending the request (default: 60)
+    - `:body`       The request body                            (default: `{}`)
+
+  Example:
+    (request-after-delay {:url \"http://example.com\"
+                          :method :post
+                          :body \"{\\\"key\\\":\\\"value\\\"}\"
+                          :sleep-time 1000})
+    ;; => `\"{\\\"key\\\":\\\"value\\\"}\"`
+          (returned immediately, request sent after 1 second)"
   [request]
   (let [req (-> request
                 (update :condition #(if (boolean? %) % true))
