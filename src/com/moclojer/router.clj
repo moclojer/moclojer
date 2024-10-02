@@ -5,17 +5,21 @@
    [com.moclojer.specs.moclojer :as spec]
    [com.moclojer.specs.openapi :as openapi]))
 
-(def home-endpoint
-  "initial/home endpoint URL: /"
+(def ^:private home-endpoint
+  "Prebuilt endpoint for `/`."
   {:endpoint {:method :get
               :path "/"
               :router-name ::moclojer
               :response {:headers {}
-                         :body (json/write-str (str '(-> moclojer server)))
+                         :body (json/write-str (pr-str '(-> moclojer server)))
                          :status 200}}})
 
 (defn smart-router
-  "Identifies configuration type (moclojer or openapi spec)"
+  "Given a list of mock endpoints tha comply to either our
+  in-house moclojer spec or openapi's spec, builds a generic
+  reitit route that can be used later by the webserver.
+
+  See also: `com.moclojer.adapters`."
   [{:keys [::config ::mocks]}]
   (let [mode (if mocks :openapi :moclojer)
         routes (if mocks

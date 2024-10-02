@@ -7,6 +7,8 @@
    [com.moclojer.log :as log]))
 
 (defn read-body
+  "Returns a json string of either `body`'s parsed content or the error
+  that happened during parsing."
   [body]
   (json/write-str
    (try
@@ -19,7 +21,12 @@
         :message (.getMessage e)}))))
 
 (defn request-after-delay
-  "after a delay call http-request, return body"
+  "Performs given `request` after its defined delay time. Returns the
+  pre-defined body after execution, or an empty object if `nil`.
+
+  Be cautious that the returned content is the pre-defined response body,
+  not the webhook response. Since there's a delay between definition and
+  execution, it's not possible to return it."
   [request]
   (let [req (-> request
                 (update :condition #(if (boolean? %) % true))

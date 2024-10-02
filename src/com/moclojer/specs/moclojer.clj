@@ -12,6 +12,7 @@
    [selmer.parser :as selmer]))
 
 (defn render-template
+  "Renders given `template`, using `request`'s data."
   [template request]
   (try
     {:content (selmer/render (ext-body/->str template) request)}
@@ -45,7 +46,7 @@
     m))
 
 (defn webhook-condition
-  "check `if` condition and return boolean value, default is true"
+  "Checks `if` condition and return boolean value, default is true"
   [condition request]
   (let [template (str "{% if " condition " %}true{% else %}false{% endif %}")]
     (if (empty? condition)
@@ -61,6 +62,10 @@
         (assoc-if :json-params body))))
 
 (defn generic-reitit-handler
+  "Builds a reitit handler that responds with pre-defined `response`.
+
+  Since we also support `webhooks`, given `webhook-config` is used
+  when necessary in together with the `response`."
   [response webhook-config]
   (fn [request]
     (when webhook-config
@@ -94,17 +99,20 @@
   [host path method]
   (str method "-" (or host "localhost") "-" (string/replace (string/replace path "/" "") ":" "--")))
 
-(defn generate-method [method]
-  (-> (or method "get")
-      name
-      string/lower-case))
+(defn generate-method
+  "Adapts given `method` to a normalized string version of itself."
+  [method]
+  (string/lower-case (name (or method "get"))))
 
 (defn provide [val & [cond forced-type]]
   (if cond
     (or forced-type (mp/provide [val]))
     val))
 
-(defn make-path-parameters [path & [gen?]]
+(defn make-path-parameters
+  "Based on `path`'s declared type, provides a placeholder that can be
+  used later on by reitit to understand the param's data type."
+   [path & [gen?]]
   (-> (fn [query-types s]
         (if (string/starts-with? s ":")
           (let [[param-name
@@ -121,8 +129,7 @@
       (reduce {} (string/split path #"/"))))
 
 (defn mock-response-body-request
-  "Given a `body`, generates a request based on the used
-  variables."
+  "Given a `body`, generates a request based on the used variables."
   [?body parameters]
   (when ?body
     (select-keys
@@ -177,6 +184,8 @@
                  :message (.getMessage e))))))
 
 (defn ->reitit
+  "Adapts given moclojer endpoints to reitit's data based routes, while
+  parsing request data types throughout the way."
   [spec]
   (->> (for [[[host path method tag] endpoints]
              (group-by (juxt :host :path :method)

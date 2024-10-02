@@ -69,7 +69,6 @@
     (ring/create-default-handler))))
 
 (defn start-server!
-  "start moclojer server"
   [*router & {:keys [join?]
               :or {join? true}}]
   (let [http-host (or (System/getenv "HOST") "0.0.0.0")
@@ -90,7 +89,10 @@
                      {:port http-port
                       :join? join?})))
 
-(defn create-watcher [*router & {:keys [config-path mocks-path]}]
+(defn create-watcher
+  "Creates a watcher over the `config` file that rebuilds and restarts
+  given `route` when the file gets altered."
+  [*router & {:keys [config-path mocks-path]}]
   (start-watch [{:file config-path
                  :event-types [:create :modify :delete]
                  :callback (fn [_event file]
@@ -111,7 +113,7 @@
                  :event-types [:create :modify :delete]}]))
 
 (defn start-server-with-file-watcher!
-  "start moclojer server with file watcher"
+  "Starts moclojer server with file watcher."
   [{:keys [config-path mocks-path]}]
   (let [*router (adapters/generate-routes (open-file config-path)
                                           :mocks-path mocks-path)]
