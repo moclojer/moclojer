@@ -90,8 +90,20 @@
                       :join? join?})))
 
 (defn create-watcher
-  "Creates a watcher over the `config` file that rebuilds and restarts
-  given `route` when the file gets altered."
+  "Creates a file watcher that monitors changes in the configuration and mocks files.
+  When changes are detected, it automatically rebuilds and updates the router.
+
+  Parameters:
+  - *router: An atom containing the current router configuration.
+  - config-path: The path to the main configuration file.
+  - mocks-path: The path to the directory containing mock files.
+
+  Returns:
+  A watcher object that can be used to stop the watching process if needed.
+
+  Side effects:
+  - Sets up file watchers for both config and mocks files.
+  - Automatically updates the router when changes are detected."
   [*router & {:keys [config-path mocks-path]}]
   (start-watch [{:file config-path
                  :event-types [:create :modify :delete]
