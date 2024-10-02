@@ -5,7 +5,7 @@
 
 ## What’s Changed
 
-* Better document lib function [PR #285](https://github.com/moclojer/moclojer/pull/285)
+*  Better document moclojer's functions and workflow [PR #285](https://github.com/moclojer/moclojer/pull/285)
 
 ## Contributors
 
