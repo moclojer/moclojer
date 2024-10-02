@@ -12,7 +12,11 @@
             #"\{([^\}]+)\}" ":$1")))
 
 (defn ->moclojer
-  "Converts OpenAPI spec to moclojer spec."
+  "Converts OpenAPI spec to moclojer spec.
+
+  Example:
+    Input: {:paths {'/pets' {:get {...}}}}
+    Output: [{:endpoint {:method 'GET' :path '/pets' ...}}]"
   [{:keys [paths]} mocks]
   (->>
    (for [[path methods] paths]
