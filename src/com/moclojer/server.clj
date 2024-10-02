@@ -125,7 +125,15 @@
                  :event-types [:create :modify :delete]}]))
 
 (defn start-server-with-file-watcher!
-  "Starts moclojer server with file watcher."
+  "Starts the moclojer server with an integrated file watcher.
+
+  The file watcher monitors changes in the configuration and mocks files,
+  automatically updating the server's behavior when changes are detected.
+
+  Side effects:
+    - Starts the server
+    - Sets up file watchers for both config and mocks files.
+    - Automatically updates the server configuration when file changes are detected."
   [{:keys [config-path mocks-path]}]
   (let [*router (adapters/generate-routes (open-file config-path)
                                           :mocks-path mocks-path)]
