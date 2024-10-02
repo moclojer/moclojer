@@ -29,9 +29,9 @@
   execution, it's not possible to return it.
 
   `request` should be a map containing (all optional):
-    - `:condition`  If false, the request won't be sent         (default: true)
+    - `:condition`  If false, the request won't be sent (default: true)
     - `:sleep-time` Delay in milliseconds before sending the request (default: 60000)
-    - `:body`       The request body                            (default: `{}`)
+    - `:body`       The request body (default: `{}`)
 
   Example:
     (request-after-delay {:url \"http://example.com\"
@@ -44,7 +44,7 @@
   (let [req (-> request
                 (update :condition #(if (boolean? %) % true))
                 (update :headers #(or % {"Content-Type" "application/json"}))
-                (update :sleep-time #(or % 60))
+                (update :sleep-time #(or % 600000))
                 (update :body #(read-body (or % "{}"))))
         {:keys [body condition sleep-time]} req
         hashed-req (-> (assoc req :body-hash (hash body))
