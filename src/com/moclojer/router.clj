@@ -11,11 +11,11 @@
               :path "/"
               :router-name ::moclojer
               :response {:headers {}
-                         :body (json/write-str (pr-str '(-> moclojer server)))
+                         :body (json/write-str '(-> moclojer server))
                          :status 200}}})
 
 (defn smart-router
-  "Given a list of mock endpoints tha comply to either our
+  "Given a list of mock endpoints that comply to either our
   in-house moclojer spec or openapi's spec, builds a generic
   reitit route that can be used later by the webserver.
 
