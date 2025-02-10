@@ -6,6 +6,9 @@
    [com.moclojer.io-utils :refer [open-file]]
    [com.moclojer.log :as log]
    [com.moclojer.watcher :refer [start-watch]]
+   [com.moclojer.middleware.rate-limit :as rate-limit]
+   [com.moclojer.middleware.latency :as latency]
+   [com.moclojer.middleware.chaos :as chaos]
    [muuntaja.core :as m]
    [reitit.coercion.malli :as reitit-malli]
    [reitit.coercion.spec]
@@ -52,6 +55,8 @@
             :middleware [host-middleware
                          log/log-request-middleware
                          swagger/swagger-feature
+                         rate-limit/wrap-rate-limit
+                         latency/wrap-latency
                          parameters/parameters-middleware
                          muuntaja/format-negotiate-middleware
                          muuntaja/format-response-middleware
@@ -59,7 +64,8 @@
                          muuntaja/format-request-middleware
                          coercion/coerce-request-middleware
                          coercion/coerce-response-middleware
-                         multipart/multipart-middleware]}})
+                         multipart/multipart-middleware
+                         chaos/wrap-chaos]}})
    (ring/routes
     (swagger-ui/create-swagger-ui-handler
      {:path "/docs"
