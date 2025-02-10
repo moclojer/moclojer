@@ -5,6 +5,7 @@
 * [Using rendering templates](template.md)
 * [External body](external-body.md)
 * [Multi-domain support](multi-domain-support.md)
+* [Rate Limiting](rate-limiting.md)
 * [Run it mocker server](run-it-mocker-server.md)
 * [Webhook support](webhook-support.md)
 * [Using moclojer as a framework](using-moclojer-as-a-framework.md)
