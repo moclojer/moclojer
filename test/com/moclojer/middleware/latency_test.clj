@@ -1,5 +1,5 @@
 (ns com.moclojer.middleware.latency-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is testing]]
             [com.moclojer.middleware.latency :as latency]))
 
 (deftest basic-latency-test
@@ -7,8 +7,8 @@
     (let [handler (fn [_] {:status 200})
           wrapped (latency/wrap-latency handler)
           request {:reitit.core/match
-                  {:data {:latency {:min-ms 50
-                                  :max-ms 150}}}}  ;; Aumentado para 150ms
+                   {:data {:latency {:min-ms 50
+                                     :max-ms 150}}}}  ;; Aumentado para 150ms
           start-time (System/currentTimeMillis)
           _ (wrapped request)
           elapsed-time (- (System/currentTimeMillis) start-time)]
@@ -20,7 +20,7 @@
     (let [handler (fn [_] {:status 200 :body "OK"})
           wrapped-handler (latency/wrap-latency handler)
           request {:reitit.core/match
-                  {:data {:latency {:failure-rate 1.0}}}}] ;; Always fail
+                   {:data {:latency {:failure-rate 1.0}}}}] ;; Always fail
       (try
         (wrapped-handler request)
         (is false "Should have thrown an exception")
@@ -34,8 +34,8 @@
     (let [handler (fn [_] {:status 200 :body "OK"})
           wrapped-handler (latency/wrap-latency handler)
           request {:reitit.core/match
-                  {:data {:latency {:timeout-rate 1.0  ;; Always timeout
-                                  :timeout-ms 100}}}}
+                   {:data {:latency {:timeout-rate 1.0  ;; Always timeout
+                                     :timeout-ms 100}}}}
           start-time (System/currentTimeMillis)]
       (try
         (wrapped-handler request)

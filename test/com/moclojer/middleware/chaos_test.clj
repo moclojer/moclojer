@@ -1,5 +1,5 @@
 (ns com.moclojer.middleware.chaos-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is testing]]
             [com.moclojer.middleware.chaos :as chaos]))
 
 (deftest random-chance-test
@@ -67,13 +67,13 @@
     (let [handler (fn [_] {:status 200 :body {:data "test"}})
           wrapped (chaos/wrap-chaos handler)
           request {:reitit.core/match
-                  {:data {:chaos
-                         {:latency {:enabled true
-                                  :min-ms 50
-                                  :max-ms 150
-                                  :probability 1.0}
-                          :corruption {:enabled true
-                                     :probability 1.0}}}}}]
+                   {:data {:chaos
+                           {:latency {:enabled true
+                                      :min-ms 50
+                                      :max-ms 150
+                                      :probability 1.0}
+                            :corruption {:enabled true
+                                         :probability 1.0}}}}}]
 
       ;; Testamos apenas a corrupção, que é determinística
       (let [response (wrapped request)]
