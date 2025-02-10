@@ -29,8 +29,8 @@
           (log/log :warn :rate-limit-exceeded :key req-key)
           {:status 429
            :headers {"X-RateLimit-Limit" (str max-requests)
-                    "X-RateLimit-Remaining" "0"
-                    "X-RateLimit-Reset" (str (+ now window-ms))}
+                     "X-RateLimit-Remaining" "0"
+                     "X-RateLimit-Reset" (str (+ now window-ms))}
            :body {:error "Rate limit exceeded"}})
         (let [updated-requests (conj (vec (sort valid-requests)) now)]
           (swap! requests-store assoc req-key updated-requests)
