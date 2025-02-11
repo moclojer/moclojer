@@ -9,5 +9,5 @@
         { "hello": "{{path-params.username}}!" }
       rate-limit:
         window-ms: 60000    # 1 minute window
-        max-requests: 2    # Allow 10 requests per window
+        max-requests: 10    # Allow 10 requests per window
         key-fn: remote-addr # Use client IP as the rate limit key

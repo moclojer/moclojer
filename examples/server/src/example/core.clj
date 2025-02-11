@@ -13,7 +13,7 @@
                  :body :ok}}}
     {:endpoint
      {:method "GET"
-      :path "/example/latency"
+      :path "/example/rate-limit"
       :response {:status 200
                  :body :ok}
       :rate-limit {:window-ms 60000 ; 1 minute window
