@@ -10,10 +10,18 @@
      {:method "GET"
       :path "/example"
       :response {:status 200
-                 :headers {:Content-Type "application/json"}
-                 :body {:id 123}}}}]))
+                 :body :ok}}}
+    {:endpoint
+     {:method "GET"
+      :path "/example/latency"
+      :response {:status 200
+                 :body :ok}
+      :rate-limit {:window-ms 60000 ; 1 minute window
+                   :max-requests 2  ; Allow 2 requests per window
+                   :key-fn :remote-addr}}}]))
 
-(defn start!
+;; start the server with `clj -A:dev -m example.core`
+(defn -main
   ([]
    (server/start-server! *router))
   ([config-path]
@@ -22,10 +30,7 @@
 (comment
 
   ;starting 
-  (start!)
+  (-main)
 
   ;starting with a file
-  (start! "resources/moclojer.yml"))
-
-
-
+  (-main "resources/moclojer.yml"))
