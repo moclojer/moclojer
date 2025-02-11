@@ -3,7 +3,7 @@
            org.clojure/core.async        {:mvn/version "1.5.648"}
            com.moclojer/moclojer         {:local/root "../../"}}
  :aliases {;; Run project
-           ;; clj -A:dev -m moclojer.core
+           ;; clj -A:dev -m example.core
            :dev      {:extra-paths ["dev"]
                       :extra-deps  {io.github.clojure/tools.build {:git/tag    "v0.9.6"
                                                                    :git/sha    "8e78bcc"
