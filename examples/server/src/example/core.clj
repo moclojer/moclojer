@@ -3,22 +3,26 @@
    [com.moclojer.adapters :as adapters]
    [com.moclojer.server :as server]))
 
-(def *router
-  "create a router from a config map"
-  (adapters/generate-routes
-   [{:endpoint
-     {:method "GET"
-      :path "/example"
-      :response {:status 200
-                 :body :ok}}}
-    {:endpoint
-     {:method "GET"
-      :path "/example/rate-limit"
-      :response {:status 200
-                 :body :ok}
-      :rate-limit {:window-ms 60000 ; 1 minute window
-                   :max-requests 2  ; Allow 2 requests per window
-                   :key-fn :remote-addr}}}]))
+(def routes
+  [{:endpoint
+    {:method "GET"
+     :path "/example"
+     :response {:status 200
+                :body {:message "ok"}}}}
+   {:endpoint
+    {:method "GET"
+     :path "/example/rate-limit"
+     :response {:status 200
+                :body {:message "ok"
+                       :rate_limited true}}
+     :rate-limit {:window-ms 5000    ;; 5 second window
+                  :max-requests 1     ;; 3 requests per 5 seconds
+                  :key-fn :remote-addr}}}])
+
+(def *router (atom @(adapters/generate-routes routes)))
+
+(defn -main [& args]
+  (server/start-server! *router))
 
 ;; start the server with `clj -A:dev -m example.core`
 (defn -main
@@ -29,8 +33,8 @@
 
 (comment
 
-  ;starting 
-  (-main)
+  ;starting
+  (start!)
 
   ;starting with a file
   (-main "resources/moclojer.yml"))
