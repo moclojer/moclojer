@@ -1,0 +1,28 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/api/users",
+      "response": {
+        "status": 200,
+        "body": {"users": []}
+      },
+      "chaos": {
+        "latency": {
+          "enabled": true,
+          "min-ms": 100,
+          "max-ms": 1000,
+          "probability": 0.3
+        },
+        "failures": {
+          "enabled": true,
+          "probability": 0.1
+        },
+        "corruption": {
+          "enabled": true,
+          "probability": 0.1
+        }
+      }
+    }
+  ]
+}
