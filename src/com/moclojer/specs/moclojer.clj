@@ -112,7 +112,7 @@
 (defn make-path-parameters
   "Based on `path`'s declared type, provides a placeholder that can be
   used later on by reitit to understand the param's data type."
-   [path & [gen?]]
+  [path & [gen?]]
   (-> (fn [query-types s]
         (if (string/starts-with? s ":")
           (let [[param-name
@@ -188,36 +188,41 @@
   parsing request data types throughout the way."
   [spec]
   (->> (for [[[host path method tag] endpoints]
-             (group-by (juxt :host :path :method)
+             (group-by (juxt :host :path #(generate-method (:method %)) :tag)
                        (remove nil? (map :endpoint spec)))]
          (let [method (generate-method method)
                route-name (generate-route-name host path method)
-               response (:response (first endpoints))
+               endpoint (first endpoints)
+               response (:response endpoint)
                real-path (create-url path)
+               rate-limit (:rate-limit endpoint)
                create-params-fn #(create-swagger-parameters
                                   (make-path-parameters path %)
-                                  (make-query-parameters (:query (first endpoints)) %)
-                                  (make-body (:body (first endpoints)) :request))]
+                                  (make-query-parameters (:query endpoint) %)
+                                  (make-body (:body endpoint) :request))]
 
            [real-path
-            {:host (or host "localhost")
-             (keyword method) {:summary (if-not (string/blank? real-path)
-                                          (str "Generated from " real-path)
-                                          "Auto-generated")
-                               :swagger {:tags [(or tag route-name)]}
-                               :parameters (create-params-fn true)
-                               :responses {(or (:status response) 200)
-                                           {:body (or (when-let [body (:body response)]
-                                                        (make-body
-                                                         (->> (update
-                                                               (create-params-fn false)
-                                                               :body #(when % (mg/generate %)))
-                                                              (mock-response-body-request body)
-                                                              (render-template body)
-                                                              (:content))
-                                                         :response))
-                                                      any?)}}
-                               :handler (generic-reitit-handler response nil)}}]))
+            {:data {:host (or host "localhost")
+                    :rate-limit rate-limit}
+             (keyword method)
+             {:summary (if-not (string/blank? real-path)
+                         (str "Generated from " real-path)
+                         "Auto-generated")
+              :swagger {:tags [(or tag route-name)]}
+              :parameters (create-params-fn true)
+              :responses {(or (:status response) 200)
+                          {:body (or (when-let [body (:body response)]
+                                       (make-body
+                                        (->> (update
+                                              (create-params-fn false)
+                                              :body #(when % (mg/generate %)))
+                                             (mock-response-body-request body)
+                                             (render-template body)
+                                             (:content))
+                                        :response))
+                                     any?)}}
+              :handler (generic-reitit-handler response nil)}}]))
+       (remove nil?)
        (concat [["/swagger.json"
                  {:get {:no-doc true
                         :swagger {:info {:title "moclojer-mock"
