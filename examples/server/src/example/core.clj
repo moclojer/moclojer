@@ -34,7 +34,7 @@
 (comment
 
   ;starting
-  (start!)
+  (-main)
 
   ;starting with a file
   (-main "resources/moclojer.yml"))
