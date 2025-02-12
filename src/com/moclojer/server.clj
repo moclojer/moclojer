@@ -21,7 +21,9 @@
    [reitit.ring.middleware.parameters :as parameters]
    [reitit.swagger :as swagger]
    [reitit.swagger-ui :as swagger-ui]
-   [ring.adapter.jetty :as jetty]))
+   [ring.adapter.jetty :as jetty]
+   [com.moclojer.middleware.rate-limit :as rate-limit]
+   [com.moclojer.middleware.latency :as latency]))
 
 (defn host-middleware
   [handler-fn]
