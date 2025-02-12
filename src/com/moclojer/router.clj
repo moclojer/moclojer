@@ -22,8 +22,10 @@
   See also: `com.moclojer.adapters`."
   [{:keys [::config ::mocks]}]
   (let [mode (if mocks :openapi :moclojer)
-        routes (if mocks
-                 (openapi/->moclojer config mocks)
+        routes (if (seq mocks)
+                 (if (vector? mocks)
+                   mocks
+                   (openapi/->moclojer config mocks))
                  config)]
 
     (log/log :info :spec-mode :mode mode)
