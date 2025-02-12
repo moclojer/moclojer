@@ -1,6 +1,5 @@
 (ns com.moclojer.middleware.rate-limit
-  (:require [com.moclojer.log :as log]
-            [clojure.data.json :as json]))
+  (:require [com.moclojer.log :as log]))
 
 (def ^:private requests-store (atom {}))
 
