@@ -45,8 +45,7 @@
               :headers {"Content-Type" "application/json"
                         "X-RateLimit-Limit" (str max-requests)
                         "X-RateLimit-Remaining" "0"
-                        "X-RateLimit-Reset" (str (+ now window-ms))}
-              :body (json/write-str {:error "Rate limit exceeded"})})
+                        "X-RateLimit-Reset" (str (+ now window-ms))}})
            (let [updated-requests (conj valid-requests now)]
              (swap! requests-store assoc req-key updated-requests)
              (-> (handler request)
