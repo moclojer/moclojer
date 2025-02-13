@@ -32,6 +32,11 @@
          (not (string/starts-with? (.getLoggerName record)
                                    "org.eclipse.jetty")))))))
 
+(defn create-file-appender [log-file]
+  {:appenders
+   {:println (core-appenders/println-appender :auto)
+    :spit (core-appenders/spit-appender {:fname log-file})}})
+
 (def supported-log-fmts-cfg
   {:default
    {:appenders
@@ -52,13 +57,14 @@
 
 (defn setup
   "timbre setup for logging"
-  [level fmt]
+  [level fmt & {:keys [log-file]}]
   (clean-timbre-appenders)
   (global-setup (.getParent (Logger/getGlobal))) ;; disable `org.eclipse.jetty` logs
-  (let [config (merge
-                {:min-level level
-                 :ns-filter {:allow #{"com.moclojer.*"}}}
-                (log-format->mergeable-cfg fmt))
+  (let [base-config {:min-level level
+                     :ns-filter {:allow #{"com.moclojer.*"}}}
+        fmt-config (log-format->mergeable-cfg fmt)
+        config (cond-> (merge base-config fmt-config)
+                 log-file (merge (create-file-appender log-file)))
         sentry-dsn (or (System/getenv "SENTRY_DSN") nil)]
     (timbre/merge-config! config)
     (when sentry-dsn
