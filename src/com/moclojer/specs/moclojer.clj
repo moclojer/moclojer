@@ -32,13 +32,24 @@
 (defn build-body
   "Builds the body from the response."
   [response request]
-  (render-template
-   (if-let [?external-body (:external-body response)]
-     (-> ?external-body
-         (enrich-external-body request)
-         ext-body/type-identification)
-     (:body response))
-   request))
+  (let [{:keys [content error?]} (render-template
+                                  (if-let [?external-body (:external-body response)]
+                                    (-> ?external-body
+                                        (enrich-external-body request)
+                                        ext-body/type-identification)
+                                    (:body response))
+                                  request)]
+    (try
+      (if error?
+        content
+        (if (string? content)
+          (json/read-str content)
+          content))
+      (catch Exception e
+        (log/log :error :bad-body
+                 :body content
+                 :message (.getMessage e))
+        {:error (.getMessage e)}))))
 
 (defn assoc-if [m k v]
   (if v
@@ -85,12 +96,12 @@
                      (:headers request))
         :sleep-time (:sleep-time webhook-config)}))
     (let [parameters (build-parameters (:parameters request))
-          {:keys [error? content]} (build-body response parameters)]
-      (log/log :info :body content)
-      {:body (json/read-str content :key-fn keyword)
-       :status (if error? 500 (:status response))
+          body (build-body response parameters)]
+      (log/log :info :body body)
+      {:body (json/write-str body)
+       :status (:status response 200)
        :headers (into
-                 {}
+                 {"Content-Type" "application/json"}
                  (map (fn [[k v]]
                         [(name k) (str v)]))
                  (:headers response))})))
@@ -211,16 +222,7 @@
               :swagger {:tags [(or tag route-name)]}
               :parameters (create-params-fn true)
               :responses {(or (:status response) 200)
-                          {:body (or (when-let [body (:body response)]
-                                       (make-body
-                                        (->> (update
-                                              (create-params-fn false)
-                                              :body #(when % (mg/generate %)))
-                                             (mock-response-body-request body)
-                                             (render-template body)
-                                             (:content))
-                                        :response))
-                                     any?)}}
+                          {:body any?}}
               :handler (generic-reitit-handler response nil)}}]))
        (remove nil?)
        (concat [["/swagger.json"
