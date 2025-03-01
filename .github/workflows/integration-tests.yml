@@ -1,0 +1,77 @@
+name: Integration Tests
+
+on: [push, pull_request]
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Clojure
+        uses: DeLaGuardo/setup-clojure@13.1
+        with:
+          cli: "1.11.1.1139"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            .cpcache
+          key: ${{ runner.os }}-clojure-${{ hashFiles('**/deps.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-clojure-
+
+      - name: Run Moclojer server for integration tests
+        run: |
+          # Start Moclojer server in the background
+          clojure -M:run -c ./test/com/moclojer/resources/moclojer.yml &
+          # Give it a moment to start up
+          sleep 5
+
+      - name: Run integration tests
+        run: |
+          # Test the /hello/:username endpoint
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/hello/testuser)
+          if [ "$RESPONSE" -eq 200 ]; then
+            echo "✅ GET /hello/testuser returned 200 OK"
+          else
+            echo "❌ GET /hello/testuser failed with status $RESPONSE"
+            exit 1
+          fi
+
+          # Test the response body
+          BODY=$(curl -s http://localhost:8080/hello/testuser)
+          EXPECTED='{ "hello": "testuser!" }'
+          if [ "$BODY" = "$EXPECTED" ]; then
+            echo "✅ Response body matches expected output"
+          else
+            echo "❌ Response body does not match expected output"
+            echo "Expected: $EXPECTED"
+            echo "Received: $BODY"
+            exit 1
+          fi
+
+          # Test rate limiting
+          echo "Testing rate limiting (10 requests per minute)..."
+          for i in {1..11}; do
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/hello/testuser)
+            echo "Request $i: Status $RESPONSE"
+            if [ $i -gt 10 ] && [ "$RESPONSE" -eq 429 ]; then
+              echo "✅ Rate limiting works correctly (received 429 Too Many Requests after 10 requests)"
+            elif [ $i -gt 10 ] && [ "$RESPONSE" -ne 429 ]; then
+              echo "❌ Rate limiting failed (expected 429 Too Many Requests after 10 requests)"
+              exit 1
+            fi
+          done
+
+      - name: Cleanup
+        run: |
+          # Kill the moclojer server
+          pkill -f "clj -M:run -c ./test/com/moclojer/resources/moclojer.yml" || true
