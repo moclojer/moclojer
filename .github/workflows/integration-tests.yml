@@ -1,4 +1,4 @@
-name: Integration Tests
+name: integration-tests
 
 on: [push, pull_request]
 
@@ -52,7 +52,7 @@ jobs:
           SERVER_READY=false
 
           while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SERVER_READY" = false ]; do
-            if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/hello/testuser | grep -q "200"; then
+            if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/hello/testuser | grep -q "200"; then
               SERVER_READY=true
               echo "✅ Moclojer server is up and running!"
             else
@@ -72,7 +72,7 @@ jobs:
         run: |
           # Test the /hello/:username endpoint
           echo "Testing /hello/:username endpoint..."
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/hello/testuser)
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/hello/testuser)
           echo "Status code: $RESPONSE"
           if [ "$RESPONSE" -eq 200 ]; then
             echo "✅ GET /hello/testuser returned 200 OK"
@@ -83,7 +83,7 @@ jobs:
 
           # Test the response body
           echo "Testing response body..."
-          BODY=$(curl -s http://localhost:8080/hello/testuser)
+          BODY=$(curl -s http://localhost:8000/hello/testuser)
           EXPECTED='{ "hello": "testuser!" }'
           echo "Received body: $BODY"
           # Use jq to compare JSON objects instead of string comparison
@@ -100,7 +100,7 @@ jobs:
           echo "Testing rate limiting (10 requests per minute)..."
           RATE_LIMIT_TRIGGERED=false
           for i in {1..15}; do
-            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/hello/testuser)
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/hello/testuser)
             echo "Request $i: Status $RESPONSE"
             if [ "$RESPONSE" -eq 429 ]; then
               RATE_LIMIT_TRIGGERED=true
