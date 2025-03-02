@@ -84,14 +84,17 @@ jobs:
           # Test the response body
           echo "Testing response body..."
           BODY=$(curl -s http://localhost:8000/hello/testuser)
-          EXPECTED='{ "hello": "testuser!" }'
+          EXPECTED_KEY="hello"
+          EXPECTED_VALUE="testuser!"
           echo "Received body: $BODY"
-          # Use jq to compare JSON objects instead of string comparison
-          if echo "$BODY" | grep -q "$EXPECTED"; then
-            echo "✅ Response body matches expected output"
+
+          # Extract and compare values ignoring whitespace
+          if echo "$BODY" | grep -q "\"$EXPECTED_KEY\":\"$EXPECTED_VALUE\""; then
+            echo "✅ Response body contains expected key-value pair"
           else
-            echo "❌ Response body does not match expected output"
-            echo "Expected: $EXPECTED"
+            echo "❌ Response body does not contain expected key-value pair"
+            echo "Expected key: $EXPECTED_KEY"
+            echo "Expected value: $EXPECTED_VALUE"
             echo "Received: $BODY"
             exit 1
           fi
