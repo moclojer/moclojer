@@ -33,6 +33,8 @@ jobs:
           echo "Current directory: $(pwd)"
           echo "Script path: ./test/scripts/integration-tests.sh"
           ls -la ./test/scripts/
+          echo "Checking config file:"
+          ls -la ./test/com/moclojer/resources/moclojer.yml
           chmod +x ./test/scripts/integration-tests.sh
           ./test/scripts/integration-tests.sh
         shell: /usr/bin/bash -e {0}

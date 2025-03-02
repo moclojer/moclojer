@@ -9,19 +9,19 @@ LOG_FILE=${LOG_FILE:-"moclojer.log"}
 
 # Function to start the moclojer server
 start_server() {
-    echo "Starting moclojer server with config: $CONFIG_PATH"
+    echo "Starting moclojer server with config: $CONFIG_PATH" >&2
     clojure -M:run -c "$CONFIG_PATH" >"$LOG_FILE" 2>&1 &
     local pid=$!
-    echo "Server started with PID: $pid"
+    echo "Server started with PID: $pid" >&2
 
     # Give it a moment to start up
-    echo "Waiting for moclojer server to start..."
+    echo "Waiting for moclojer server to start..." >&2
     sleep 10
 
     # Check if server is running
     if ! ps -p $pid >/dev/null; then
-        echo "❌ moclojer server failed to start. Check logs:"
-        cat "$LOG_FILE"
+        echo "❌ moclojer server failed to start. Check logs:" >&2
+        cat "$LOG_FILE" >&2
         exit 1
     fi
 
@@ -33,20 +33,21 @@ start_server() {
     while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SERVER_READY" = false ]; do
         if curl -s -o /dev/null -w "%{http_code}" "http://$SERVER_HOST:$SERVER_PORT/hello/testuser" | grep -q "200"; then
             SERVER_READY=true
-            echo "✅ moclojer server is up and running!"
+            echo "✅ moclojer server is up and running!" >&2
         else
-            echo "Waiting for server to be ready... (attempt $((RETRY_COUNT + 1))/$MAX_RETRIES)"
+            echo "Waiting for server to be ready... (attempt $((RETRY_COUNT + 1))/$MAX_RETRIES)" >&2
             RETRY_COUNT=$((RETRY_COUNT + 1))
             sleep 5
         fi
     done
 
     if [ "$SERVER_READY" = false ]; then
-        echo "❌ moclojer server did not respond in time. Check logs:"
-        cat "$LOG_FILE"
+        echo "❌ moclojer server did not respond in time. Check logs:" >&2
+        cat "$LOG_FILE" >&2
         exit 1
     fi
 
+    # Return only the PID, nothing else
     echo "$pid"
 }
 
@@ -129,7 +130,7 @@ test_additional_endpoints() {
 
 # Main execution
 main() {
-    # Start the server
+    # Start the server and capture only the PID
     local server_pid
     server_pid=$(start_server)
 
