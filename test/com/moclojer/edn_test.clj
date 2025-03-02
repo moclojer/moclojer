@@ -11,16 +11,14 @@
        (is (= {:pets [{:name "Uber" :type "dog"}
                       {:name "Pinpolho" :type "cat"}]}
               (json/read-str
-               (slurp
-                (:body (server {:request-method :get
-                                :uri "/pets"})))
+               (:body (server {:request-method :get
+                               :uri "/pets"}))
                :key-fn keyword))))
      (testing "get pet by id"
        (is (= {:id 1
                :name "uber"
                :type "dog"}
               (json/read-str
-               (slurp
-                (:body (server {:request-method :get
-                                :uri "/pet/1"})))
+               (:body (server {:request-method :get
+                               :uri "/pet/1"}))
                :key-fn keyword))))]))
