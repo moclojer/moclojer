@@ -56,7 +56,7 @@ stop_server() {
     local pid=$1
     if [[ -n "$pid" && "$pid" =~ ^[0-9]+$ ]]; then
         echo "Stopping moclojer server (PID: $pid)..."
-        kill $pid || true
+        kill "$pid" || true
     else
         echo "Invalid PID: '$pid'. Trying to kill by process name..."
         pkill -f "clojure -M:run -c $CONFIG_PATH" || true
