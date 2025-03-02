@@ -39,11 +39,18 @@
                                     (:body response))
                                   request)]
     (try
-      (if error?
-        {:error (json/read-str content :key-fn keyword) :message (:message (json/read-str content :key-fn keyword))}
-        (if (string? content)
-          (json/read-str content)
-          content))
+      (cond
+        error? (let [parsed (json/read-str content :key-fn keyword)]
+                 {:error parsed
+                  :message (get parsed :message)})
+        (string? content) (try
+                            (json/read-str content)
+                            (catch Exception e
+                              (log/log :warn :json-parse-error
+                                       :body content
+                                       :message (.getMessage e))
+                              content))
+        :else content)
       (catch Exception e
         (log/log :error :bad-body
                  :body content
