@@ -17,6 +17,11 @@ jobs:
           cli: "1.11.1.1139"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq lsof
+
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
