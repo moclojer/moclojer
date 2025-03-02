@@ -11,7 +11,7 @@ TIMEOUT=${TIMEOUT:-5} # Timeout in seconds for curl requests
 
 # Check required commands
 check_requirements() {
-    local required_commands=("curl" "lsof" "clojure" "grep" "ps" "kill")
+    local required_commands=("curl" "lsof" "clojure" "grep" "ps" "kill" "jq")
     local missing_commands=()
 
     for cmd in "${required_commands[@]}"; do
@@ -188,14 +188,17 @@ test_endpoint() {
         # For each key-value pair in expected_output (format: "key1:value1,key2:value2")
         IFS=',' read -ra PAIRS <<<"$expected_output"
         for pair in "${PAIRS[@]}"; do
-            IFS=':' read -ra KV <<<"$pair"
-            local key="${KV[0]}"
-            local value="${KV[1]}"
+            # Use different delimiter to handle values with spaces
+            key=$(echo "$pair" | cut -d':' -f1)
+            value=$(echo "$pair" | cut -d':' -f2-)
 
-            if echo "$response_body" | grep -q "\"$key\":$value"; then
+            # Remove leading/trailing whitespace
+            key=$(echo "$key" | xargs)
+            value=$(echo "$value" | xargs)
+
+            # Try both quoted and unquoted values
+            if echo "$response_body" | jq -e --arg k "$key" --arg v "${value//\"/}" '. | has($k) and .[$k] == $v' >/dev/null 2>&1; then
                 echo "✅ Response contains expected key-value pair: $key:$value"
-            elif echo "$response_body" | grep -q "\"$key\":\"$value\""; then
-                echo "✅ Response contains expected key-value pair: $key:\"$value\""
             else
                 echo "❌ Response does not contain expected key-value pair"
                 echo "   Expected key: $key"
