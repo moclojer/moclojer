@@ -198,6 +198,9 @@ test_endpoint() {
             value=${value#"${value%%[![:space:]]*}"}
             value=${value%"${value##*[![:space:]]}"}
 
+            # Debug output
+            echo "   Debug: Testing key='$key' value='$value'"
+
             # Try to parse the value as JSON if it looks like a JSON value
             if [[ "$value" =~ ^[0-9]+$ ]] || [[ "$value" == "true" ]] || [[ "$value" == "false" ]]; then
                 # For numbers and booleans, use direct comparison
@@ -213,10 +216,13 @@ test_endpoint() {
                 # Remove surrounding quotes if present
                 value=${value#\"}
                 value=${value%\"}
+                # Debug output
+                echo "   Debug: After quote removal value='$value'"
                 if ! echo "$response_body" | jq -e --arg k "$key" --arg v "$value" '. | has($k) and .[$k] == $v' >/dev/null 2>&1; then
                     echo "❌ Response does not contain expected key-value pair"
                     echo "   Expected key: $key"
                     echo "   Expected value: $value"
+                    echo "   Actual value: $(echo "$response_body" | jq -r --arg k "$key" '.[$k]')"
                     echo "   Received: $response_body"
                     return 1
                 fi
@@ -234,7 +240,6 @@ run_all_tests() {
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
     # Define test cases as arrays with endpoint, method, data, expected output, and query params
-    # Format: "endpoint|method|data|expected_output|query_params"
     local test_cases=(
         "/hello/testuser|GET||hello:\"testuser!\"|"
         "/hello-world|GET||hello:\"Hello, World!\"|"
