@@ -35,7 +35,7 @@
 (deftest text-config-test
   (let [server (helpers/service-fn
                 "test/com/moclojer/resources/external-body-json.yml")]
-    (is (= ret-text
+    (is (= (jsond/write-str ret-text)
            (:body (server {:request-method :get
                            :uri "/external-body-text"}))))))
 

@@ -1,5 +1,6 @@
 (ns com.moclojer.framework-test
   (:require
+   [clojure.data.json :as json]
    [clojure.test :refer [deftest is]]
    [com.moclojer.adapters :as adapters]
    [com.moclojer.server :as server]))
@@ -15,7 +16,7 @@
                  :body {:id 123}}}}]))
 
 (deftest framework-test
-  (is (= {:id 123}
+  (is (= (json/write-str {:id 123})
          (:body
           ((server/reitit-router *router)
            {:request-method :get
