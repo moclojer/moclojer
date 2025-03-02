@@ -189,23 +189,31 @@ test_endpoint() {
         IFS=',' read -ra PAIRS <<<"$expected_output"
         for pair in "${PAIRS[@]}"; do
             # Use different delimiter to handle values with spaces
-            key=$(echo "$pair" | cut -d':' -f1)
-            value=$(echo "$pair" | cut -d':' -f2-)
+            key=$(echo "$pair" | cut -d':' -f1 | xargs)
+            value=$(echo "$pair" | cut -d':' -f2- | xargs)
 
-            # Remove leading/trailing whitespace
-            key=$(echo "$key" | xargs)
-            value=$(echo "$value" | xargs)
-
-            # Try both quoted and unquoted values
-            if echo "$response_body" | jq -e --arg k "$key" --arg v "${value//\"/}" '. | has($k) and .[$k] == $v' >/dev/null 2>&1; then
-                echo "✅ Response contains expected key-value pair: $key:$value"
+            # Try to parse the value as JSON if it looks like a JSON value
+            if [[ "$value" =~ ^[0-9]+$ ]] || [[ "$value" == "true" ]] || [[ "$value" == "false" ]]; then
+                # For numbers and booleans, use direct comparison
+                if ! echo "$response_body" | jq -e --arg k "$key" --argjson v "$value" '. | has($k) and .[$k] == $v' >/dev/null 2>&1; then
+                    echo "❌ Response does not contain expected key-value pair"
+                    echo "   Expected key: $key"
+                    echo "   Expected value: $value"
+                    echo "   Received: $response_body"
+                    return 1
+                fi
             else
-                echo "❌ Response does not contain expected key-value pair"
-                echo "   Expected key: $key"
-                echo "   Expected value: $value"
-                echo "   Received: $response_body"
-                return 1
+                # For strings, handle quoted values
+                value="${value//\"/}"
+                if ! echo "$response_body" | jq -e --arg k "$key" --arg v "$value" '. | has($k) and .[$k] == $v' >/dev/null 2>&1; then
+                    echo "❌ Response does not contain expected key-value pair"
+                    echo "   Expected key: $key"
+                    echo "   Expected value: $value"
+                    echo "   Received: $response_body"
+                    return 1
+                fi
             fi
+            echo "✅ Response contains expected key-value pair: $key:$value"
         done
     fi
 
