@@ -40,7 +40,7 @@
                                   request)]
     (try
       (if error?
-        content
+        {:error (json/read-str content :key-fn keyword) :message (:message (json/read-str content :key-fn keyword))}
         (if (string? content)
           (json/read-str content)
           content))
@@ -95,15 +95,19 @@
                      (:headers request))
         :sleep-time (:sleep-time webhook-config)}))
     (let [parameters (build-parameters (:parameters request))
-          body (build-body response parameters)]
-      (log/log :info :body body)
-      {:body (json/write-str body)
-       :status (:status response 200)
-       :headers (into
-                 {"Content-Type" "application/json"}
-                 (map (fn [[k v]]
-                        [(name k) (str v)]))
-                 (:headers response))})))
+          body-result (build-body response parameters)]
+      (log/log :info :body body-result)
+      (if (and (map? body-result) (:error body-result))
+        {:body (json/write-str body-result)
+         :status 500
+         :headers {"Content-Type" "application/json"}}
+        {:body (json/write-str body-result)
+         :status (:status response 200)
+         :headers (into
+                   {"Content-Type" "application/json"}
+                   (map (fn [[k v]]
+                          [(name k) (str v)]))
+                   (:headers response))}))))
 
 (defn generate-route-name
   [host path method]
