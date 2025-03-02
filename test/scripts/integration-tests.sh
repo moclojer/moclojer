@@ -188,9 +188,15 @@ test_endpoint() {
         # For each key-value pair in expected_output (format: "key1:value1,key2:value2")
         IFS=',' read -ra PAIRS <<<"$expected_output"
         for pair in "${PAIRS[@]}"; do
-            # Use different delimiter to handle values with spaces
-            key=$(echo "$pair" | cut -d':' -f1 | xargs)
-            value=$(echo "$pair" | cut -d':' -f2- | xargs)
+            # Split key and value using : as delimiter, but preserve the rest of the string
+            key=${pair%%:*}
+            value=${pair#*:}
+
+            # Remove leading/trailing whitespace without using xargs
+            key=${key#"${key%%[![:space:]]*}"}
+            key=${key%"${key##*[![:space:]]}"}
+            value=${value#"${value%%[![:space:]]*}"}
+            value=${value%"${value##*[![:space:]]}"}
 
             # Try to parse the value as JSON if it looks like a JSON value
             if [[ "$value" =~ ^[0-9]+$ ]] || [[ "$value" == "true" ]] || [[ "$value" == "false" ]]; then
@@ -204,7 +210,9 @@ test_endpoint() {
                 fi
             else
                 # For strings, handle quoted values
-                value="${value//\"/}"
+                # Remove surrounding quotes if present
+                value=${value#\"}
+                value=${value%\"}
                 if ! echo "$response_body" | jq -e --arg k "$key" --arg v "$value" '. | has($k) and .[$k] == $v' >/dev/null 2>&1; then
                     echo "❌ Response does not contain expected key-value pair"
                     echo "   Expected key: $key"
