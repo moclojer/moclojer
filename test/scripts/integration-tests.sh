@@ -144,7 +144,7 @@ main() {
     echo "Captured server PID: $server_pid"
 
     # Ensure server is stopped on exit
-    trap "stop_server $server_pid" EXIT
+    trap 'stop_server $server_pid' EXIT
 
     # Run tests
     test_basic_endpoints
