@@ -1,11 +1,12 @@
 (ns com.moclojer.webhook-test
   (:require
    [cheshire.core :as json]
+   [clojure.data.json :as clj.json]
    [clojure.test :refer [deftest is]]
    [com.moclojer.helpers-test :as helpers]
    [com.moclojer.webhook :as webhook]))
 
-(def body {:id 123})
+(def body (clj.json/write-str {:id 123}))
 
 (deftest server-with-webhook
   (let [server (helpers/service-fn

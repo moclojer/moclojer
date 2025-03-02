@@ -36,6 +36,6 @@
 (deftest openapi->moclojer->reitit-test
   (let [server (helpers/service-fn (:config petstore)
                                    {:mocks (:mocks petstore)})]
-    (is (= {:id 0, :name "caramelo"}
+    (is (= "{\"id\":0,\"name\":\"caramelo\"}"
            (:body (server {:request-method :get
                            :uri "/pets/1"}))))))

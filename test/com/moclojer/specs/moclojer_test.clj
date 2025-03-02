@@ -1,5 +1,6 @@
 (ns com.moclojer.specs.moclojer-test
   (:require
+   [clojure.data.json :as json]
    [clojure.test :refer [deftest is testing]]
    [com.moclojer.helpers-test :as helpers]
    [com.moclojer.specs.moclojer :refer [create-url make-body
@@ -36,6 +37,6 @@
   (let [server (helpers/service-fn
                 "test/com/moclojer/resources/moclojer-v2.yml"
                 {:start? false :join? false})]
-    (is (= {:user "avelino is 77 years old and has children"}
+    (is (= (json/write-str {:user "avelino is 77 years old and has children"})
            (:body (server {:request-method :get
                            :uri "/users/77"}))))))
