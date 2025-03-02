@@ -29,5 +29,10 @@ jobs:
             ${{ runner.os }}-clojure-
 
       - name: Run integration tests
-        run: chmod +x ./test/scripts/integration-tests.sh && ./test/scripts/integration-tests.sh
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Script path: ./test/scripts/integration-tests.sh"
+          ls -la ./test/scripts/
+          chmod +x ./test/scripts/integration-tests.sh
+          ./test/scripts/integration-tests.sh
         shell: /usr/bin/bash -e {0}
