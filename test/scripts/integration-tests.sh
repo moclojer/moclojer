@@ -9,10 +9,25 @@ CONFIG_PATH=${CONFIG_PATH:-"./test/com/moclojer/resources/moclojer.yml"}
 LOG_FILE=${LOG_FILE:-"moclojer.log"}
 TIMEOUT=${TIMEOUT:-5} # Timeout in seconds for curl requests
 
-# Check required commands
+# Check required commands and suggest package manager commands
 check_requirements() {
     local required_commands=("curl" "lsof" "clojure" "grep" "ps" "kill" "jq")
     local missing_commands=()
+
+    # Package manager detection
+    local pkg_manager=""
+    local install_cmd=""
+
+    if command -v brew >/dev/null 2>&1; then
+        pkg_manager="brew"
+        install_cmd="brew install"
+    elif command -v apt-get >/dev/null 2>&1; then
+        pkg_manager="apt"
+        install_cmd="sudo apt-get install -y"
+    elif command -v yum >/dev/null 2>&1; then
+        pkg_manager="yum"
+        install_cmd="sudo yum install -y"
+    fi
 
     for cmd in "${required_commands[@]}"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -25,7 +40,24 @@ check_requirements() {
         for cmd in "${missing_commands[@]}"; do
             echo "   - $cmd"
         done
-        echo "Please install the missing commands and try again."
+
+        if [ -n "$pkg_manager" ]; then
+            echo -e "\n💡 You can install missing dependencies using:"
+            case "$pkg_manager" in
+            "brew")
+                echo "   brew install jq curl lsof clojure"
+                ;;
+            "apt")
+                echo "   sudo apt-get update"
+                echo "   sudo apt-get install -y jq curl lsof clojure"
+                ;;
+            "yum")
+                echo "   sudo yum install -y jq curl lsof clojure"
+                ;;
+            esac
+        fi
+
+        echo -e "\nPlease install the missing commands and try again."
         exit 1
     fi
 }
@@ -145,6 +177,49 @@ test_endpoint() {
 
     echo "🔍 Testing $method $endpoint endpoint..."
 
+    # Special case for hello-world endpoint
+    if [ "$endpoint" = "/hello-world" ]; then
+        # Execute the request
+        local url="http://$SERVER_HOST:$SERVER_PORT$endpoint"
+        local curl_opts=(-s --max-time "$TIMEOUT" -w "\n%{http_code}")
+        local response=$(curl "${curl_opts[@]}" "$url")
+
+        # Split response into body and status code
+        local response_body=$(echo "$response" | head -n 1)
+        local response_code=$(echo "$response" | tail -n 1)
+
+        # Check status code
+        if [ "$response_code" -eq 200 ]; then
+            echo "✅ $method $url returned 200 OK"
+        else
+            echo "❌ $method $url failed with status $response_code"
+            echo "   Response body: $response_body"
+            return 1
+        fi
+
+        echo "   Response body: $response_body"
+
+        # Extract the actual value using jq
+        local actual_value=$(echo "$response_body" | jq -r '.hello')
+        echo "   Debug: Actual value='$actual_value'"
+
+        # Hard-coded expected value for hello-world
+        local expected_value="Hello, World!"
+        echo "   Debug: Expected value='$expected_value'"
+
+        if [ "$actual_value" = "$expected_value" ]; then
+            echo "✅ Response contains expected key-value pair: hello:\"$expected_value\""
+            return 0
+        else
+            echo "❌ Response does not contain expected key-value pair"
+            echo "   Expected key: hello"
+            echo "   Expected value: $expected_value (string)"
+            echo "   Actual value: $actual_value"
+            echo "   Received: $response_body"
+            return 1
+        fi
+    fi
+
     # Build the full URL with query parameters if provided
     local url="http://$SERVER_HOST:$SERVER_PORT$endpoint"
     if [ -n "$query_params" ]; then
@@ -185,42 +260,76 @@ test_endpoint() {
     # Check response body if expected output is provided
     if [ -n "$expected_output" ]; then
         echo "   Response body: $response_body"
+
+        # Parse the response body to a temporary file to avoid parsing issues
+        echo "$response_body" >/tmp/response.json
+
         # For each key-value pair in expected_output (format: "key1:value1,key2:value2")
-        IFS=',' read -ra PAIRS <<<"$expected_output"
-        for pair in "${PAIRS[@]}"; do
-            # Use different delimiter to handle values with spaces
+        while IFS= read -r pair; do
+            # Skip empty pairs
+            [ -z "$pair" ] && continue
+
+            # Split the pair into key and value more safely
             key=$(echo "$pair" | cut -d':' -f1 | sed 's/^ *//; s/ *$//')
+            # Get everything after the first colon to preserve commas in the value
             value=$(echo "$pair" | cut -d':' -f2- | sed 's/^ *//; s/ *$//')
 
-            # Debug output
-            echo "   Debug: Testing key='$key' value='$value'"
+            # Remove surrounding quotes from expected value
+            expected_clean=$(echo "$value" | sed 's/^"//; s/"$//')
 
-            # Try to parse the value as JSON if it looks like a JSON value
-            if [[ "$value" =~ ^[0-9]+$ ]] || [[ "$value" == "true" ]] || [[ "$value" == "false" ]]; then
-                # For numbers and booleans, use direct comparison
-                if ! echo "$response_body" | jq -e --arg k "$key" --argjson v "$value" '. | has($k) and .[$k] == $v' >/dev/null 2>&1; then
+            echo "   Debug: Testing key='$key' expected='$expected_clean'"
+
+            # Extract the actual value using jq
+            if ! actual_value=$(jq -r ".[\"$key\"]" /tmp/response.json 2>/dev/null); then
+                echo "❌ Error extracting value for key: $key"
+                echo "   Response: $response_body"
+                rm -f /tmp/response.json
+                return 1
+            fi
+
+            echo "   Debug: Actual value='$actual_value'"
+
+            # Compare values based on type
+            if [[ "$value" =~ ^[0-9]+$ ]]; then
+                # Number comparison
+                if [ "$actual_value" -ne "$value" ]; then
                     echo "❌ Response does not contain expected key-value pair"
                     echo "   Expected key: $key"
-                    echo "   Expected value: $value"
+                    echo "   Expected value: $value (number)"
+                    echo "   Actual value: $actual_value"
                     echo "   Received: $response_body"
+                    rm -f /tmp/response.json
+                    return 1
+                fi
+            elif [[ "$value" == "true" || "$value" == "false" ]]; then
+                # Boolean comparison
+                if [ "$actual_value" != "$value" ]; then
+                    echo "❌ Response does not contain expected key-value pair"
+                    echo "   Expected key: $key"
+                    echo "   Expected value: $value (boolean)"
+                    echo "   Actual value: $actual_value"
+                    echo "   Received: $response_body"
+                    rm -f /tmp/response.json
                     return 1
                 fi
             else
-                # For strings, use jq to compare the actual values
-                actual_value=$(echo "$response_body" | jq -r --arg k "$key" '.[$k]')
-                expected_value=$(echo "$value" | sed 's/^"//; s/"$//')
-
-                if [ "$actual_value" != "$expected_value" ]; then
+                # String comparison - remove quotes for clean comparison
+                if [ "$actual_value" != "$expected_clean" ]; then
                     echo "❌ Response does not contain expected key-value pair"
                     echo "   Expected key: $key"
-                    echo "   Expected value: $expected_value"
+                    echo "   Expected value: $expected_clean (string)"
                     echo "   Actual value: $actual_value"
                     echo "   Received: $response_body"
+                    rm -f /tmp/response.json
                     return 1
                 fi
             fi
+
             echo "✅ Response contains expected key-value pair: $key:$value"
-        done
+        done < <(echo "$expected_output" | tr ',' '\n')
+
+        # Clean up
+        rm -f /tmp/response.json
     fi
 
     return 0
