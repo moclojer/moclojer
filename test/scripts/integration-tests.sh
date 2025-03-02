@@ -11,15 +11,15 @@ LOG_FILE=${LOG_FILE:-"moclojer.log"}
 start_server() {
     echo "Starting moclojer server with config: $CONFIG_PATH"
     clojure -M:run -c "$CONFIG_PATH" >"$LOG_FILE" 2>&1 &
-    SERVER_PID=$!
-    echo "Server started with PID: $SERVER_PID"
+    local pid=$!
+    echo "Server started with PID: $pid"
 
     # Give it a moment to start up
     echo "Waiting for moclojer server to start..."
     sleep 10
 
     # Check if server is running
-    if ! ps -p $SERVER_PID >/dev/null; then
+    if ! ps -p $pid >/dev/null; then
         echo "❌ moclojer server failed to start. Check logs:"
         cat "$LOG_FILE"
         exit 1
@@ -47,16 +47,17 @@ start_server() {
         exit 1
     fi
 
-    echo $SERVER_PID
+    echo "$pid"
 }
 
 # Function to stop the server
 stop_server() {
     local pid=$1
-    if [ -n "$pid" ]; then
+    if [[ -n "$pid" && "$pid" =~ ^[0-9]+$ ]]; then
         echo "Stopping moclojer server (PID: $pid)..."
         kill $pid || true
     else
+        echo "Invalid PID: '$pid'. Trying to kill by process name..."
         pkill -f "clojure -M:run -c $CONFIG_PATH" || true
     fi
 
@@ -129,10 +130,20 @@ test_additional_endpoints() {
 # Main execution
 main() {
     # Start the server
-    SERVER_PID=$(start_server)
+    local server_pid
+    server_pid=$(start_server)
+
+    # Validate PID is a number
+    if [[ ! "$server_pid" =~ ^[0-9]+$ ]]; then
+        echo "❌ Failed to get valid server PID: '$server_pid'"
+        cat "$LOG_FILE"
+        exit 1
+    fi
+
+    echo "Captured server PID: $server_pid"
 
     # Ensure server is stopped on exit
-    trap "stop_server $SERVER_PID" EXIT
+    trap "stop_server $server_pid" EXIT
 
     # Run tests
     test_basic_endpoints
