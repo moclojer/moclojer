@@ -206,17 +206,15 @@ test_endpoint() {
                     return 1
                 fi
             else
-                # For strings, handle quoted values
-                # Remove surrounding quotes if present
-                value=${value#\"}
-                value=${value%\"}
-                # Debug output
-                echo "   Debug: After quote removal value='$value'"
-                if ! echo "$response_body" | jq -e --arg k "$key" --arg v "$value" '. | has($k) and .[$k] == $v' >/dev/null 2>&1; then
+                # For strings, use jq to compare the actual values
+                actual_value=$(echo "$response_body" | jq -r --arg k "$key" '.[$k]')
+                expected_value=$(echo "$value" | sed 's/^"//; s/"$//')
+
+                if [ "$actual_value" != "$expected_value" ]; then
                     echo "❌ Response does not contain expected key-value pair"
                     echo "   Expected key: $key"
-                    echo "   Expected value: $value"
-                    echo "   Actual value: $(echo "$response_body" | jq -r --arg k "$key" '.[$k]')"
+                    echo "   Expected value: $expected_value"
+                    echo "   Actual value: $actual_value"
                     echo "   Received: $response_body"
                     return 1
                 fi
