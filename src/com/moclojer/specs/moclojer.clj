@@ -6,7 +6,6 @@
    [com.moclojer.external-body.core :as ext-body]
    [com.moclojer.log :as log]
    [com.moclojer.webhook :as webhook]
-   [malli.generator :as mg]
    [malli.provider :as mp]
    [reitit.swagger :as swagger]
    [selmer.parser :as selmer]))
