@@ -28,20 +28,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-clojure-
 
-      - name: Run Moclojer server for integration tests
+      - name: Run moclojer server for integration tests
         run: |
-          # Start Moclojer server in the background
+          # Start moclojer server in the background
           clojure -M:run -c ./test/com/moclojer/resources/moclojer.yml > moclojer.log 2>&1 &
           SERVER_PID=$!
           echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
 
           # Give it a moment to start up
-          echo "Waiting for Moclojer server to start..."
+          echo "Waiting for moclojer server to start..."
           sleep 10
 
           # Check if server is running
           if ! ps -p $SERVER_PID > /dev/null; then
-            echo "❌ Moclojer server failed to start. Check logs:"
+            echo "❌ moclojer server failed to start. Check logs:"
             cat moclojer.log
             exit 1
           fi
@@ -54,7 +54,7 @@ jobs:
           while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ "$SERVER_READY" = false ]; do
             if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/hello/testuser | grep -q "200"; then
               SERVER_READY=true
-              echo "✅ Moclojer server is up and running!"
+              echo "✅ moclojer server is up and running!"
             else
               echo "Waiting for server to be ready... (attempt $((RETRY_COUNT+1))/$MAX_RETRIES)"
               RETRY_COUNT=$((RETRY_COUNT+1))
@@ -63,7 +63,7 @@ jobs:
           done
 
           if [ "$SERVER_READY" = false ]; then
-            echo "❌ Moclojer server did not respond in time. Check logs:"
+            echo "❌ moclojer server did not respond in time. Check logs:"
             cat moclojer.log
             exit 1
           fi
@@ -128,9 +128,9 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          # Kill the Moclojer server
+          # Kill the moclojer server
           if [ -n "$SERVER_PID" ]; then
-            echo "Stopping Moclojer server (PID: $SERVER_PID)..."
+            echo "Stopping moclojer server (PID: $SERVER_PID)..."
             kill $SERVER_PID || true
           else
             pkill -f "clojure -M:run -c ./test/com/moclojer/resources/moclojer.yml" || true
@@ -138,7 +138,7 @@ jobs:
 
           # Print server logs for debugging
           if [ -f "moclojer.log" ]; then
-            echo "Moclojer server logs:"
+            echo "moclojer server logs:"
             cat moclojer.log
           fi
         shell: /usr/bin/bash -e {0}
