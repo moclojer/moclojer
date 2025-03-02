@@ -188,15 +188,9 @@ test_endpoint() {
         # For each key-value pair in expected_output (format: "key1:value1,key2:value2")
         IFS=',' read -ra PAIRS <<<"$expected_output"
         for pair in "${PAIRS[@]}"; do
-            # Split key and value using : as delimiter, but preserve the rest of the string
-            key=${pair%%:*}
-            value=${pair#*:}
-
-            # Remove leading/trailing whitespace without using xargs
-            key=${key#"${key%%[![:space:]]*}"}
-            key=${key%"${key##*[![:space:]]}"}
-            value=${value#"${value%%[![:space:]]*}"}
-            value=${value%"${value##*[![:space:]]}"}
+            # Use different delimiter to handle values with spaces
+            key=$(echo "$pair" | cut -d':' -f1 | sed 's/^ *//; s/ *$//')
+            value=$(echo "$pair" | cut -d':' -f2- | sed 's/^ *//; s/ *$//')
 
             # Debug output
             echo "   Debug: Testing key='$key' value='$value'"
