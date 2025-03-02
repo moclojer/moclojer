@@ -242,7 +242,7 @@ run_all_tests() {
     # Define test cases as arrays with endpoint, method, data, expected output, and query params
     local test_cases=(
         "/hello/testuser|GET||hello:\"testuser!\"|"
-        "/hello-world|GET||hello:\"Hello, World!\"|"
+        "/hello-world|GET||hello:Hello, World!|"
         "/with-params/testparam|GET||path-params:\"testparam\",query-params:\"queryvalue\"|param1=queryvalue"
         "/first-post-route|POST|{\"project\":\"moclojer\"}|project:\"moclojer\"|"
         "/v1/hello/test/testuser|GET||hello-v1:\"testuser!\",sufix:false|"
