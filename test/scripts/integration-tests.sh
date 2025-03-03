@@ -304,8 +304,9 @@ test_endpoint() {
     if [ -n "$expected_output" ]; then
         echo "   Response body: $response_body"
 
-        # Parse the response body to a temporary file to avoid parsing issues
-        echo "$response_body" >/tmp/response.json
+        # Parse the response body to a uniquely generated temporary file to avoid race conditions
+        tmpfile=$(mktemp /tmp/response.json.XXXXXX)
+        echo "$response_body" > "$tmpfile"
 
         # For each key-value pair in expected_output (format: "key1:value1,key2:value2")
         while IFS= read -r pair; do
@@ -323,10 +324,10 @@ test_endpoint() {
             echo "   Debug: Testing key='$key' expected='$expected_clean'"
 
             # Extract the actual value using jq
-            if ! actual_value=$(jq -r ".[\"$key\"]" /tmp/response.json 2>/dev/null); then
+            if ! actual_value=$(jq -r ".[\"$key\"]" "$tmpfile" 2>/dev/null); then
                 echo "❌ Error extracting value for key: $key"
                 echo "   Response: $response_body"
-                rm -f /tmp/response.json
+                rm -f "$tmpfile"
                 return 1
             fi
 
@@ -341,7 +342,7 @@ test_endpoint() {
                     echo "   Expected value: $value (number)"
                     echo "   Actual value: $actual_value"
                     echo "   Received: $response_body"
-                    rm -f /tmp/response.json
+                    rm -f "$tmpfile"
                     return 1
                 fi
             elif [[ "$value" == "true" || "$value" == "false" ]]; then
@@ -352,7 +353,7 @@ test_endpoint() {
                     echo "   Expected value: $value (boolean)"
                     echo "   Actual value: $actual_value"
                     echo "   Received: $response_body"
-                    rm -f /tmp/response.json
+                    rm -f "$tmpfile"
                     return 1
                 fi
             else
@@ -363,7 +364,7 @@ test_endpoint() {
                     echo "   Expected value: $expected_clean (string)"
                     echo "   Actual value: $actual_value"
                     echo "   Received: $response_body"
-                    rm -f /tmp/response.json
+                    rm -f "$tmpfile"
                     return 1
                 fi
             fi
@@ -372,7 +373,7 @@ test_endpoint() {
         done < <(echo "$expected_output" | tr ',' '\n')
 
         # Clean up
-        rm -f /tmp/response.json
+        rm -f "$tmpfile"
     fi
 
     return 0
