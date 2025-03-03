@@ -220,6 +220,49 @@ test_endpoint() {
         fi
     fi
 
+    # Special case for hello-world-json endpoint (using Content-Type: application/json)
+    if [ "$endpoint" = "/hello-world-json" ]; then
+        # Execute the request with JSON content type
+        local url="http://$SERVER_HOST:$SERVER_PORT/hello-world" # Use the same hello-world endpoint
+        local curl_opts=(-s --max-time "$TIMEOUT" -w "\n%{http_code}" -H "Content-Type: application/json" -H "Accept: application/json")
+        local response=$(curl "${curl_opts[@]}" "$url")
+
+        # Split response into body and status code
+        local response_body=$(echo "$response" | head -n 1)
+        local response_code=$(echo "$response" | tail -n 1)
+
+        # Check status code
+        if [ "$response_code" -eq 200 ]; then
+            echo "✅ GET-JSON $url returned 200 OK"
+        else
+            echo "❌ GET-JSON $url failed with status $response_code"
+            echo "   Response body: $response_body"
+            return 1
+        fi
+
+        echo "   Response body: $response_body"
+
+        # Extract the actual value using jq
+        local actual_value=$(echo "$response_body" | jq -r '.hello')
+        echo "   Debug: Actual value='$actual_value'"
+
+        # Hard-coded expected value for hello-world-json
+        local expected_value="Hello, World!"
+        echo "   Debug: Expected value='$expected_value'"
+
+        if [ "$actual_value" = "$expected_value" ]; then
+            echo "✅ Response contains expected key-value pair: hello:\"$expected_value\""
+            return 0
+        else
+            echo "❌ Response does not contain expected key-value pair"
+            echo "   Expected key: hello"
+            echo "   Expected value: $expected_value (string)"
+            echo "   Actual value: $actual_value"
+            echo "   Received: $response_body"
+            return 1
+        fi
+    fi
+
     # Build the full URL with query parameters if provided
     local url="http://$SERVER_HOST:$SERVER_PORT$endpoint"
     if [ -n "$query_params" ]; then
@@ -350,6 +393,8 @@ run_all_tests() {
         "/v1/hello/test/testuser/with-sufix|GET||hello-v1:\"testuser!\",sufix:true|"
         "/v1/hello|GET||hello-v1:\"hello world!\"|"
         "/multi-path-param/testuser/more/30|GET||username:\"testuser\",age:30|"
+        # New test case with Content-Type: application/json
+        "/hello-world-json|GET-JSON||hello:\"Hello, World!\"|"
     )
 
     local total_tests=${#test_cases[@]}
