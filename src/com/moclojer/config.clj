@@ -36,6 +36,9 @@
                 :desc    "Log output format."
                 :alias   :l
                 :default "default"}
+   :log-file {:ref     "<file>"
+              :desc    "Log file path to save logs."
+              :alias   :f}
    :help    {:desc   "Show this Help."
              :alias  :h}})
 
