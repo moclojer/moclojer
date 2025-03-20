@@ -33,6 +33,7 @@
     (let [routers (router/smart-router
                    {::router/config edn-sample})]
       (is (= (count routers) 3))
+      ;; Router order changed due to http-kit integration and WebSocket support
       (is (= (ffirst routers) ""))
       (is (= (first (get routers 1)) "/users"))
       (is (= (first (get routers 2)) "/swagger.json")))
