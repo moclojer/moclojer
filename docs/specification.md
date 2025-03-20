@@ -165,6 +165,70 @@ webhook:
 | `body` | No | String/Object | Webhook request body |
 | `if` | No | String | Conditional expression for triggering webhook |
 
+## WebSocket
+
+Configure WebSocket endpoints for real-time bidirectional communication:
+
+```yaml
+- websocket:
+    path: /ws/chat/:room_id
+    on-connect:
+      response: >
+        {"status": "connected", "room": "{{path-params.room_id}}"}
+    on-message:
+      - pattern: "ping"
+        response: "pong"
+      - pattern: "join"
+        response: >
+          {"event": "joined", "user": "{{json-params.user}}", "room": "{{path-params.room_id}}"}
+```
+
+### WebSocket Object
+
+| Key | Required | Type | Description |
+|-----|----------|------|-------------|
+| `path` | Yes | String | URL path for the WebSocket endpoint |
+| `on-connect` | No | Object | Configuration for when a client connects |
+| `on-message` | No | Array | List of patterns and responses for messages |
+
+### on-connect Object
+
+| Key | Required | Type | Description |
+|-----|----------|------|-------------|
+| `response` | Yes | String/Object | Response sent to the client upon connection |
+
+### on-message Object
+
+Each item in the `on-message` list is an object with the following fields:
+
+| Key | Required | Type | Description |
+|-----|----------|------|-------------|
+| `pattern` | Yes | String | Pattern to match against the received message |
+| `response` | Yes | String/Object | Response to be sent when the message matches the pattern |
+
+### Templates in WebSockets
+
+Like HTTP responses, you can use templates in WebSocket responses:
+
+```yaml
+- websocket:
+    path: /ws/users/:user_id
+    on-connect:
+      response: >
+        {"status": "connected", "user": "{{path-params.user_id}}"}
+    on-message:
+      - pattern: "{\"action\":\"update\"}"
+        response: >
+          {"event": "updated", "user": "{{path-params.user_id}}", "data": {{message}}}
+```
+
+Available template variables:
+
+- `path-params`: URL path parameters
+- `query-params`: URL query parameters
+- `json-params`: JSON body parameters (for JSON messages)
+- `message`: The complete received message
+
 ## External Body
 
 Load response body from external sources:
