@@ -8,7 +8,7 @@
           wrapped-handler (latency/wrap-latency handler)
           request {:reitit.core/match
                   {:data {:latency {:min-ms 50
-                                  :max-ms 100}}}}
+                                    :max-ms 100}}}}
           start-time (System/currentTimeMillis)
           response (wrapped-handler request)
           elapsed-time (- (System/currentTimeMillis) start-time)]
