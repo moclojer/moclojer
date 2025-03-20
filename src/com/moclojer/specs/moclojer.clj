@@ -11,9 +11,6 @@
    [selmer.parser :as selmer]
    [org.httpkit.server :as http-kit]))
 
-;; Using declare to inform the linter that 'channel' will be defined elsewhere (by http-kit macros)
-(declare channel)
-
 (defn ws-send!
   "Sends a message to a WebSocket connection"
   [channel message]
@@ -27,7 +24,9 @@
   "Renders given `template`, using `request`'s data."
   [template request]
   (try
-    {:content (selmer/render (ext-body/->str template) request)}
+    {:content (-> template
+                  ext-body/->str
+                  (selmer/render request))}
     (catch Exception e
       (log/log :error :bad-body
                :body template
@@ -41,34 +40,49 @@
   (let [{:keys [content]} (render-template (:path external-body) request)]
     (assoc external-body :path content)))
 
+(defn parse-json-safely
+  "Tenta fazer parse de um JSON, retornando o conteúdo original em caso de erro"
+  [content]
+  (try
+    (json/read-str content)
+    (catch Exception e
+      (log/log :warn :json-parse-error
+               :body content
+               :message (.getMessage e))
+      content)))
+
+(defn get-response-body
+  "Obtém o corpo correto da resposta (processando external-body se necessário)"
+  [response request]
+  (if-let [?external-body (:external-body response)]
+    (-> ?external-body
+        (enrich-external-body request)
+        ext-body/type-identification)
+    (:body response)))
+
 (defn build-body
   "Builds the body from the response."
   [response request]
-  (let [{:keys [content error?]} (render-template
-                                  (if-let [?external-body (:external-body response)]
-                                    (-> ?external-body
-                                        (enrich-external-body request)
-                                        ext-body/type-identification)
-                                    (:body response))
-                                  request)]
-    (try
+  (try
+    (let [{:keys [content error?]} (-> response
+                                       (get-response-body request)
+                                       (render-template request))]
       (cond
-        error? (let [parsed (json/read-str content :key-fn keyword)]
-                 {:error parsed
-                  :message (get parsed :message)})
-        (string? content) (try
-                            (json/read-str content)
-                            (catch Exception e
-                              (log/log :warn :json-parse-error
-                                       :body content
-                                       :message (.getMessage e))
-                              content))
-        :else content)
-      (catch Exception e
-        (log/log :error :bad-body
-                 :body content
-                 :message (.getMessage e))
-        {:error (.getMessage e)}))))
+        error?
+        (-> content
+            (json/read-str :key-fn keyword)
+            (as-> parsed {:error parsed
+                          :message (:message parsed)}))
+
+        (string? content)
+        (parse-json-safely content)
+
+        :else content))
+    (catch Exception e
+      (log/log :error :bad-body
+               :body (:body response)
+               :message (.getMessage e))
+      {:error (.getMessage e)})))
 
 (defn assoc-if [m k v]
   (if v
@@ -76,64 +90,48 @@
     m))
 
 (defn webhook-condition
-  "Checks `if` condition and return boolean value, default is true"
+  "Checks `if` condition and return boolean value, default is true when condition is empty"
   [condition request]
-  (let [template (str "{% if " condition " %}true{% else %}false{% endif %}")]
-    (if (empty? condition)
-      true
-      (boolean (Boolean/valueOf (selmer/render (ext-body/->str template) request))))))
+  (if (empty? condition)
+    true
+    (let [template (str "{% if " condition " %}true{% else %}false{% endif %}")]
+      (-> template
+          ext-body/->str
+          (selmer/render request)
+          Boolean/valueOf
+          boolean))))
 
 (defn build-parameters [request-values]
   (let [query (:query request-values)
         path (:path request-values)
         body (:body request-values)]
-    (-> (assoc-if {} :query-params query)
-        (assoc-if :path-params path)
-        (assoc-if :json-params body))))
+    (-> {}
+        (cond-> query (assoc :query-params query))
+        (cond-> path (assoc :path-params path))
+        (cond-> body (assoc :json-params body)))))
 
-(defn generic-reitit-ws
-  "Creates a WebSocket handler with defined callbacks using the Ring 1.11 standard format"
-  [request path on-connect on-message]
-  {:on-connect (fn [_]
-                 (when on-connect
-                   (let [response (:response on-connect)
-                         parameters (build-parameters {:query (:query-params request)
-                                                       :path (:path-params request)})]
-                     (when response
-                       (let [content (render-template response parameters)]
-                         (when-not (:error? content)
-                           (ws-send! channel (:content content))))))))
-   :on-message (fn [_ message]
-                 (when on-message
-                   (let [parameters (build-parameters {:query (:query-params request)
-                                                       :path (:path-params request)
-                                                       :body message})]
-                     (doseq [pattern-config on-message]
-                       (let [pattern (:pattern pattern-config)
-                             response (:response pattern-config)
-                             template (str "{% if message = \"" pattern "\" %}true{% else %}false{% endif %}")
-                             matches (boolean (Boolean/valueOf
-                                               (selmer/render template
-                                                              (assoc parameters :message message))))]
-                         (when matches
-                           (let [content (render-template response parameters)]
-                             (when-not (:error? content)
-                               (ws-send! channel (:content content))))))))))
-   :on-close (fn [_ status-code reason]
-               (log/log :info :websocket-closed
-                        :path path
-                        :status-code status-code
-                        :reason reason))
-   :on-error (fn [_ e]
-               (log/log :error :websocket-error
-                        :path path
-                        :message (.getMessage e)))})
+(defn process-ws-message
+  "Process WebSocket message based on pattern matching"
+  [channel message pattern-configs request-params]
+  (let [params (assoc request-params :message message)]
+    (doseq [{:keys [pattern response]} pattern-configs]
+      (let [template (str "{% if message = \"" pattern "\" %}true{% else %}false{% endif %}")
+            matches (boolean (Boolean/valueOf (selmer/render template params)))]
+        (when matches
+          (when-let [content (:content (render-template response params))]
+            (ws-send! channel content)))))))
+
+(defn handle-ws-connect
+  "Handle WebSocket connection"
+  [channel connect-config request-params]
+  (when-let [response (:response connect-config)]
+    (when-let [content (:content (render-template response request-params))]
+      (ws-send! channel content))))
 
 (defn generic-reitit-handler
   "Builds a reitit handler that responds with pre-defined `response`.
-
-  Since we also support `webhooks`, given `webhook-config` is used
-  when necessary in together with the `response`."
+   Since we also support `webhooks`, given `webhook-config` is used
+   when necessary in together with the `response`."
   [response webhook-config]
   (fn [request]
     (when webhook-config
@@ -183,7 +181,7 @@
 
 (defn make-path-parameters
   "Based on `path`'s declared type, provides a placeholder that can be
-  used later on by reitit to understand the param's data type."
+   used later on by reitit to understand the param's data type."
   [path & [gen?]]
   (-> (fn [query-types s]
         (if (string/starts-with? s ":")
@@ -257,8 +255,8 @@
 
 (defn ->reitit
   "Adapts given moclojer endpoints to reitit's data based routes, while
-  parsing request data types throughout the way. Supports both HTTP endpoints
-  and WebSocket endpoints."
+   parsing request data types throughout the way. Supports both HTTP endpoints
+   and WebSocket endpoints."
   [spec]
   (let [;; Process HTTP endpoints
         http-routes
@@ -299,40 +297,34 @@
              {:get
               {:no-doc true
                :handler (fn [request]
-                          (http-kit/with-channel request channel
-                            ;; Connection handler
-                            (when on-connect
-                              (let [response (:response on-connect)
-                                    parameters (build-parameters {:query (:query-params request)
-                                                                  :path (:path-params request)})]
-                                (when response
-                                  (let [content (render-template response parameters)]
-                                    (when-not (:error? content)
-                                      (ws-send! channel (:content content)))))))
+                          (http-kit/as-channel
+                           request
+                           {:on-open (fn [channel]
+                                       ;; Connection handler
+                                       (when on-connect
+                                         (handle-ws-connect channel on-connect
+                                                            (build-parameters
+                                                             {:query (:query-params request)
+                                                              :path (:path-params request)}))))
 
-                            ;; Message handler
-                            (http-kit/on-receive channel (fn [message]
-                                                           (when on-message
-                                                             (let [parameters (build-parameters {:query (:query-params request)
-                                                                                                 :path (:path-params request)
-                                                                                                 :body message})]
-                                                               (doseq [pattern-config on-message]
-                                                                 (let [pattern (:pattern pattern-config)
-                                                                       response (:response pattern-config)
-                                                                       template (str "{% if message = \"" pattern "\" %}true{% else %}false{% endif %}")
-                                                                       matches (boolean (Boolean/valueOf
-                                                                                         (selmer/render template
-                                                                                                        (assoc parameters :message message))))]
-                                                                   (when matches
-                                                                     (let [content (render-template response parameters)]
-                                                                       (when-not (:error? content)
-                                                                         (ws-send! channel (:content content)))))))))))
+                            :on-receive (fn [channel message]
+                                          ;; Message handler
+                                          (when on-message
+                                            (let [params (build-parameters
+                                                          {:query (:query-params request)
+                                                           :path (:path-params request)
+                                                           :body message})]
+                                              (process-ws-message channel message on-message params))))
 
-                            ;; Close handler
-                            (http-kit/on-close channel (fn [status]
-                                                         (log/log :info :websocket-closed
-                                                                  :path path
-                                                                  :status status)))))}}]))
+                            :on-close (fn [_channel status]
+                                        (log/log :info :websocket-closed
+                                                 :path path
+                                                 :status status))
+
+                            :on-error (fn [_channel error]
+                                        (log/log :error :websocket-error
+                                                 :path path
+                                                 :message (.getMessage error)))}))}}]))
 
         ;; Add swagger endpoint
         swagger-route
