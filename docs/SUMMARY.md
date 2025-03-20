@@ -8,7 +8,8 @@
 * [Multi-domain support](multi-domain-support.md)
 * [Rate Limiting](rate-limiting.md)
 * [Run it mocker server](run-it-mocker-server.md)
-* [Webhook support](webhook-support.md)
+* [Webhook support (background request)](webhook-support.md)
+* [WebSocket support](websocket-support.md)
 * [Using moclojer as a framework](using-moclojer-as-a-framework.md)
 
 ## Releases
