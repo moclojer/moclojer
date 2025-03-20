@@ -71,7 +71,7 @@ wscat -c ws://localhost:8000/ws/echo
 
 **Example interaction:**
 
-```
+```text
 Connected to ws://localhost:8000/ws/echo
 < {"status": "connected", "message": "Welcome to WebSocket Echo!"}
 > ping
