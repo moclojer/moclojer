@@ -1,10 +1,10 @@
-FROM docker.io/clojure:temurin-21-tools-deps-alpine AS jar-build
+FROM docker.io/clojure:temurin-23-tools-deps-alpine AS jar-build
 RUN apk add git
 WORKDIR /app
 COPY . .
 RUN clojure -M:dev --report stderr -m com.moclojer.build --uberjar
 
-FROM docker.io/clojure:temurin-21-tools-deps-alpine
+FROM docker.io/clojure:temurin-23-tools-deps-alpine
 LABEL org.opencontainers.image.source https://github.com/moclojer/moclojer
 WORKDIR /app
 COPY --from=jar-build /app/target/moclojer.jar /app/moclojer.jar
