@@ -1,6 +1,6 @@
 (ns com.moclojer.webhook
   (:require
-   [clj-http.client :as client]
+   [org.httpkit.client :as client]
    [clojure.core.async :as a]
    [clojure.data.json :as json]
    [clojure.edn :as edn]
@@ -59,8 +59,8 @@
           (do
             (Thread/sleep (long sleep-time))
             (try
-              (client/request req)
-              (log/log :info :sleep sleep-time :webhook-done hashed-req)
+              (let [_response @(client/request req)]
+                (log/log :info :sleep sleep-time :webhook-done hashed-req))
               (catch Exception e
                 (log/log :error :webhook-failed hashed-req :message (.getMessage e))
                 (.printStackTrace e))))))
