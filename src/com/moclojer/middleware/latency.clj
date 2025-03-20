@@ -1,6 +1,10 @@
 (ns com.moclojer.middleware.latency
   (:require [com.moclojer.log :as log]))
 
+;; Funções de tempo configuráveis para facilitar testes
+(def ^:dynamic *sleep-fn* Thread/sleep)
+(def ^:dynamic *current-time-fn* #(System/currentTimeMillis))
+
 (defn wrap-latency
   "Simulates network latency and failures.
    Options can be configured via endpoint metadata:
@@ -28,14 +32,14 @@
       (when (pos? timeout-rate)
         (when (< (rand) timeout-rate)
           (log/log :debug :simulated-timeout)
-          (Thread/sleep timeout-ms)
+          (*sleep-fn* timeout-ms)
           (throw (ex-info "Simulated timeout"
                           {:status 504
                            :body {:error "Gateway Timeout (simulated)"}}))))
 
       (when (pos? max-ms)
-        (let [latency (+ min-ms (rand-int (- max-ms min-ms)))]
+        (let [latency (+ min-ms (rand-int (inc (- max-ms min-ms))))]
           (log/log :debug :adding-latency :ms latency)
-          (Thread/sleep latency)))
+          (*sleep-fn* latency)))
 
       (handler request))))
