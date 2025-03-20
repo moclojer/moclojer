@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Scan code
-        uses: clj-holmes/clj-holmes-action@200d2d03900917d7eb3c24fc691ab83579a87fcb
+        uses: clj-holmes/clj-holmes-action@main
         with:
           # rules-repository: 'git://org/private-rules-repo#main'
           output-type: 'sarif'
