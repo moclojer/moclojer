@@ -14,7 +14,6 @@
 ;; Using declare to inform the linter that 'channel' will be defined elsewhere (by http-kit macros)
 (declare channel)
 
-;; Função auxiliar para enviar mensagens WebSocket
 (defn ws-send!
   "Sends a message to a WebSocket connection"
   [channel message]
@@ -92,7 +91,6 @@
         (assoc-if :path-params path)
         (assoc-if :json-params body))))
 
-;; Funções para WebSocket
 (defn generic-reitit-ws
   "Creates a WebSocket handler with defined callbacks using the Ring 1.11 standard format"
   [request path on-connect on-message]
