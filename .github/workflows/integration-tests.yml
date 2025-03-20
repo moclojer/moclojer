@@ -20,7 +20,13 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y jq lsof
+          sudo apt-get install -y jq lsof coreutils
+
+      - name: Install Rust and websocat for WebSocket tests
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          export PATH="$HOME/.cargo/bin:$PATH"
+          cargo install websocat
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -29,12 +35,15 @@ jobs:
             ~/.m2/repository
             ~/.gitlibs
             .cpcache
-          key: ${{ runner.os }}-clojure-${{ hashFiles('**/deps.edn') }}
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/deps.edn') }}
           restore-keys: |
-            ${{ runner.os }}-clojure-
+            ${{ runner.os }}-deps-
 
       - name: Run integration tests
         run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
           echo "Current directory: $(pwd)"
           echo "Script path: ./test/scripts/integration-tests.sh"
           chmod +x ./test/scripts/integration-tests.sh
