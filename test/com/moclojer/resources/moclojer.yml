@@ -117,3 +117,13 @@
           "age": {{path-params.age}}
         }
 
+# this is a websocket route
+- websocket:
+    path: /ws/echo
+    on-connect:
+      response: '{"status": "connected", "message": "Welcome to WebSocket Echo!"}'
+    on-message:
+      - pattern: "ping"
+        response: "pong"
+      - pattern: '{"echo": "{{json-params.echo}}"}'
+        response: '{"echoed": "{{json-params.echo}}"}'

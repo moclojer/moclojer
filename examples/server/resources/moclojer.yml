@@ -11,3 +11,13 @@
         window-ms: 60000    # 1 minute window
         max-requests: 10    # Allow 10 requests per window
         key-fn: remote-addr # Use client IP as the rate limit key
+
+- websocket:
+    path: /ws/echo
+    on-connect:
+      response: '{"status": "connected", "message": "Welcome to WebSocket Echo!"}'
+    on-message:
+      - pattern: "ping"
+        response: "pong"
+      - pattern: '{"echo": "{{json-params.echo}}"}'
+        response: '{"echoed": "{{json-params.echo}}"}'

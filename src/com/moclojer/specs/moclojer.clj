@@ -8,7 +8,21 @@
    [com.moclojer.webhook :as webhook]
    [malli.provider :as mp]
    [reitit.swagger :as swagger]
-   [selmer.parser :as selmer]))
+   [selmer.parser :as selmer]
+   [org.httpkit.server :as http-kit]))
+
+;; Using declare to inform the linter that 'channel' will be defined elsewhere (by http-kit macros)
+(declare channel)
+
+;; Função auxiliar para enviar mensagens WebSocket
+(defn ws-send!
+  "Sends a message to a WebSocket connection"
+  [channel message]
+  (try
+    (http-kit/send! channel message)
+    (catch Exception e
+      (log/log :error :websocket-send-error
+               :message (.getMessage e)))))
 
 (defn render-template
   "Renders given `template`, using `request`'s data."
@@ -77,6 +91,45 @@
     (-> (assoc-if {} :query-params query)
         (assoc-if :path-params path)
         (assoc-if :json-params body))))
+
+;; Funções para WebSocket
+(defn generic-reitit-ws
+  "Creates a WebSocket handler with defined callbacks using the Ring 1.11 standard format"
+  [request path on-connect on-message]
+  {:on-connect (fn [ws]
+                 (when on-connect
+                   (let [response (:response on-connect)
+                         parameters (build-parameters {:query (:query-params request)
+                                                       :path (:path-params request)})]
+                     (when response
+                       (let [content (render-template response parameters)]
+                         (when-not (:error? content)
+                           (ws-send! ws (:content content))))))))
+   :on-message (fn [ws message]
+                 (when on-message
+                   (let [parameters (build-parameters {:query (:query-params request)
+                                                       :path (:path-params request)
+                                                       :body message})]
+                     (doseq [pattern-config on-message]
+                       (let [pattern (:pattern pattern-config)
+                             response (:response pattern-config)
+                             template (str "{% if message = \"" pattern "\" %}true{% else %}false{% endif %}")
+                             matches (boolean (Boolean/valueOf
+                                               (selmer/render template
+                                                              (assoc parameters :message message))))]
+                         (when matches
+                           (let [content (render-template response parameters)]
+                             (when-not (:error? content)
+                               (ws-send! ws (:content content))))))))))
+   :on-close (fn [ws status-code reason]
+               (log/log :info :websocket-closed
+                        :path path
+                        :status-code status-code
+                        :reason reason))
+   :on-error (fn [ws e]
+               (log/log :error :websocket-error
+                        :path path
+                        :message (.getMessage e)))})
 
 (defn generic-reitit-handler
   "Builds a reitit handler that responds with pre-defined `response`.
@@ -206,45 +259,101 @@
 
 (defn ->reitit
   "Adapts given moclojer endpoints to reitit's data based routes, while
-  parsing request data types throughout the way."
+  parsing request data types throughout the way. Supports both HTTP endpoints
+  and WebSocket endpoints."
   [spec]
-  (->> (for [[[host path method tag] endpoints]
-             (group-by (juxt :host :path #(generate-method (:method %)) :tag)
-                       (remove nil? (map :endpoint spec)))]
-         (let [method (generate-method method)
-               route-name (generate-route-name host path method)
-               endpoint (first endpoints)
-               response (:response endpoint)
-               real-path (create-url path)
-               rate-limit (:rate-limit endpoint)
-               create-params-fn #(create-swagger-parameters
-                                  (make-path-parameters path %)
-                                  (make-query-parameters (:query endpoint) %)
-                                  (make-body (:body endpoint) :request))]
+  (let [;; Process HTTP endpoints
+        http-routes
+        (for [[[host path method tag] endpoints]
+              (group-by (juxt :host :path #(generate-method (:method %)) :tag)
+                        (remove nil? (map :endpoint (filter #(contains? % :endpoint) spec))))]
+          (let [method (generate-method method)
+                route-name (generate-route-name host path method)
+                endpoint (first endpoints)
+                response (:response endpoint)
+                real-path (create-url path)
+                rate-limit (:rate-limit endpoint)
+                create-params-fn #(create-swagger-parameters
+                                   (make-path-parameters path %)
+                                   (make-query-parameters (:query endpoint) %)
+                                   (make-body (:body endpoint) :request))]
+            [real-path
+             {:data {:host (or host "localhost")
+                     :rate-limit rate-limit}
+              (keyword method)
+              {:summary (if-not (string/blank? real-path)
+                          (str "Generated from " real-path)
+                          "Auto-generated")
+               :swagger {:tags [(or tag route-name)]}
+               :parameters (create-params-fn true)
+               :responses {(or (:status response) 200)
+                           {:body any?}}
+               :handler (generic-reitit-handler response nil)}}]))
 
-           [real-path
-            {:data {:host (or host "localhost")
-                    :rate-limit rate-limit}
-             (keyword method)
-             {:summary (if-not (string/blank? real-path)
-                         (str "Generated from " real-path)
-                         "Auto-generated")
-              :swagger {:tags [(or tag route-name)]}
-              :parameters (create-params-fn true)
-              :responses {(or (:status response) 200)
-                          {:body any?}}
-              :handler (generic-reitit-handler response nil)}}]))
-       (remove nil?)
-       (concat [["/swagger.json"
-                 {:get {:no-doc true
-                        :swagger {:info {:title "moclojer-mock"
-                                         :description "my mock"}}
-                        :handler (swagger/create-swagger-handler)}}]])
-       (reduce
-        (fn [routes [route-name route-definition]]
-          (let [?existing-definitions (get routes route-name)]
-            (assoc routes route-name
-                   (merge ?existing-definitions route-definition))))
-        {})
-       (map identity)
-       (vec)))
+        ;; Process WebSocket endpoints
+        ws-routes
+        (for [route-config (filter #(contains? % :websocket) spec)]
+          (let [ws-config (:websocket route-config)
+                path (:path ws-config)
+                on-connect (:on-connect ws-config)
+                on-message (:on-message ws-config)]
+            [path
+             {:get
+              {:no-doc true
+               :handler (fn [request]
+                          (http-kit/with-channel request channel
+                            ;; Connection handler
+                            (when on-connect
+                              (let [response (:response on-connect)
+                                    parameters (build-parameters {:query (:query-params request)
+                                                                  :path (:path-params request)})]
+                                (when response
+                                  (let [content (render-template response parameters)]
+                                    (when-not (:error? content)
+                                      (ws-send! channel (:content content)))))))
+
+                            ;; Message handler
+                            (http-kit/on-receive channel (fn [message]
+                                                           (when on-message
+                                                             (let [parameters (build-parameters {:query (:query-params request)
+                                                                                                 :path (:path-params request)
+                                                                                                 :body message})]
+                                                               (doseq [pattern-config on-message]
+                                                                 (let [pattern (:pattern pattern-config)
+                                                                       response (:response pattern-config)
+                                                                       template (str "{% if message = \"" pattern "\" %}true{% else %}false{% endif %}")
+                                                                       matches (boolean (Boolean/valueOf
+                                                                                         (selmer/render template
+                                                                                                        (assoc parameters :message message))))]
+                                                                   (when matches
+                                                                     (let [content (render-template response parameters)]
+                                                                       (when-not (:error? content)
+                                                                         (ws-send! channel (:content content)))))))))))
+
+                            ;; Close handler
+                            (http-kit/on-close channel (fn [status]
+                                                         (log/log :info :websocket-closed
+                                                                  :path path
+                                                                  :status status)))))}}]))
+
+        ;; Add swagger endpoint
+        swagger-route
+        [["/swagger.json"
+          {:get {:no-doc true
+                 :swagger {:info {:title "moclojer-mock"
+                                  :description "my mock"}}
+                 :handler (swagger/create-swagger-handler)}}]]
+
+        ;; Combine all routes
+        all-routes (concat http-routes ws-routes swagger-route)]
+
+    (->> all-routes
+         (remove nil?)
+         (reduce
+          (fn [routes [route-name route-definition]]
+            (let [?existing-definitions (get routes route-name)]
+              (assoc routes route-name
+                     (merge ?existing-definitions route-definition))))
+          {})
+         (map identity)
+         (vec))))

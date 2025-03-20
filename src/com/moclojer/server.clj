@@ -18,7 +18,7 @@
    [reitit.ring.middleware.parameters :as parameters]
    [reitit.swagger :as swagger]
    [reitit.swagger-ui :as swagger-ui]
-   [ring.adapter.jetty :as jetty]
+   [org.httpkit.server :as http-kit]
    [com.moclojer.middleware.rate-limit :as rate-limit]
    [com.moclojer.middleware.latency :as latency]))
 
@@ -89,9 +89,9 @@
              :url (str "http://" http-host ":" http-port)
              :version config/version)
 
-    (jetty/run-jetty (reitit-router *router)
-                     {:port http-port
-                      :join? join?})))
+    (http-kit/run-server (reitit-router *router)
+                         {:ip http-host
+                          :port http-port})))
 
 (defn create-watcher
   "Creates a file watcher that monitors changes in the configuration and mocks files.

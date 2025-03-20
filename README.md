@@ -57,6 +57,32 @@ Simple and efficient HTTP mock server with specification written in `yaml`, `edn
         }
 ```
 
+**WebSocket Support**
+
+Moclojer also supports WebSocket connections with a simple configuration approach:
+
+```yaml
+# WebSocket echo server
+- websocket:
+    path: /ws/echo
+    on-connect:
+      # Message sent when client connects
+      response: '{"status": "connected", "message": "Welcome to WebSocket Echo!"}'
+    on-message:
+      # Simple echo for "ping" message
+      - pattern: "ping"
+        response: "pong"
+      # Echo back any JSON content with an "echo" field
+      - pattern: '{"echo": "{{json-params.echo}}"}'
+        response: '{"echoed": "{{json-params.echo}}"}'
+```
+
+You can test the WebSocket connection using tools like `websocat`:
+
+```sh
+websocat "ws://localhost:8000/ws/echo" --text
+```
+
 ## docker
 
 * **image:** `ghcr.io/moclojer/moclojer:latest`

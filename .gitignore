@@ -30,3 +30,4 @@ moclojer.json
 upload-filesystem/
 META-INF/*-native-image-args
 .dccache
+*.log
