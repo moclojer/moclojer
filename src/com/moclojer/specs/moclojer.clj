@@ -96,7 +96,7 @@
 (defn generic-reitit-ws
   "Creates a WebSocket handler with defined callbacks using the Ring 1.11 standard format"
   [request path on-connect on-message]
-  {:on-connect (fn [ws]
+  {:on-connect (fn [_]
                  (when on-connect
                    (let [response (:response on-connect)
                          parameters (build-parameters {:query (:query-params request)
@@ -104,8 +104,8 @@
                      (when response
                        (let [content (render-template response parameters)]
                          (when-not (:error? content)
-                           (ws-send! ws (:content content))))))))
-   :on-message (fn [ws message]
+                           (ws-send! channel (:content content))))))))
+   :on-message (fn [_ message]
                  (when on-message
                    (let [parameters (build-parameters {:query (:query-params request)
                                                        :path (:path-params request)
@@ -120,13 +120,13 @@
                          (when matches
                            (let [content (render-template response parameters)]
                              (when-not (:error? content)
-                               (ws-send! ws (:content content))))))))))
-   :on-close (fn [ws status-code reason]
+                               (ws-send! channel (:content content))))))))))
+   :on-close (fn [_ status-code reason]
                (log/log :info :websocket-closed
                         :path path
                         :status-code status-code
                         :reason reason))
-   :on-error (fn [ws e]
+   :on-error (fn [_ e]
                (log/log :error :websocket-error
                         :path path
                         :message (.getMessage e)))})
