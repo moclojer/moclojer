@@ -73,8 +73,7 @@
     (ring/create-default-handler))))
 
 (defn start-server!
-  [*router & {:keys [join?]
-              :or {join? true}}]
+  [*router]
   (let [http-host (or (System/getenv "HOST") "0.0.0.0")
         http-port (or (some-> (System/getenv "PORT")
                               Integer/parseInt)

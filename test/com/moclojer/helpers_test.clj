@@ -14,11 +14,11 @@
 
 (defn start-server!
   "create a running server of reitit from a config map"
-  [config & {:keys [mocks] :as opts}]
+  [config & {:keys [mocks] :as _opts}]
   (let [*router (adapters/generate-routes (open-file config)
                                           :mocks-path mocks)]
     (async/thread
-      (server/start-server! *router opts))))
+      (server/start-server! *router))))
 
 (comment
   (start-server! "test/com/moclojer/resources/external-body-json.yml")
