@@ -11,6 +11,6 @@ jobs:
           submodules: true
       - uses: DeLaGuardo/setup-clojure@13.2
         with:
-          cli: "1.11.1.1139"
+          cli: "1.12.0.1530"
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: clojure -M:test
