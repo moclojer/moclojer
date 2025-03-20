@@ -33,9 +33,9 @@
     (let [routers (router/smart-router
                    {::router/config edn-sample})]
       (is (= (count routers) 3))
-      (is (= (ffirst routers) "/swagger.json"))
-      (is (= (first (get routers 2)) "/users"))
-      (is (= (first (get routers 1)) "")))
+      (is (= (ffirst routers) ""))
+      (is (= (first (get routers 1)) "/users"))
+      (is (= (first (get routers 2)) "/swagger.json")))
     (testing "should make yaml routers"
       (let [yaml-routers (router/smart-router
                           {::router/config yaml-sample})]
