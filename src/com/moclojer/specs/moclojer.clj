@@ -106,9 +106,9 @@
         path (:path request-values)
         body (:body request-values)]
     (-> {}
-        (cond-> query (assoc :query-params query))
-        (cond-> path (assoc :path-params path))
-        (cond-> body (assoc :json-params body)))))
+        (assoc-if :query-params query)
+        (assoc-if :path-params path)
+        (assoc-if :json-params body))))
 
 (defn process-ws-message
   "Process WebSocket message based on pattern matching"
