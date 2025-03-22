@@ -115,8 +115,7 @@
   [channel message pattern-configs request-params]
   (let [params (assoc request-params :message message)]
     (doseq [{:keys [pattern response]} pattern-configs]
-      (let [template (str "{% if message = \"" pattern "\" %}true{% else %}false{% endif %}")
-            matches (boolean (Boolean/valueOf (selmer/render template params)))]
+      (let [matches (boolean (re-matches (re-pattern pattern) message))]
         (when matches
           (when-let [content (:content (render-template response params))]
             (ws-send! channel content)))))))
