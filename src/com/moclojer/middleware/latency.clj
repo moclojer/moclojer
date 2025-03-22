@@ -1,7 +1,7 @@
 (ns com.moclojer.middleware.latency
   (:require [com.moclojer.log :as log]))
 
-;; Funções de tempo configuráveis para facilitar testes
+;; Configurable time functions to facilitate testing
 (def ^:dynamic *sleep-fn* Thread/sleep)
 (def ^:dynamic *current-time-fn* #(System/currentTimeMillis))
 
