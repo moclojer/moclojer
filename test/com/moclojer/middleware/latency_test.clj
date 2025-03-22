@@ -8,7 +8,7 @@
           wrapped-handler (latency/wrap-latency handler)
           min-ms 50
           max-ms 100
-          buffer-ms 10  ;; Adicionando um buffer para acomodar variações do sistema
+          buffer-ms 10  ;; Adding a buffer to accommodate system variations
           request {:reitit.core/match
                    {:data {:latency {:min-ms min-ms
                                      :max-ms max-ms}}}}

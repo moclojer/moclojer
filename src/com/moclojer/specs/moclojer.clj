@@ -41,7 +41,7 @@
     (assoc external-body :path content)))
 
 (defn parse-json-safely
-  "Tenta fazer parse de um JSON, retornando o conteúdo original em caso de erro"
+  "Tries to parse a JSON, returning the original content in case of error"
   [content]
   (try
     (json/read-str content)
@@ -265,20 +265,20 @@
           real-path (create-url path)
           rate-limit (:rate-limit endpoint)
           create-params-fn #(create-swagger-parameters
-                           (make-path-parameters path %)
-                           (make-query-parameters (:query endpoint) %)
-                           (make-body (:body endpoint) :request))]
+                             (make-path-parameters path %)
+                             (make-query-parameters (:query endpoint) %)
+                             (make-body (:body endpoint) :request))]
       [real-path
        {:data {:host (or host "localhost")
                :rate-limit rate-limit}
         (keyword method)
         {:summary (if-not (string/blank? real-path)
-                   (str "Generated from " real-path)
-                   "Auto-generated")
+                    (str "Generated from " real-path)
+                    "Auto-generated")
          :swagger {:tags [(or tag route-name)]}
          :parameters (create-params-fn true)
          :responses {(or (:status response) 200)
-                    {:body any?}}
+                     {:body any?}}
          :handler (generic-reitit-handler response nil)}}])))
 
 (defn create-ws-handler
@@ -290,27 +290,27 @@
      {:on-open (fn [channel]
                  (when on-connect
                    (handle-ws-connect channel on-connect
-                                    (build-parameters
-                                     {:query (:query-params request)
-                                      :path (:path-params request)}))))
+                                      (build-parameters
+                                       {:query (:query-params request)
+                                        :path (:path-params request)}))))
 
       :on-receive (fn [channel message]
-                   (when on-message
-                     (let [params (build-parameters
-                                 {:query (:query-params request)
-                                  :path (:path-params request)
-                                  :body message})]
-                       (process-ws-message channel message on-message params))))
+                    (when on-message
+                      (let [params (build-parameters
+                                    {:query (:query-params request)
+                                     :path (:path-params request)
+                                     :body message})]
+                        (process-ws-message channel message on-message params))))
 
       :on-close (fn [_channel status]
-                 (log/log :info :websocket-closed
-                         :path path
-                         :status status))
+                  (log/log :info :websocket-closed
+                           :path path
+                           :status status))
 
       :on-error (fn [_channel error]
-                 (log/log :error :websocket-error
-                         :path path
-                         :message (.getMessage error)))})))
+                  (log/log :error :websocket-error
+                           :path path
+                           :message (.getMessage error)))})))
 
 (defn process-ws-routes
   "Process WebSocket endpoints and return route configurations"
@@ -331,7 +331,7 @@
   [["/swagger.json"
     {:get {:no-doc true
            :swagger {:info {:title "moclojer-mock"
-                          :description "my mock"}}
+                            :description "my mock"}}
            :handler (swagger/create-swagger-handler)}}]])
 
 (defn merge-routes
