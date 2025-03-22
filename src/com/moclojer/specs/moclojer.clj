@@ -52,7 +52,7 @@
       content)))
 
 (defn get-response-body
-  "Obtém o corpo correto da resposta (processando external-body se necessário)"
+  "Gets the correct response body (processing external-body if necessary)"
   [response request]
   (if-let [?external-body (:external-body response)]
     (-> ?external-body
