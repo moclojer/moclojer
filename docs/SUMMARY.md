@@ -15,6 +15,7 @@
 ## Releases
 
 * [next](releases/next.md)
+* [v0.4.0](releases/v0.4.0.md)
 * [v0.3.5](releases/v0.3.5.md)
 * [v0.3.4](releases/v0.3.4.md)
 * [v0.3.3.1](releases/v0.3.3.1.md)
