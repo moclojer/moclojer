@@ -252,97 +252,106 @@
                  :body ?body
                  :message (.getMessage e))))))
 
+(defn process-http-routes
+  "Process HTTP endpoints and return route configurations"
+  [spec]
+  (for [[[host path method tag] endpoints]
+        (group-by (juxt :host :path #(generate-method (:method %)) :tag)
+                  (remove nil? (map :endpoint (filter #(contains? % :endpoint) spec))))]
+    (let [method (generate-method method)
+          route-name (generate-route-name host path method)
+          endpoint (first endpoints)
+          response (:response endpoint)
+          real-path (create-url path)
+          rate-limit (:rate-limit endpoint)
+          create-params-fn #(create-swagger-parameters
+                           (make-path-parameters path %)
+                           (make-query-parameters (:query endpoint) %)
+                           (make-body (:body endpoint) :request))]
+      [real-path
+       {:data {:host (or host "localhost")
+               :rate-limit rate-limit}
+        (keyword method)
+        {:summary (if-not (string/blank? real-path)
+                   (str "Generated from " real-path)
+                   "Auto-generated")
+         :swagger {:tags [(or tag route-name)]}
+         :parameters (create-params-fn true)
+         :responses {(or (:status response) 200)
+                    {:body any?}}
+         :handler (generic-reitit-handler response nil)}}])))
+
+(defn create-ws-handler
+  "Create WebSocket handler function with connection and message handling"
+  [path on-connect on-message]
+  (fn [request]
+    (http-kit/as-channel
+     request
+     {:on-open (fn [channel]
+                 (when on-connect
+                   (handle-ws-connect channel on-connect
+                                    (build-parameters
+                                     {:query (:query-params request)
+                                      :path (:path-params request)}))))
+
+      :on-receive (fn [channel message]
+                   (when on-message
+                     (let [params (build-parameters
+                                 {:query (:query-params request)
+                                  :path (:path-params request)
+                                  :body message})]
+                       (process-ws-message channel message on-message params))))
+
+      :on-close (fn [_channel status]
+                 (log/log :info :websocket-closed
+                         :path path
+                         :status status))
+
+      :on-error (fn [_channel error]
+                 (log/log :error :websocket-error
+                         :path path
+                         :message (.getMessage error)))})))
+
+(defn process-ws-routes
+  "Process WebSocket endpoints and return route configurations"
+  [spec]
+  (for [route-config (filter #(contains? % :websocket) spec)]
+    (let [ws-config (:websocket route-config)
+          path (:path ws-config)
+          on-connect (:on-connect ws-config)
+          on-message (:on-message ws-config)]
+      [path
+       {:get
+        {:no-doc true
+         :handler (create-ws-handler path on-connect on-message)}}])))
+
+(defn create-swagger-route
+  "Create Swagger documentation endpoint"
+  []
+  [["/swagger.json"
+    {:get {:no-doc true
+           :swagger {:info {:title "moclojer-mock"
+                          :description "my mock"}}
+           :handler (swagger/create-swagger-handler)}}]])
+
+(defn merge-routes
+  "Merge route definitions with the same path"
+  [routes [route-name route-definition]]
+  (let [?existing-definitions (get routes route-name)]
+    (assoc routes route-name
+           (merge ?existing-definitions route-definition))))
+
 (defn ->reitit
   "Adapts given moclojer endpoints to reitit's data based routes, while
    parsing request data types throughout the way. Supports both HTTP endpoints
    and WebSocket endpoints."
   [spec]
-  (let [;; Process HTTP endpoints
-        http-routes
-        (for [[[host path method tag] endpoints]
-              (group-by (juxt :host :path #(generate-method (:method %)) :tag)
-                        (remove nil? (map :endpoint (filter #(contains? % :endpoint) spec))))]
-          (let [method (generate-method method)
-                route-name (generate-route-name host path method)
-                endpoint (first endpoints)
-                response (:response endpoint)
-                real-path (create-url path)
-                rate-limit (:rate-limit endpoint)
-                create-params-fn #(create-swagger-parameters
-                                   (make-path-parameters path %)
-                                   (make-query-parameters (:query endpoint) %)
-                                   (make-body (:body endpoint) :request))]
-            [real-path
-             {:data {:host (or host "localhost")
-                     :rate-limit rate-limit}
-              (keyword method)
-              {:summary (if-not (string/blank? real-path)
-                          (str "Generated from " real-path)
-                          "Auto-generated")
-               :swagger {:tags [(or tag route-name)]}
-               :parameters (create-params-fn true)
-               :responses {(or (:status response) 200)
-                           {:body any?}}
-               :handler (generic-reitit-handler response nil)}}]))
-
-        ;; Process WebSocket endpoints
-        ws-routes
-        (for [route-config (filter #(contains? % :websocket) spec)]
-          (let [ws-config (:websocket route-config)
-                path (:path ws-config)
-                on-connect (:on-connect ws-config)
-                on-message (:on-message ws-config)]
-            [path
-             {:get
-              {:no-doc true
-               :handler (fn [request]
-                          (http-kit/as-channel
-                           request
-                           {:on-open (fn [channel]
-                                       ;; Connection handler
-                                       (when on-connect
-                                         (handle-ws-connect channel on-connect
-                                                            (build-parameters
-                                                             {:query (:query-params request)
-                                                              :path (:path-params request)}))))
-
-                            :on-receive (fn [channel message]
-                                          ;; Message handler
-                                          (when on-message
-                                            (let [params (build-parameters
-                                                          {:query (:query-params request)
-                                                           :path (:path-params request)
-                                                           :body message})]
-                                              (process-ws-message channel message on-message params))))
-
-                            :on-close (fn [_channel status]
-                                        (log/log :info :websocket-closed
-                                                 :path path
-                                                 :status status))
-
-                            :on-error (fn [_channel error]
-                                        (log/log :error :websocket-error
-                                                 :path path
-                                                 :message (.getMessage error)))}))}}]))
-
-        ;; Add swagger endpoint
-        swagger-route
-        [["/swagger.json"
-          {:get {:no-doc true
-                 :swagger {:info {:title "moclojer-mock"
-                                  :description "my mock"}}
-                 :handler (swagger/create-swagger-handler)}}]]
-
-        ;; Combine all routes
+  (let [http-routes (process-http-routes spec)
+        ws-routes (process-ws-routes spec)
+        swagger-route (create-swagger-route)
         all-routes (concat http-routes ws-routes swagger-route)]
-
     (->> all-routes
          (remove nil?)
-         (reduce
-          (fn [routes [route-name route-definition]]
-            (let [?existing-definitions (get routes route-name)]
-              (assoc routes route-name
-                     (merge ?existing-definitions route-definition))))
-          {})
+         (reduce merge-routes {})
          (map identity)
          (vec))))
