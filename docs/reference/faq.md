@@ -166,7 +166,7 @@ Make sure you don't put quotes around numeric template variables:
 
 ### Can I use custom HTTP methods?
 
-moclojer supports all standard HTTP methods (GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD). Custom methods might work but aren't officially supported.
+moclojer supports all standard HTTP methods (GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD). Custom methods might work, but aren't officially supported.
 
 ### How do I return different status codes?
 
