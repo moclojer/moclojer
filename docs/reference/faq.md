@@ -307,7 +307,7 @@ Use tools like:
 
 ## Troubleshooting
 
-### moclojer starts but I get "connection refused"
+### Moclojer starts, but I get "connection refused"
 
 Check that:
 - moclojer is actually running (check terminal output)
