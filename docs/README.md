@@ -147,8 +147,7 @@ We welcome contributions to improve the documentation! Here's how you can help:
 - **Include practical examples** - Show, don't just tell
 - **Follow the progressive structure** - Start simple, add complexity gradually
 - **Test all code examples** - Ensure examples actually work
-- **Use proper markdown formatting** - Follow existing style
-
+- **Use proper Markdown formatting** - Follow existing style
 ## 📞 Getting Help
 
 ### Community Resources
