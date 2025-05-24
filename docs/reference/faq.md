@@ -269,7 +269,7 @@ Yes! Use headers and conditional responses:
 
 ### How do I mock file uploads?
 
-moclojer receives file upload data but currently doesn't provide special template variables for file content. You can access form data through the request body.
+moclojer receives file upload data, but currently doesn't provide special template variables for file content. You can access form data through the request body.
 
 ### Can I use moclojer with HTTPS?
 
