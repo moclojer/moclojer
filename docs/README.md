@@ -62,7 +62,7 @@ Practical examples and common patterns:
 
 ## 🎯 Learning Paths
 
-### I'm completely new to moclojer
+### I'm entirely new to moclojer
 1. Read the [Overview](getting-started/overview.md)
 2. Follow the [Installation](getting-started/installation.md) guide
 3. Complete all tutorials in the "First Steps" section
