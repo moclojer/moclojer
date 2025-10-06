@@ -1,18 +1,25 @@
 FROM docker.io/clojure:temurin-23-tools-deps-alpine AS jar-build
-RUN apk add git
+RUN apk add --no-cache git
 WORKDIR /app
 COPY . .
 RUN clojure -M:dev --report stderr -m com.moclojer.build --uberjar
 
-FROM docker.io/clojure:temurin-23-tools-deps-alpine
+FROM ghcr.io/graalvm/native-image-community:23.0.2-ol9 AS native-build
+WORKDIR /workspace
+COPY --from=jar-build /app/target ./target
+RUN microdnf install -y zlib-devel && microdnf clean all
+RUN native-image \
+    @target/native-image-args \
+    -jar target/moclojer.jar \
+    -cp target/classes:target/moclojer.jar
+
+FROM gcr.io/distroless/base-debian12:nonroot
 LABEL org.opencontainers.image.source https://github.com/moclojer/moclojer
 WORKDIR /app
-COPY --from=jar-build /app/target/moclojer.jar /app/moclojer.jar
-# TODO: copying the edn file into docker is bad
-COPY ./deps.edn /app/deps.edn
+COPY --from=native-build /workspace/moclojer /app/moclojer
 ENV PORT="8000"
 ENV HOST="0.0.0.0"
 ENV CONFIG="/app/moclojer.yml"
 EXPOSE ${PORT}
-VOLUME ${CONFIG}
-ENTRYPOINT "java" "-jar" "/app/moclojer.jar"
+ENTRYPOINT ["/app/moclojer"]
+CMD ["-c", "/app/moclojer.yml"]
