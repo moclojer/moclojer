@@ -51,7 +51,7 @@
   []
   (println "Building native image configuration files")
   (let [native-config-dir (io/file "target" "native-config")
-        native-config-path (.getAbsolutePath native-config-dir)
+        native-config-path (.getPath native-config-dir)
         sdk-root (or (System/getenv "SDKROOT")
                      (try
                        (let [{:keys [exit out]} (shell/sh "xcrun" "--sdk" "macosx" "--show-sdk-path")]
@@ -66,13 +66,13 @@
                    "-Dorg.slf4j.simpleLogger.defaultLogLevel=error"
                    "-Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error"
                    "--allow-incomplete-classpath"
-                   "--features=InitAtBuildTimeFeature"
+                   "--features=clj_easy.graal_build_time.InitClojureClasses"
                    "-H:+UnlockExperimentalVMOptions"]
         tail-args ["--enable-all-security-services"
                    initialize-at-build-time
                    (str "-H:ConfigurationFileDirectories=" native-config-path)
-                   (str "-H:ReflectionConfigurationFiles=" (io/file native-config-dir "reflect-config.json"))
-                   (str "-H:ResourceConfigurationFiles=" (io/file native-config-dir "resource-config.json"))
+                   (str "-H:ReflectionConfigurationFiles=" (.getPath (io/file native-config-dir "reflect-config.json")))
+                   (str "-H:ResourceConfigurationFiles=" (.getPath (io/file native-config-dir "resource-config.json")))
                    "-H:EnableURLProtocols=http,https"
                    "-H:DashboardDump=report/moclojer"
                    "-H:+ReportExceptionStackTraces"
