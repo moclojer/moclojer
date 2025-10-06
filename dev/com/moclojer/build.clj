@@ -1,6 +1,7 @@
 (ns com.moclojer.build
   (:refer-clojure :exclude [test])
-  (:require [clojure.string :as string]
+  (:require [clojure.java.io :as io]
+            [clojure.string :as string]
             [clojure.tools.build.api :as b]
             [com.moclojer.config :as config]
             [com.moclojer.native-image :as native-image]))
@@ -74,6 +75,10 @@
         (do
           (println "Packaging classes into jar")
           (b/jar options))))
+    (let [native-dir (io/file "target" "native")]
+      (when (.exists native-dir)
+        (b/delete {:path (.getPath native-dir)}))
+      (.mkdirs native-dir))
 
     ;; prepare file for native image
     ;; TODO: commented feature, see why https://github.com/moclojer/moclojer/issues/158

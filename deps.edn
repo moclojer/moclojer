@@ -5,6 +5,8 @@
            org.clojure/clojure           {:mvn/version "1.12.0"}
            org.clojure/core.async        {:mvn/version "1.6.673"}
            org.clojure/data.json         {:mvn/version "2.4.0"}
+           clj-easy/graal-build-time     {:git/url "https://github.com/clj-easy/graal-build-time"
+                                          :git/sha "32312fe4ccb43e38e14f9abb6e6fad5bf1bbbbcf"}
            com.taoensso/timbre           {:mvn/version "6.2.1"}
            raven-clj/raven-clj           {:mvn/version "1.7.0"}
            org.slf4j/slf4j-jdk14         {:mvn/version "2.0.11"}

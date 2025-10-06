@@ -1,6 +1,7 @@
 (ns com.moclojer.native-image
   (:require [clojure.data.json :as json]
             [clojure.java.io :as io]
+            [clojure.java.shell :as shell]
             [clojure.string :as string]))
 
 
@@ -49,31 +50,51 @@
   "Prepare files for native-image build"
   []
   (println "Building native image configuration files")
-      ;; create native-image configuration file `filter.json`
-  (spit (io/file "target" "filter.json")
-        (json/write-str {:rules []}))
+  (let [native-config-dir (io/file "target" "native-config")
+        native-config-path (.getAbsolutePath native-config-dir)
+        sdk-root (or (System/getenv "SDKROOT")
+                     (try
+                       (let [{:keys [exit out]} (shell/sh "xcrun" "--sdk" "macosx" "--show-sdk-path")]
+                         (when (zero? exit)
+                           (string/trim out)))
+                       (catch Exception _ nil)))
+        linker-args (concat (when sdk-root
+                              [(str "-H:NativeLinkerOption=-L" (io/file sdk-root "usr/lib"))])
+                            ["-H:NativeLinkerOption=-lz"])
+        base-args ["-H:Name=moclojer"
+                   "-Dio.pedestal.log.defaultMetricsRecorder=nil"
+                   "-Dorg.slf4j.simpleLogger.defaultLogLevel=error"
+                   "-Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error"
+                   "--allow-incomplete-classpath"
+                   "--features=InitAtBuildTimeFeature"
+                   "-H:+UnlockExperimentalVMOptions"]
+        tail-args ["--enable-all-security-services"
+                   initialize-at-build-time
+                   (str "-H:ConfigurationFileDirectories=" native-config-path)
+                   (str "-H:ReflectionConfigurationFiles=" (io/file native-config-dir "reflect-config.json"))
+                   (str "-H:ResourceConfigurationFiles=" (io/file native-config-dir "resource-config.json"))
+                   "-H:EnableURLProtocols=http,https"
+                   "-H:DashboardDump=report/moclojer"
+                   "-H:+ReportExceptionStackTraces"
+                   "-H:+DashboardHeap"
+                   "-H:+DashboardCode"
+                   "-H:+DashboardBgv"
+                   "-H:+DashboardJson"
+                   "-O0" ;; TODO: remove this option when generating optimized builds for production
+                   "--no-fallback"
+                   "--verbose"]]
+    ;; create native-image configuration file `filter.json`
+    (spit (io/file "target" "filter.json")
+          (json/write-str {:rules []}))
 
-      ;; create native-image parameter file `@native-image-args`
-  (spit (io/file "target" "native-image-args")
-        (string/join "\n" ["-H:Name=moclojer"
-                           "-Dio.pedestal.log.defaultMetricsRecorder=nil"
-                           "-Dorg.slf4j.simpleLogger.defaultLogLevel=error"
-                           "-Dorg.slf4j.simpleLogger.log.org.eclipse.jetty.server=error"
-                           "--allow-incomplete-classpath"
-                           "--features=clj_easy.graal_build_time.InitClojureClasses"
-                           ;; TODO: Option 'EnableAllSecurityServices' is deprecated
-                           "--enable-all-security-services"
-                           initialize-at-build-time ;; lists managed in the native-image library
-                           "-H:EnableURLProtocols=http,https"
-                           "-H:DashboardDump=report/moclojer"
-                           "-H:+ReportExceptionStackTraces"
-                           "-H:+DashboardHeap"
-                           "-H:+DashboardCode"
-                           "-H:+DashboardBgv"
-                           "-H:+DashboardJson"
-                           "-H:ReflectionConfigurationFiles=reflect-config.json"
-                           "-H:ResourceConfigurationFiles=resource-config.json"
-                           ;; TODO: remove this option when generating optimized builds for production
-                           "-O0"
-                           "--no-fallback"
-                           "--verbose"])))
+    ;; create native-image parameter file `@native-image-args`
+    (spit (io/file "target" "native-image-args")
+          (string/join "\n" (concat base-args linker-args tail-args)))
+    ;; graalvm configuration directory
+    (.mkdirs native-config-dir)
+    ;; default configuration placeholders to avoid missing files when running native-image
+    (doseq [[fname contents] [["reflect-config.json" "[]"]
+                              ["resource-config.json" (json/write-str {:resources {:includes []}})]]]
+      (let [file (io/file native-config-dir fname)]
+        (when-not (.exists file)
+          (spit file contents))))))

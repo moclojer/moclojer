@@ -28,11 +28,10 @@ jobs:
       - name: Gen reflect.config.json to ${{ runner.os }}
         working-directory: target
         run: |
-          echo [] > moclojer.yml
+          cat ../test/com/moclojer/resources/moclojer.yml > moclojer.yml
           java -agentlib:native-image-agent=caller-filter-file=filter.json,config-output-dir=. -jar moclojer.jar & PID=$!
           ## Wait startup
           while ! curl -s localhost:8000 -o /dev/null; do echo waiting; sleep 3; done
-          curl -s localhost:8000 -D -
           kill $PID
       - name: GraalVM native image build moclojer binary to ${{ runner.os }}
         working-directory: target
@@ -47,13 +46,13 @@ jobs:
       - name: "Check http status"
         working-directory: target
         run: |
-          echo [] > moclojer.yml
+          cat ../test/com/moclojer/resources/moclojer.yml > moclojer.yml
           chmod +x ./moclojer_${{ runner.os }}
           ./moclojer_${{ runner.os }} -c moclojer.yml &
           PID=$!
           sleep 5
           curl -vvv -s -D - localhost:8000
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" localhost:8000)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" localhost:8000/hello/world)
           kill $PID
           if [ "x$STATUS" = "x200" ]; then
             exit 0
@@ -65,4 +64,4 @@ jobs:
       - uses: "actions/upload-artifact@v4.6.2"
         with:
           name: moclojer_bin_${{ runner.os }}
-          path: target/native/moclojer_${{ runner.os }}
+          path: target/moclojer_${{ runner.os }}

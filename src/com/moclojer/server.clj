@@ -38,6 +38,11 @@
                           :value host
                           :expected server-host})))))))
 
+(defn running-on-native-image?
+  "Return true when executing inside a GraalVM native image runtime."
+  []
+  (= "runtime" (System/getProperty "org.graalvm.nativeimage.imagecode")))
+
 (defn reitit-router [*router]
   (ring/ring-handler
    (ring/router
@@ -139,6 +144,14 @@
     - Automatically updates the server configuration when file changes are detected."
   [{:keys [config-path mocks-path]}]
   (let [*router (adapters/generate-routes (open-file config-path)
-                                          :mocks-path mocks-path)]
-    (create-watcher *router {:config-path config-path :mocks-path mocks-path})
+                                          :mocks-path mocks-path)
+        native? (running-on-native-image?)
+        watcher? (and (not native?) config-path)]
+    (if watcher?
+      (create-watcher *router {:config-path config-path :mocks-path mocks-path})
+      (log/log :info
+               :watcher-disabled
+               :reason (if native?
+                         "File watcher disabled on native image runtime"
+                         "File watcher disabled")))
     (start-server! *router)))
