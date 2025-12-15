@@ -29,7 +29,7 @@ jobs:
           cargo install websocat
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.m2/repository
