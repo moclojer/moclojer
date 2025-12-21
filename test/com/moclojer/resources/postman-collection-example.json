@@ -1,0 +1,104 @@
+{
+  "info": {
+    "name": "Pets API",
+    "description": "Sample Postman Collection for testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get all pets",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/pets",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["pets"]
+        }
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[{\"id\":1,\"name\":\"caramelo\"},{\"id\":2,\"name\":\"bob\"}]"
+        }
+      ]
+    },
+    {
+      "name": "Get pet by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/pets/:id",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["pets", ":id"]
+        }
+      },
+      "response": [
+        {
+          "name": "Pet found",
+          "code": 200,
+          "body": "{\"id\":1,\"name\":\"caramelo\"}"
+        }
+      ]
+    },
+    {
+      "name": "Pet Operations",
+      "item": [
+        {
+          "name": "Create pet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:3000/pets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"new pet\"}"
+            }
+          },
+          "response": [
+            {
+              "code": 201,
+              "body": "{\"id\":3,\"name\":\"new pet\"}"
+            }
+          ]
+        },
+        {
+          "name": "Delete pet",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:3000/pets/:id"
+          },
+          "response": [
+            {
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

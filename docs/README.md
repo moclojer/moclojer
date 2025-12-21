@@ -8,10 +8,11 @@ New to moclojer? Start with our progressive tutorial series:
 
 1. **[Overview](getting-started/overview.md)** - Learn what moclojer is and why you'd want to use it
 2. **[Installation](getting-started/installation.md)** - Get moclojer running on your system
-3. **[Your First Mock Server](getting-started/your-first-mock.md)** - Create a working API in 10 minutes
-4. **[Dynamic Responses](getting-started/dynamic-responses.md)** - Make your mocks respond to request data
-5. **[Multiple Endpoints](getting-started/multiple-endpoints.md)** - Build complete APIs with proper structure
-6. **[Real-World Example](getting-started/real-world-example.md)** - Complete e-commerce API tutorial
+3. **[Using Postman Collections](getting-started/postman-collections.md)** - Use your existing Postman Collections directly
+4. **[Your First Mock Server](getting-started/your-first-mock.md)** - Create a working API in 10 minutes
+5. **[Dynamic Responses](getting-started/dynamic-responses.md)** - Make your mocks respond to request data
+6. **[Multiple Endpoints](getting-started/multiple-endpoints.md)** - Build complete APIs with proper structure
+7. **[Real-World Example](getting-started/real-world-example.md)** - Complete e-commerce API tutorial
 
 ## 📚 Documentation Structure
 
@@ -22,7 +23,7 @@ Perfect for beginners - get up and running quickly with guided tutorials.
 
 ### 🧠 Core Concepts
 Understand how moclojer works with detailed explanations of key concepts:
-- **Configuration** - YAML, EDN, and OpenAPI formats
+- **Configuration** - YAML, EDN, OpenAPI, and Postman Collection formats
 - **Endpoints** - HTTP methods, paths, and responses
 - **Templates** - Dynamic content generation
 - **Parameters** - Path, query, body, and header handling

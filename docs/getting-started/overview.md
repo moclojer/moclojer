@@ -24,7 +24,7 @@ Support for dynamic responses, path parameters, query parameters, WebSockets, we
 
 ## How does it work?
 
-moclojer reads configuration files (YAML, EDN, or OpenAPI) that describe your API endpoints and their responses. When a request comes in, it matches the request to your configuration and returns the appropriate response.
+moclojer reads configuration files (YAML, EDN, OpenAPI, or Postman Collections) that describe your API endpoints and their responses. When a request comes in, it matches the request to your configuration and returns the appropriate response.
 
 **Simple example:**
 
@@ -146,10 +146,11 @@ Mock external APIs for development and testing:
 Ready to create your first mock API? Here's what you'll learn:
 
 1. **[Installation](installation.md)** - Get moclojer running on your system
-2. **[Your First Mock Server](your-first-mock.md)** - Create and test a simple API
-3. **[Dynamic Responses](dynamic-responses.md)** - Make your mocks respond to different inputs
-4. **[Multiple Endpoints](multiple-endpoints.md)** - Build a complete API with multiple routes
-5. **[Real-World Example](real-world-example.md)** - Put it all together with a practical example
+2. **[Using Postman Collections](postman-collections.md)** - Already have Postman Collections? Start here!
+3. **[Your First Mock Server](your-first-mock.md)** - Create and test a simple API with YAML
+4. **[Dynamic Responses](dynamic-responses.md)** - Make your mocks respond to different inputs
+5. **[Multiple Endpoints](multiple-endpoints.md)** - Build a complete API with multiple routes
+6. **[Real-World Example](real-world-example.md)** - Put it all together with a practical example
 
 Each tutorial builds on the previous one, so you'll have a solid understanding of moclojer by the end.
 
