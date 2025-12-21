@@ -1,5 +1,6 @@
 (ns com.moclojer.io-utils
-  (:require [clojure.edn :as edn]
+  (:require [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clojure.string :as string]
             [com.moclojer.log :as log]
             [yaml.core :as yaml])
@@ -9,8 +10,14 @@
   (if (empty? path)
     (log/log :error :open-config :not-found "file not found" :path path)
     (try
-      (if (string/ends-with? path ".edn")
+      (cond
+        (string/ends-with? path ".edn")
         (edn/read-string (str "[" (slurp path) "]"))
+
+        (string/ends-with? path ".json")
+        (json/parse-string (slurp path) true)
+
+        :else
         (yaml/from-file path))
       (catch FileNotFoundException e
         (log/log :error :open-config :exception (str "file not found" e))))))
