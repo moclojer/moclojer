@@ -153,6 +153,10 @@ clj -M:test
 clj -A:dev -M --report stderr -m com.moclojer.build
 ```
 
+## AI-assisted development
+
+This project includes an [`AGENTS.md`](AGENTS.md) file with guidelines for AI coding assistants (Claude Code, Cursor, GitHub Copilot, etc.). It documents architecture decisions, code patterns, extension points, and common pitfalls to help both humans and AI tools understand and contribute to the codebase effectively.
+
 ## framework integrations
 
 We distribute the library via [Clojars](https://clojars.org/com.moclojer/moclojer).
