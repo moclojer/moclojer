@@ -157,6 +157,8 @@ clj -A:dev -M --report stderr -m com.moclojer.build
 
 This project includes an [`AGENTS.md`](AGENTS.md) file with guidelines for AI coding assistants (Claude Code, Cursor, GitHub Copilot, etc.). It documents architecture decisions, code patterns, extension points, and common pitfalls to help both humans and AI tools understand and contribute to the codebase effectively.
 
+> **Windows users:** This project uses symlinks for AI tool config files. Git on Windows disables symlinks by default. Enable them with `git config --global core.symlinks true` before cloning (may require Developer Mode or admin privileges).
+
 ## framework integrations
 
 We distribute the library via [Clojars](https://clojars.org/com.moclojer/moclojer).
