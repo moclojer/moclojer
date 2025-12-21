@@ -6,6 +6,7 @@ Are you new to moclojer? This is the place to start!
 
 * [Overview](getting-started/overview.md)
 * [Installation](getting-started/installation.md)
+* [Using Postman Collections](getting-started/postman-collections.md)
 * [Your First Mock Server](getting-started/your-first-mock.md)
 * [Dynamic Responses](getting-started/dynamic-responses.md)
 * [Multiple Endpoints](getting-started/multiple-endpoints.md)

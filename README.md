@@ -30,7 +30,7 @@
   <a href="https://www.producthunt.com/posts/moclojer?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-moclojer" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=449961&theme=neutral" alt="moclojer - &#0032;Simple&#0032;and&#0032;efficient&#0032;HTTP&#0032;mock&#0032;server&#0032;with&#0032;easy&#0032;spec | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </p>
 
-Simple and efficient HTTP mock server with specification written in `yaml`, `edn` or `OpenAPI`.
+Simple and efficient HTTP mock server with specification written in `yaml`, `edn`, `OpenAPI` or `Postman Collection`.
 
 > 💾 Download the `.jar` file with the latest version of moclojer to test on your computer [here](https://github.com/moclojer/moclojer/releases/latest).
 
@@ -56,6 +56,33 @@ Simple and efficient HTTP mock server with specification written in `yaml`, `edn
           "hello": "{{path-params.username}}!"
         }
 ```
+
+**Postman Collection Support**
+
+Moclojer can directly use Postman Collection v2.1 exports as mock specifications. Simply export your Postman collection and use it:
+
+```sh
+# Using environment variable
+CONFIG=my-collection.json moclojer
+
+# Using CLI parameter
+moclojer --config my-collection.json
+```
+
+**How to export from Postman:**
+
+1. Open your Postman collection
+2. Click the three dots menu → Export
+3. Select "Collection v2.1" format
+4. Save the JSON file
+5. Use it directly with moclojer!
+
+The converter automatically:
+- Detects Postman Collection format
+- Extracts HTTP methods, paths, and response examples
+- Processes nested folders
+- Converts path variables (`:id`, `:username`, etc.)
+- Includes headers and status codes from examples
 
 **WebSocket Support**
 
