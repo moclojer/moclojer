@@ -1,7 +1,7 @@
 ---
 description: >-
-  Learn how to create dynamic responses that change based on request data using moclojer's
-  powerful template system. Make your mocks more realistic and flexible.
+  Master dynamic API responses with template variables. Use path params, query strings, JSON body,
+  and headers to create realistic mocks. Learn {{path-params}}, {{query-params}}, and more.
 ---
 
 # Dynamic Responses
@@ -39,6 +39,12 @@ Template variables are placeholders in your responses that get replaced with act
 - `{{query-params.name}}` - Values from query string (e.g., `?search=value`)
 - `{{json-params.name}}` - Values from JSON request body
 - `{{header-params.name}}` - Values from HTTP headers
+
+> **📚 Deep dive:** For complete details on each parameter type, see our dedicated guides:
+> - **[Path Parameters Guide](../topics/parameters/path-parameters.md)**
+> - **[Query Parameters Guide](../topics/parameters/query-parameters.md)**
+> - **[Body Parameters Guide](../topics/parameters/body-parameters.md)**
+> - **[Header Parameters Guide](../topics/parameters/header-parameters.md)**
 
 ## Step 2: Path parameters
 
@@ -507,6 +513,15 @@ Your mock APIs are now much more realistic and flexible! In the next tutorial, y
 
 ## Need help?
 
-- **Confused about templates?** See [Template System Overview](../topics/templates/template-system.md)
-- **Want more examples?** Check [Common Patterns](../examples/common-patterns.md)
+- **Confused about templates?** See **[Template System Overview](../topics/templates/template-system.md)**
+- **Want practical examples?** Check **[CRUD Operations](../how-to/patterns/crud-operations.md)** guide
 - **Have questions?** Join the [community discussions](https://github.com/moclojer/moclojer/discussions)
+
+## See Also
+
+- **[Path Parameters](../topics/parameters/path-parameters.md)** - Complete guide with types, precedence, and advanced patterns
+- **[Query Parameters](../topics/parameters/query-parameters.md)** - Pagination, filters, search, and sorting
+- **[Body Parameters](../topics/parameters/body-parameters.md)** - JSON body handling and nested objects
+- **[Header Parameters](../topics/parameters/header-parameters.md)** - HTTP headers and authentication
+- **[Template Variables Reference](../topics/templates/template-variables.md)** - All available template variables
+- **[Troubleshooting Guide](../reference/troubleshooting.md)** - Solutions for common issues

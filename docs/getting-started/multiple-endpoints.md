@@ -1,7 +1,7 @@
 ---
 description: >-
-  Learn how to organize and structure multiple endpoints to create a complete API.
-  Build a realistic user management system with proper HTTP methods and error handling.
+  Build complete REST APIs with multiple endpoints. Learn CRUD operations (GET, POST, PUT, DELETE),
+  nested resources, error handling, and API design best practices with a full user management example.
 ---
 
 # Multiple Endpoints
@@ -691,6 +691,14 @@ You now have a well-structured API! In the final tutorial, you'll put everything
 
 ## Need help?
 
-- **Want to understand API design better?** See [REST API Best Practices](../examples/rest-api-mocking.md)
-- **Looking for more complex examples?** Check [E-commerce API Example](../examples/ecommerce-api.md)
+- **Want practical examples?** See **[CRUD Operations Guide](../how-to/patterns/crud-operations.md)**
+- **Need pagination?** Check **[Pagination Guide](../how-to/patterns/pagination.md)**
 - **Have questions?** Join the [community discussions](https://github.com/moclojer/moclojer/discussions)
+
+## See Also
+
+- **[CRUD Operations](../how-to/patterns/crud-operations.md)** - Complete Create, Read, Update, Delete guide
+- **[Pagination](../how-to/patterns/pagination.md)** - Implement pagination strategies
+- **[HTTP Methods](../topics/endpoints/http-methods.md)** - Detailed guide on all HTTP methods
+- **[Query Parameters](../topics/parameters/query-parameters.md)** - Filters, search, and sorting
+- **[Troubleshooting Guide](../reference/troubleshooting.md)** - Solutions for common issues

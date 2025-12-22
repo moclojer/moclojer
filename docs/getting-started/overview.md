@@ -1,7 +1,7 @@
 ---
 description: >-
-  Learn what moclojer is, why you'd want to use it, and how it can help you build
-  better applications with mock APIs.
+  Discover moclojer - a simple HTTP mock server for development and testing. Create realistic
+  API mocks from YAML, OpenAPI, or Postman Collections with dynamic responses and WebSocket support.
 ---
 
 # What is moclojer?
@@ -157,7 +157,28 @@ Each tutorial builds on the previous one, so you'll have a solid understanding o
 ## Need help?
 
 - **[FAQ](../reference/faq.md)** - Common questions and answers
+- **[Troubleshooting Guide](../reference/troubleshooting.md)** - Solutions for common problems
 - **[GitHub Discussions](https://github.com/moclojer/moclojer/discussions)** - Community help and ideas
 - **[GitHub Issues](https://github.com/moclojer/moclojer/issues)** - Bug reports and feature requests
+
+## Explore more
+
+Once you're comfortable with the basics, dive deeper into moclojer's features:
+
+### Configuration Formats
+- **[YAML Format Guide](../topics/configuration/yaml-format.md)** - Complete YAML syntax and best practices
+- **[OpenAPI Format](../topics/configuration/openapi-format.md)** - Import OpenAPI 3.x specifications
+- **[Postman Collection Format](../topics/configuration/postman-format.md)** - Use Postman Collections v2.1
+
+### Parameters
+- **[Path Parameters](../topics/parameters/path-parameters.md)** - Dynamic URL parameters
+- **[Query Parameters](../topics/parameters/query-parameters.md)** - Filters, pagination, and search
+- **[Body Parameters](../topics/parameters/body-parameters.md)** - JSON request body handling
+- **[Header Parameters](../topics/parameters/header-parameters.md)** - HTTP headers and authentication
+
+### Practical Guides
+- **[CRUD Operations](../how-to/patterns/crud-operations.md)** - Complete Create, Read, Update, Delete examples
+- **[Pagination](../how-to/patterns/pagination.md)** - Implement pagination strategies
+- **[Docker Deployment](../how-to/deployment/docker.md)** - Production-ready Docker setup
 
 Let's get started! 🚀
