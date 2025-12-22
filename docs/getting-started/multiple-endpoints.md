@@ -1,7 +1,7 @@
 ---
 description: >-
-  Learn how to organize and structure multiple endpoints to create a complete API.
-  Build a realistic user management system with proper HTTP methods and error handling.
+  Build complete REST APIs with multiple endpoints. Learn CRUD operations (GET, POST, PUT, DELETE),
+  nested resources, error handling, and API design best practices with a full user management example.
 ---
 
 # Multiple Endpoints
@@ -20,6 +20,7 @@ In the previous tutorials, you learned to create basic endpoints and make them d
 ## What you'll build
 
 A complete user management API with these endpoints:
+
 - `GET /users` - List all users
 - `GET /users/:id` - Get a specific user
 - `POST /users` - Create a new user
@@ -40,6 +41,7 @@ A complete user management API with these endpoints:
 Before writing configuration, let's plan our API structure:
 
 **Users Resource:**
+
 - List users: `GET /users`
 - Get user: `GET /users/:id`
 - Create user: `POST /users`
@@ -47,11 +49,13 @@ Before writing configuration, let's plan our API structure:
 - Delete user: `DELETE /users/:id`
 
 **Posts Resource (nested under users):**
+
 - Get user posts: `GET /users/:id/posts`
 - Create user post: `POST /users/:id/posts`
 - Get specific post: `GET /users/:id/posts/:postId`
 
 **Error Handling:**
+
 - 404 for not found resources
 - 400 for bad requests
 - 422 for validation errors
@@ -481,9 +485,11 @@ curl http://localhost:8000/docs
 Your API now follows several important best practices:
 
 ### ✅ **Consistent Response Format**
+
 All responses have similar structure with consistent field names.
 
 ### ✅ **Proper HTTP Status Codes**
+
 - 200 for successful GET, PUT, DELETE
 - 201 for successful POST (creation)
 - 404 for not found
@@ -491,17 +497,21 @@ All responses have similar structure with consistent field names.
 - 422 for validation errors
 
 ### ✅ **RESTful URL Structure**
+
 - `/users` for the collection
 - `/users/:id` for individual resources
 - `/users/:id/posts` for nested resources
 
 ### ✅ **Meaningful Error Messages**
+
 Error responses include helpful information for debugging.
 
 ### ✅ **Resource Relationships**
+
 Posts are properly nested under users, showing the relationship.
 
 ### ✅ **Pagination Support**
+
 List endpoints include pagination metadata.
 
 ## Your complete API configuration
@@ -691,6 +701,14 @@ You now have a well-structured API! In the final tutorial, you'll put everything
 
 ## Need help?
 
-- **Want to understand API design better?** See [REST API Best Practices](../examples/rest-api-mocking.md)
-- **Looking for more complex examples?** Check [E-commerce API Example](../examples/ecommerce-api.md)
+- **Want practical examples?** See **[CRUD Operations Guide](../how-to/patterns/crud-operations.md)**
+- **Need pagination?** Check **[Pagination Guide](../how-to/patterns/pagination.md)**
 - **Have questions?** Join the [community discussions](https://github.com/moclojer/moclojer/discussions)
+
+## See Also
+
+- **[CRUD Operations](../how-to/patterns/crud-operations.md)** - Complete Create, Read, Update, Delete guide
+- **[Pagination](../how-to/patterns/pagination.md)** - Implement pagination strategies
+- **[HTTP Methods](../topics/endpoints/http-methods.md)** - Detailed guide on all HTTP methods
+- **[Query Parameters](../topics/parameters/query-parameters.md)** - Filters, search, and sorting
+- **[Troubleshooting Guide](../reference/troubleshooting.md)** - Solutions for common issues

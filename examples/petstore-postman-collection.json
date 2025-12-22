@@ -1,0 +1,183 @@
+{
+  "info": {
+    "name": "Petstore API - Moclojer Example",
+    "description": "Example Postman Collection for Moclojer. Export this from Postman and use directly with moclojer:\n\nCONFIG=petstore-postman-collection.json moclojer\n\nThis collection demonstrates:\n- GET, POST, PUT, DELETE methods\n- Path parameters (:id)\n- Response examples with different status codes\n- Headers configuration\n- Nested folders for organization",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "moclojer"
+  },
+  "item": [
+    {
+      "name": "Pets",
+      "description": "Pet management endpoints",
+      "item": [
+        {
+          "name": "List all pets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/pets",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["pets"]
+            },
+            "description": "Returns a list of all pets in the store"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Caramelo\",\n    \"type\": \"dog\",\n    \"age\": 3\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Mingau\",\n    \"type\": \"cat\",\n    \"age\": 2\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get pet by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/pets/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["pets", ":id"]
+            },
+            "description": "Returns a single pet by ID"
+          },
+          "response": [
+            {
+              "name": "Pet found",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Caramelo\",\n  \"type\": \"dog\",\n  \"age\": 3\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create a pet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "http://localhost:8000/pets",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Pet\",\n  \"type\": \"dog\",\n  \"age\": 1\n}"
+            },
+            "description": "Creates a new pet"
+          },
+          "response": [
+            {
+              "name": "Pet created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Location",
+                  "value": "/pets/3"
+                }
+              ],
+              "body": "{\n  \"id\": 3,\n  \"name\": \"New Pet\",\n  \"type\": \"dog\",\n  \"age\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update pet",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/pets/:id",
+              "path": ["pets", ":id"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Pet\",\n  \"age\": 4\n}"
+            },
+            "description": "Updates an existing pet"
+          },
+          "response": [
+            {
+              "name": "Pet updated",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Updated Pet\",\n  \"type\": \"dog\",\n  \"age\": 4\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete pet",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8000/pets/:id",
+            "description": "Deletes a pet by ID"
+          },
+          "response": [
+            {
+              "name": "Pet deleted",
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "description": "Health check endpoints",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8000/health"
+          },
+          "response": [
+            {
+              "name": "Healthy",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"healthy\",\n  \"uptime\": 12345,\n  \"timestamp\": \"2025-12-21T20:00:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

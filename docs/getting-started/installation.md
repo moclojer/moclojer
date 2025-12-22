@@ -1,7 +1,7 @@
 ---
 description: >-
-  Quick and easy installation guide for moclojer. Choose from Docker, standalone JAR,
-  or package installation methods.
+  Install moclojer in minutes with Docker, JAR, or native binary. Step-by-step guide with
+  verification steps and troubleshooting. Get your mock server running on Linux, macOS, or Windows.
 ---
 
 # Installation
@@ -25,9 +25,11 @@ This will start moclojer on port 8000 with a default configuration. You can now 
 Docker is the easiest way to get started, especially for trying moclojer or using it in development.
 
 **Requirements:**
+
 - Docker installed on your system
 
 **Basic usage:**
+
 ```bash
 # Run with default configuration
 docker run -it -p 8000:8000 ghcr.io/moclojer/moclojer:latest
@@ -40,23 +42,29 @@ docker run -it \
 ```
 
 **Available Docker tags:**
+
 - `latest` - Latest stable release
 - `dev` - Latest development version from main branch
 
 **Custom port:**
+
 ```bash
 # Run on port 3000 instead of 8000
 docker run -it -p 3000:3000 -e PORT=3000 ghcr.io/moclojer/moclojer:latest
 ```
+
+> **📚 For production deployments:** See the complete **[Docker Deployment Guide](../how-to/deployment/docker.md)** for Docker Compose, multi-environment setup, and CI/CD integration.
 
 ### ☕ Standalone JAR
 
 The JAR file works on any system with Java installed. Perfect for CI/CD, scripts, or when you don't want to use Docker.
 
 **Requirements:**
+
 - Java 11 or higher
 
 **Download and run:**
+
 ```bash
 # Download the latest version
 curl -L -o moclojer.jar https://github.com/moclojer/moclojer/releases/latest/download/moclojer.jar
@@ -69,6 +77,7 @@ java -jar moclojer.jar --config my-config.yml
 ```
 
 **Quick installation script:**
+
 ```bash
 bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/install.sh)
 ```
@@ -80,6 +89,7 @@ bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/instal
 For Linux systems, we provide a native binary that doesn't require Java.
 
 **Download:**
+
 ```bash
 # Download and make executable
 curl -L -o moclojer https://github.com/moclojer/moclojer/releases/latest/download/moclojer_Linux
@@ -90,6 +100,7 @@ sudo mv moclojer /usr/local/bin/
 ```
 
 **Usage:**
+
 ```bash
 ./moclojer --config moclojer.yml
 ```
@@ -99,10 +110,12 @@ sudo mv moclojer /usr/local/bin/
 If you're a Clojure developer or want to contribute to moclojer.
 
 **Requirements:**
+
 - Clojure CLI tools installed
 - Git
 
 **Clone and run:**
+
 ```bash
 git clone https://github.com/moclojer/moclojer.git
 cd moclojer
@@ -110,6 +123,7 @@ clj -M:run
 ```
 
 **Build your own JAR:**
+
 ```bash
 clj -A:dev -M --report stderr -m com.moclojer.build
 ```
@@ -135,7 +149,7 @@ After installation, verify that moclojer is working:
         }
 ```
 
-2. **Start moclojer** with your configuration:
+1. **Start moclojer** with your configuration:
 
 ```bash
 # Using Docker
@@ -148,13 +162,14 @@ java -jar moclojer.jar --config moclojer.yml
 ./moclojer --config moclojer.yml
 ```
 
-3. **Test the endpoint**:
+1. **Test the endpoint**:
 
 ```bash
 curl http://localhost:8000/hello
 ```
 
 You should see:
+
 ```json
 {
   "message": "Hello from moclojer!",
@@ -188,6 +203,7 @@ Configure moclojer using environment variables:
 | `SENTRY_DSN` | Sentry DSN for error reporting | - |
 
 **Example:**
+
 ```bash
 PORT=3000 CONFIG=./my-config.yml java -jar moclojer.jar
 ```
@@ -202,32 +218,44 @@ PORT=3000 CONFIG=./my-config.yml java -jar moclojer.jar
 | `-h, --help` | Show help information |
 | `-v, --version` | Show version information |
 
+> **📚 For all CLI options:** See the complete **[CLI Reference](../reference/cli-reference.md)** with detailed examples and use cases.
+
 ## Troubleshooting
 
 ### Port already in use
+
 If port 8000 is already in use:
+
 ```bash
 # Use a different port
 PORT=3001 docker run -it -p 3001:3001 ghcr.io/moclojer/moclojer:latest
 ```
 
 ### Java not found
+
 Make sure Java 11+ is installed:
+
 ```bash
 java -version
 ```
 
 ### Configuration file not found
+
 Ensure your configuration file exists and is readable:
+
 ```bash
 ls -la moclojer.yml
 ```
 
 ### Docker permission denied
+
 On Linux, you might need to add your user to the docker group:
+
 ```bash
 sudo usermod -aG docker $USER
 ```
+
+> **📚 More issues?** Check the complete **[Troubleshooting Guide](../reference/troubleshooting.md)** with solutions for 20+ common problems.
 
 ## Next Steps
 
@@ -238,5 +266,12 @@ Now that moclojer is installed, let's create your first mock server:
 ## Need Help?
 
 - **[FAQ](../reference/faq.md)** - Common installation issues
+- **[Troubleshooting Guide](../reference/troubleshooting.md)** - Detailed solutions for common problems
 - **[GitHub Issues](https://github.com/moclojer/moclojer/issues)** - Report bugs or get help
 - **[GitHub Discussions](https://github.com/moclojer/moclojer/discussions)** - Community support
+
+## See Also
+
+- **[Docker Deployment Guide](../how-to/deployment/docker.md)** - Production-ready Docker setup
+- **[CLI Reference](../reference/cli-reference.md)** - Complete command-line options reference
+- **[Configuration Formats](../topics/configuration/yaml-format.md)** - YAML, OpenAPI, and Postman formats

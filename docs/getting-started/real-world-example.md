@@ -1,7 +1,7 @@
 ---
 description: >-
-  Build a complete e-commerce API from scratch using everything you've learned.
-  This real-world example showcases advanced features, best practices, and complex scenarios.
+  Complete e-commerce API tutorial - products, cart, orders, authentication. Real-world example
+  with versioning, admin endpoints, search, pagination, and comprehensive error handling.
 ---
 
 # Real-World Example: E-commerce API
@@ -21,6 +21,7 @@ In this final tutorial, you'll build a complete e-commerce API that demonstrates
 ## What you'll build
 
 A complete e-commerce API with these features:
+
 - **Product catalog** with categories and search
 - **User management** with different roles
 - **Shopping cart** functionality
@@ -32,6 +33,7 @@ A complete e-commerce API with these features:
 ## API Overview
 
 ### Core Resources
+
 - **Products** - Product catalog management
 - **Categories** - Product categorization
 - **Users** - Customer and admin accounts
@@ -40,6 +42,7 @@ A complete e-commerce API with these features:
 - **Reviews** - Product reviews and ratings
 
 ### API Structure
+
 ```
 /api/v1/
 ├── auth/
@@ -960,3 +963,172 @@ Add comprehensive error responses:
       body: >
         {
           "error": "Unprocessable Entity",
+          "message": "Product 'Gaming Laptop' is out of stock",
+          "code": "INSUFFICIENT_STOCK",
+          "details": {
+            "product_id": 1,
+            "product_name": "Gaming Laptop",
+            "requested_quantity": 1,
+            "available_quantity": 0
+          },
+          "timestamp": "2024-01-15T10:30:00Z",
+          "request_id": "req_xyz789abc"
+        }
+
+# Unauthorized access
+- endpoint:
+    method: GET
+    path: /api/v1/admin/products/unauthorized
+    response:
+      status: 401
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "error": "Unauthorized",
+          "message": "Authentication required. Please provide a valid token",
+          "code": "UNAUTHORIZED",
+          "timestamp": "2024-01-15T10:30:00Z"
+        }
+
+# Invalid validation
+- endpoint:
+    method: POST
+    path: /api/v1/auth/register/invalid
+    response:
+      status: 400
+      headers:
+        Content-Type: application/json
+      body: >
+        {
+          "error": "Bad Request",
+          "message": "Validation failed",
+          "code": "VALIDATION_ERROR",
+          "errors": [
+            {
+              "field": "email",
+              "message": "Invalid email format"
+            },
+            {
+              "field": "password",
+              "message": "Password must be at least 8 characters"
+            }
+          ],
+          "timestamp": "2024-01-15T10:30:00Z"
+        }
+```
+
+## What you've accomplished
+
+✅ **Complete E-commerce API** - Products, cart, orders, and user management
+✅ **Authentication Simulation** - Login, register, and token-based auth
+✅ **Advanced Routing** - Versioned API with nested resources
+✅ **Role-Based Access** - Customer and admin endpoints
+✅ **Search & Filters** - Product search with categories
+✅ **Shopping Cart** - Add, remove, update quantities, checkout
+✅ **Order Management** - Create orders, track status
+✅ **Comprehensive Errors** - 400, 401, 404, 422 with detailed messages
+✅ **Pagination** - Metadata in list endpoints
+✅ **Real-World Patterns** - Authentication headers, versioning, business logic
+
+## Testing your e-commerce API
+
+Start your server and test the complete flow:
+
+```bash
+# 1. Register a user
+curl -X POST http://localhost:8000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe", "email": "john@example.com", "password": "secret123"}'
+
+# 2. Browse products
+curl http://localhost:8000/api/v1/products
+
+# 3. Search products
+curl "http://localhost:8000/api/v1/products/search?q=laptop&category=electronics"
+
+# 4. View specific product
+curl http://localhost:8000/api/v1/products/1
+
+# 5. Add to cart
+curl -X POST http://localhost:8000/api/v1/cart/items \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer token123" \
+  -d '{"product_id": 1, "quantity": 2}'
+
+# 6. View cart
+curl http://localhost:8000/api/v1/cart \
+  -H "Authorization: Bearer token123"
+
+# 7. Checkout
+curl -X POST http://localhost:8000/api/v1/cart/checkout \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer token123" \
+  -d '{"payment_method": "credit_card", "shipping_address": "123 Main St"}'
+
+# 8. View orders
+curl http://localhost:8000/api/v1/orders \
+  -H "Authorization: Bearer token123"
+
+# 9. Test error cases
+curl http://localhost:8000/api/v1/products/99999  # 404
+```
+
+## Key takeaways
+
+### ✅ **API Design Best Practices**
+
+- **Versioning**: `/api/v1/` allows future changes
+- **RESTful structure**: Resources and HTTP methods used correctly
+- **Consistent naming**: Clear, predictable endpoint names
+
+### ✅ **Authentication Patterns**
+
+- **Token-based auth**: Simulated JWT tokens
+- **Protected routes**: Admin vs customer access
+- **Header authentication**: `Authorization: Bearer token`
+
+### ✅ **Error Handling**
+
+- **Meaningful messages**: Errors explain what went wrong
+- **Error codes**: Machine-readable error identifiers
+- **Validation details**: Field-level error information
+
+### ✅ **Real-World Features**
+
+- **Shopping cart**: Add, update, remove items
+- **Product search**: Query and category filters
+- **Order tracking**: Status updates and history
+- **Pagination**: Scalable list endpoints
+
+## Next steps
+
+Congratulations! You've completed all the tutorials and built a production-quality e-commerce API mock. 🎉
+
+### Expand your knowledge
+
+- **[Docker Deployment](../how-to/deployment/docker.md)** - Deploy your mock server
+- **[Pagination Patterns](../how-to/patterns/pagination.md)** - Advanced pagination strategies
+- **[Advanced Features](../advanced/)** - WebSockets, webhooks, rate limiting
+
+### Reference documentation
+
+- **[Configuration Formats](../topics/configuration/yaml-format.md)** - Complete YAML reference
+- **[HTTP Methods](../topics/endpoints/http-methods.md)** - All HTTP methods explained
+- **[Template Variables](../topics/templates/template-variables.md)** - All available variables
+- **[CLI Reference](../reference/cli-reference.md)** - Command-line options
+- **[Troubleshooting](../reference/troubleshooting.md)** - Common issues and solutions
+
+## Need help?
+
+- **Questions?** Join the [GitHub Discussions](https://github.com/moclojer/moclojer/discussions)
+- **Found a bug?** Open an [issue](https://github.com/moclojer/moclojer/issues)
+- **Want to contribute?** See the [contribution guide](../../CONTRIBUTING.md)
+
+## See Also
+
+- **[CRUD Operations](../how-to/patterns/crud-operations.md)** - Complete CRUD guide
+- **[Pagination](../how-to/patterns/pagination.md)** - Pagination strategies
+- **[OpenAPI Format](../topics/configuration/openapi-format.md)** - Import OpenAPI specs
+- **[Postman Collections](postman-collections.md)** - Use Postman Collections
+- **[Docker Deployment](../how-to/deployment/docker.md)** - Production Docker setup

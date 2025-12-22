@@ -13,6 +13,7 @@ This reference guide provides a complete list of all template variables availabl
 Extract values from URL path segments defined with `:parameter` syntax.
 
 ### Syntax
+
 ```yaml
 path: /users/:id/posts/:postId
 body: >
@@ -25,6 +26,7 @@ body: >
 ### Examples
 
 **Single parameter:**
+
 ```yaml
 path: /users/:id
 # Request: GET /users/123
@@ -32,6 +34,7 @@ path: /users/:id
 ```
 
 **Multiple parameters:**
+
 ```yaml
 path: /api/:version/users/:userId/posts/:postId
 # Request: GET /api/v1/users/456/posts/789
@@ -42,6 +45,7 @@ path: /api/:version/users/:userId/posts/:postId
 ```
 
 **Typed parameters:**
+
 ```yaml
 path: /users/:id|int/profile/:section|string
 # Request: GET /users/123/profile/settings
@@ -51,6 +55,7 @@ path: /users/:id|int/profile/:section|string
 ```
 
 ### Available Types
+
 - `string` (default) - Any string value
 - `int` - Integer numbers only
 - `uuid` - UUID format validation
@@ -62,6 +67,7 @@ path: /users/:id|int/profile/:section|string
 Access URL query string parameters that come after the `?` in URLs.
 
 ### Syntax
+
 ```yaml
 # Request: GET /search?q=javascript&category=tutorials&page=2
 body: >
@@ -75,6 +81,7 @@ body: >
 ### Examples
 
 **Simple query parameters:**
+
 ```yaml
 # Request: GET /products?sort=price&order=asc
 # Results:
@@ -83,6 +90,7 @@ body: >
 ```
 
 **Array parameters:**
+
 ```yaml
 # Request: GET /products?tags=electronics&tags=wireless&tags=audio
 # Results:
@@ -91,6 +99,7 @@ body: >
 ```
 
 **URL encoded parameters:**
+
 ```yaml
 # Request: GET /search?q=hello%20world&filter=name%3Ajohn
 # Results:
@@ -103,6 +112,7 @@ body: >
 Access data from JSON request bodies in POST, PUT, PATCH requests.
 
 ### Syntax
+
 ```yaml
 # Request body: {"name": "John", "email": "john@example.com", "age": 30}
 body: >
@@ -117,6 +127,7 @@ body: >
 ### Examples
 
 **Simple properties:**
+
 ```yaml
 # Request body: {"username": "john_doe", "password": "secret123"}
 # Results:
@@ -125,6 +136,7 @@ body: >
 ```
 
 **Nested objects:**
+
 ```yaml
 # Request body: {"user": {"profile": {"name": "John", "age": 30}}}
 # Results:
@@ -133,6 +145,7 @@ body: >
 ```
 
 **Array elements:**
+
 ```yaml
 # Request body: {"tags": ["javascript", "tutorial", "beginner"]}
 # Results:
@@ -142,6 +155,7 @@ body: >
 ```
 
 **Complex nested structures:**
+
 ```yaml
 # Request body:
 # {
@@ -162,17 +176,20 @@ body: >
 ### Data Type Handling
 
 **Strings (require quotes):**
+
 ```yaml
 "name": "{{json-params.name}}"
 ```
 
 **Numbers (no quotes needed):**
+
 ```yaml
 "age": {{json-params.age}},
 "price": {{json-params.price}}
 ```
 
 **Booleans (no quotes needed):**
+
 ```yaml
 "active": {{json-params.active}},
 "verified": {{json-params.verified}}
@@ -183,6 +200,7 @@ body: >
 Access HTTP request headers using the header name.
 
 ### Syntax
+
 ```yaml
 body: >
   {
@@ -195,6 +213,7 @@ body: >
 ### Examples
 
 **Standard headers:**
+
 ```yaml
 # Request headers:
 # User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
@@ -207,6 +226,7 @@ body: >
 ```
 
 **Custom headers:**
+
 ```yaml
 # Request headers:
 # X-API-Key: abc123def456
@@ -219,6 +239,7 @@ body: >
 ```
 
 **Case sensitivity:**
+
 ```yaml
 # Headers are case-insensitive in HTTP, but use exact case in templates:
 # {{header-params.content-type}} = same as Content-Type
@@ -231,6 +252,7 @@ body: >
 Special template functions that provide dynamic values.
 
 ### `{{now}}`
+
 Returns the current timestamp in ISO 8601 format.
 
 ```yaml
@@ -243,6 +265,7 @@ body: >
 ```
 
 ### `{{uuid}}`
+
 Generates a random UUID v4.
 
 ```yaml
@@ -255,6 +278,7 @@ body: >
 ```
 
 ### `{{random}}`
+
 Generates random numbers (if supported).
 
 ```yaml
@@ -270,6 +294,7 @@ body: >
 Special variables available in WebSocket responses.
 
 ### `{{message}}`
+
 The complete received message content.
 
 ```yaml
@@ -285,6 +310,7 @@ websocket:
 ```
 
 ### WebSocket Path Parameters
+
 Same as HTTP path parameters.
 
 ```yaml
@@ -341,6 +367,7 @@ body: >
 ## Error Handling
 
 ### Missing Parameters
+
 When a parameter is not present in the request, it appears as an empty string:
 
 ```yaml
@@ -350,6 +377,7 @@ When a parameter is not present in the request, it appears as an empty string:
 ```
 
 ### Invalid JSON
+
 If JSON body is malformed, json-params will be empty:
 
 ```yaml
@@ -359,6 +387,7 @@ If JSON body is malformed, json-params will be empty:
 ```
 
 ### Special Characters
+
 Template variables handle URL encoding and JSON escaping automatically:
 
 ```yaml
@@ -370,6 +399,7 @@ Template variables handle URL encoding and JSON escaping automatically:
 ## Best Practices
 
 ### 1. Use Appropriate Data Types
+
 ```yaml
 # Good - numbers without quotes
 "age": {{json-params.age}},
@@ -380,6 +410,7 @@ Template variables handle URL encoding and JSON escaping automatically:
 ```
 
 ### 2. Provide Default Values
+
 ```yaml
 # Use fallback values for optional parameters
 "page": {{query-params.page}},
@@ -387,12 +418,14 @@ Template variables handle URL encoding and JSON escaping automatically:
 ```
 
 ### 3. Validate Parameter Types
+
 ```yaml
 # Use typed path parameters for validation
 path: /users/:id|int/orders/:orderId|uuid
 ```
 
 ### 4. Handle Missing Parameters Gracefully
+
 ```yaml
 # Design responses to work with missing optional parameters
 "filters": {
@@ -403,6 +436,7 @@ path: /users/:id|int/orders/:orderId|uuid
 ```
 
 ### 5. Use Meaningful Parameter Names
+
 ```yaml
 # Good - clear parameter names
 path: /users/:userId/posts/:postId
@@ -414,6 +448,7 @@ path: /users/:id1/posts/:id2
 ## Examples by Use Case
 
 ### User Profile API
+
 ```yaml
 - endpoint:
     method: GET
@@ -429,6 +464,7 @@ path: /users/:id1/posts/:id2
 ```
 
 ### Product Search
+
 ```yaml
 - endpoint:
     method: GET
@@ -445,6 +481,7 @@ path: /users/:id1/posts/:id2
 ```
 
 ### Order Creation
+
 ```yaml
 - endpoint:
     method: POST
