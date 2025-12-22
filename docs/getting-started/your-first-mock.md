@@ -1,7 +1,7 @@
 ---
 description: >-
-  Step-by-step tutorial to create your first mock server with moclojer. Learn the basics
-  of configuration, endpoints, and testing in under 10 minutes.
+  Create your first mock API server in 10 minutes. Step-by-step tutorial covering YAML configuration,
+  HTTP endpoints, JSON responses, and testing. Perfect for beginners to start mocking APIs quickly.
 ---
 
 # Your First Mock Server
@@ -266,6 +266,8 @@ Let's break down what you've learned:
 - Indentation matters - use 2 spaces consistently
 - Each endpoint starts with `- endpoint:`
 
+> **📚 Learn more:** See the complete **[YAML Format Guide](../topics/configuration/yaml-format.md)** for advanced syntax, best practices, and troubleshooting.
+
 ## What you've accomplished
 
 ✅ Created a working mock API server
@@ -379,6 +381,14 @@ You now have a solid foundation! But your API is still static - it always return
 
 ## Need help?
 
-- **Stuck?** Check the [troubleshooting section](../reference/troubleshooting.md)
-- **Want examples?** See [common patterns](../examples/common-patterns.md)
+- **Stuck?** Check the **[Troubleshooting Guide](../reference/troubleshooting.md)** with 20+ common issues solved
+- **Want practical examples?** See **[CRUD Operations](../how-to/patterns/crud-operations.md)** guide
 - **Have questions?** Join the [community discussions](https://github.com/moclojer/moclojer/discussions)
+
+## See Also
+
+- **[YAML Format Guide](../topics/configuration/yaml-format.md)** - Complete YAML syntax and best practices
+- **[HTTP Methods](../topics/endpoints/http-methods.md)** - Detailed guide on GET, POST, PUT, DELETE, etc.
+- **[CLI Reference](../reference/cli-reference.md)** - All command-line options
+- **[OpenAPI Format](../topics/configuration/openapi-format.md)** - Alternative: Use OpenAPI specs
+- **[Postman Collections](postman-collections.md)** - Alternative: Export from Postman

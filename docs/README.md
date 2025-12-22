@@ -2,6 +2,43 @@
 
 Welcome to the complete documentation for moclojer - a simple and efficient HTTP mock server. This documentation is designed to help you get started quickly and become proficient with all of moclojer's features.
 
+## ✨ Novidades da Documentação
+
+A documentação foi **completamente reorganizada** seguindo as melhores práticas do Django Docs!
+
+**🆕 13 Novos Documentos de Alta Qualidade:**
+
+**Configuration Formats:**
+- ⭐ [YAML Format Guide](topics/configuration/yaml-format.md) - Guia completo de sintaxe YAML
+- ⭐ [OpenAPI Format](topics/configuration/openapi-format.md) - Importar specs OpenAPI 3.x
+- ⭐ [Postman Collection](topics/configuration/postman-format.md) - Usar Postman Collections v2.1
+
+**Parameters (Completo!):**
+- ⭐ [Path Parameters](topics/parameters/path-parameters.md) - Parâmetros dinâmicos em URLs
+- ⭐ [Query Parameters](topics/parameters/query-parameters.md) - Filtros, paginação e busca
+- ⭐ [Body Parameters](topics/parameters/body-parameters.md) - JSON e dados de requisição
+- ⭐ [Header Parameters](topics/parameters/header-parameters.md) - HTTP headers (Authorization, etc.)
+
+**Endpoints:**
+- ⭐ [HTTP Methods](topics/endpoints/http-methods.md) - GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS
+
+**How-to Guides (Receitas Práticas):**
+- ⭐ [CRUD Operations](how-to/patterns/crud-operations.md) - Create, Read, Update, Delete completo
+- ⭐ [Pagination](how-to/patterns/pagination.md) - Offset/Limit, Cursor-based, Link headers
+- ⭐ [Docker Deployment](how-to/deployment/docker.md) - Docker & Docker Compose production-ready
+
+**Reference:**
+- ⭐ [CLI Reference](reference/cli-reference.md) - Todas as opções de linha de comando
+- ⭐ [Troubleshooting Guide](reference/troubleshooting.md) - Resolução de problemas comuns
+
+**🎯 Novas Seções Criadas:**
+- **How-to Guides** - Receitas práticas para casos de uso comuns
+- **Examples & Use Cases** - Implementações completas e reais (em breve)
+
+**📊 Progresso:** 13 novos docs + 1 plano estratégico + ~5.000 linhas de conteúdo!
+
+📖 Veja o [Plano Completo de Melhorias](community/documentation-improvement-plan.md) para saber o que vem a seguir!
+
 ## 🚀 Getting Started
 
 New to moclojer? Start with our progressive tutorial series:
@@ -21,12 +58,25 @@ This documentation follows a progressive structure inspired by Django's excellen
 ### 🎯 First Steps
 Perfect for beginners - get up and running quickly with guided tutorials.
 
-### 🧠 Core Concepts
+### 🧠 Core Concepts ⭐ EXPANDIDO
 Understand how moclojer works with detailed explanations of key concepts:
-- **Configuration** - YAML, EDN, OpenAPI, and Postman Collection formats
-- **Endpoints** - HTTP methods, paths, and responses
+- **Configuration Formats** ⭐
+  - [YAML Format](topics/configuration/yaml-format.md) - Sintaxe completa e boas práticas
+  - OpenAPI Format - Importar specs OpenAPI (em breve)
+  - Postman Format - Usar Postman Collections (em breve)
+  - EDN Format - Para usuários Clojure (em breve)
+- **Endpoints**
+  - [HTTP Methods](topics/endpoints/http-methods.md) ⭐ - GET, POST, PUT, DELETE, etc.
+  - Path Patterns - Padrões de rotas (em breve)
+  - Response Structure - Estrutura de respostas (em breve)
 - **Templates** - Dynamic content generation
-- **Parameters** - Path, query, body, and header handling
+  - [Template System](topics/templates/template-system.md)
+  - [Template Variables](topics/templates/template-variables.md)
+- **Parameters** ⭐
+  - [Path Parameters](topics/parameters/path-parameters.md) - Parâmetros dinâmicos de URL
+  - [Query Parameters](topics/parameters/query-parameters.md) - Filtros e paginação
+  - Body Parameters - Dados no corpo (em breve)
+  - Header Parameters - Headers HTTP (em breve)
 
 ### ⚡ Advanced Features
 Specialized functionality for complex scenarios:
@@ -36,30 +86,50 @@ Specialized functionality for complex scenarios:
 - Rate limiting
 - Multi-domain support
 
-### 🔧 Framework Integration
+### 🔧 How-to Guides 🆕 NOVA SEÇÃO
+Practical recipes for common use cases:
+- **Testing**
+  - Integration Testing (em breve)
+  - E2E Testing (em breve)
+  - Contract Testing (em breve)
+- **Deployment**
+  - Docker (em breve)
+  - Kubernetes (em breve)
+  - Cloud Run (em breve)
+- **Common Patterns** ⭐
+  - [CRUD Operations](how-to/patterns/crud-operations.md) - Create, Read, Update, Delete completo
+  - Pagination (em breve)
+  - Authentication Mock (em breve)
+  - Error Handling (em breve)
+
+### ⚡ Advanced Features
+Specialized functionality for complex scenarios:
+- [WebSocket Support](advanced/websocket-support.md)
+- [External Bodies](advanced/external-bodies.md)
+- [Webhook Integration](advanced/webhook-integration.md)
+- [Rate Limiting](advanced/rate-limiting.md)
+- [Multi-Domain Support](advanced/multi-domain-support.md)
+
+### 🏗️ Framework Integration
 Using moclojer as a library and integrating with applications:
-- Clojure integration
-- Testing workflows
-- Development practices
+- [Using as a Library](framework/using-as-library.md)
+- Testing Integration (em breve)
+- Development Workflows (em breve)
 
-### 📖 Reference Documentation
+### 📖 Reference Documentation ⭐ EXPANDIDO
 Complete technical reference for all features:
-- Configuration specification
-- Template variables
-- CLI reference
-- FAQ and troubleshooting
+- [Configuration Specification](reference/configuration-spec.md)
+- [CLI Reference](reference/cli-reference.md) ⭐ - Todas as opções de linha de comando
+- [Troubleshooting Guide](reference/troubleshooting.md) ⭐ - Resolução de problemas
+- Template Variables Reference (em breve)
+- Environment Variables (em breve)
+- [FAQ](reference/faq.md)
 
-### 🚀 Deployment & Operations
-Production deployment and operational concerns:
-- Docker deployment
-- Cloud deployment
-- Monitoring and security
-
-### 💡 Examples & Recipes
-Practical examples and common patterns:
-- REST API mocking
-- Industry-specific examples
-- Integration examples
+### 💡 Examples & Use Cases 🆕 NOVA SEÇÃO
+Real-world examples and complete implementations:
+- **REST APIs** - Basic CRUD, Blog API (em breve)
+- **Third-Party Mocks** - Stripe, GitHub, Slack APIs (em breve)
+- **Microservices** - Service mesh, Event-driven (em breve)
 
 ## 🎯 Learning Paths
 
@@ -70,9 +140,11 @@ Practical examples and common patterns:
 4. Explore [Core Concepts](topics/) as needed
 
 ### I want to mock a specific type of API
-1. Check [Examples & Recipes](examples/) for your use case
-2. Review relevant [Core Concepts](topics/)
-3. Refer to the [Configuration Specification](reference/configuration-spec.md)
+1. Start with [CRUD Operations How-to](how-to/patterns/crud-operations.md) ⭐
+2. Check [Examples & Use Cases](examples/) for your use case (em breve)
+3. Review [HTTP Methods](topics/endpoints/http-methods.md) ⭐
+4. Learn about [Path](topics/parameters/path-parameters.md) ⭐ and [Query Parameters](topics/parameters/query-parameters.md) ⭐
+5. Refer to the [Configuration Specification](reference/configuration-spec.md)
 
 ### I'm integrating moclojer into my application
 1. Read [Using as a Library](framework/using-as-library.md)
@@ -80,9 +152,11 @@ Practical examples and common patterns:
 3. Review [Development Workflows](framework/development-workflows.md)
 
 ### I need help with a specific feature
-1. Check the [FAQ](reference/faq.md) first
-2. Search the [Reference Documentation](reference/)
-3. Look for examples in [Examples & Recipes](examples/)
+1. Check the [Troubleshooting Guide](reference/troubleshooting.md) ⭐ first
+2. Review the [FAQ](reference/faq.md)
+3. Search the [Reference Documentation](reference/)
+4. Check [CLI Reference](reference/cli-reference.md) ⭐ for command-line options
+5. Look for examples in [How-to Guides](how-to/)
 
 ## 🔍 Quick Reference
 

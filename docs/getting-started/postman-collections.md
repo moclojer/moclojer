@@ -1,6 +1,7 @@
 ---
 description: >-
-  Use your existing Postman Collections directly with moclojer. No conversion needed - just export and run!
+  Turn Postman Collections into live mock APIs instantly. Export Collection v2.1 and run with moclojer
+  - no conversion needed. Perfect for frontend development and testing with existing Postman specs.
 ---
 
 # Using Postman Collections
@@ -9,12 +10,14 @@ If you already have API specifications in Postman, you can use them directly wit
 
 ## What is Postman Collection Support?
 
-Moclojer can read **Postman Collection v2.1** JSON files and automatically convert them into working mock endpoints. This means you can:
+moclojer can read **Postman Collection v2.1** JSON files and automatically convert them into working mock endpoints. This means you can:
 
 - ✅ Export collections from Postman
 - ✅ Use them directly with moclojer
 - ✅ No manual conversion or rewriting needed
 - ✅ All your response examples become live endpoints
+
+> **📚 For advanced features:** See the complete **[Postman Collection Format Guide](../topics/configuration/postman-format.md)** for variables, nested folders, multiple responses, and troubleshooting.
 
 ## Quick Start
 
@@ -242,9 +245,9 @@ curl -X DELETE http://localhost:8000/pets/123
 
 Now that you know how to use Postman Collections with moclojer:
 
-- **Need dynamic responses?** See [Dynamic Responses](dynamic-responses.md) to learn about templates
-- **Want to write YAML instead?** See [Your First Mock Server](your-first-mock.md)
-- **Looking for advanced features?** Check [Advanced Features](../advanced/) section
+- **Need dynamic responses?** Continue with [Dynamic Responses](dynamic-responses.md) to learn about template variables
+- **Want to write YAML instead?** Try [Your First Mock Server](your-first-mock.md) tutorial
+- **Build complete APIs?** See [Multiple Endpoints](multiple-endpoints.md) guide
 
 ## Troubleshooting
 
@@ -273,3 +276,10 @@ Now that you know how to use Postman Collections with moclojer:
 ---
 
 **Ready to create your first mock?** Export a Postman Collection and give it a try! 🚀
+
+## See Also
+
+- **[Postman Collection Format Guide](../topics/configuration/postman-format.md)** - Complete guide with advanced features
+- **[OpenAPI Format](../topics/configuration/openapi-format.md)** - Alternative: Use OpenAPI specifications
+- **[YAML Format Guide](../topics/configuration/yaml-format.md)** - Write mocks from scratch in YAML
+- **[Troubleshooting Guide](../reference/troubleshooting.md)** - Solutions for common issues
