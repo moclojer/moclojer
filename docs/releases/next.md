@@ -7,7 +7,10 @@
 
 ### Features
 
-* ...
+* Add global external-body folder configuration ([#328](https://github.com/moclojer/moclojer/issues/328))
+  - Configure a base folder for all external body files
+  - Reduces configuration duplication in Docker/Kubernetes deployments
+  - See [External Bodies documentation](../advanced/external-bodies.md#-global-configuration)
 
 ## Contributors
 

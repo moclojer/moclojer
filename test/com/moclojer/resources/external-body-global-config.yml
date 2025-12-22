@@ -1,0 +1,24 @@
+# Global configuration (as list item)
+- external-body:
+    folder: test/com/moclojer/resources
+
+# Endpoints
+- endpoint:
+    method: GET
+    path: /with-global-folder
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: json
+        path: text-plan.json
+
+- endpoint:
+    method: GET
+    path: /without-external-body
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      body: '{"msg": "hello world"}'

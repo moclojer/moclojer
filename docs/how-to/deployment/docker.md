@@ -253,6 +253,96 @@ docker-compose ps
 
 ---
 
+## External Bodies with Global Configuration
+
+When using external body files in Docker, you can leverage the global folder configuration to simplify your setup. This is especially useful when mounting volumes with response data.
+
+### Setup
+
+**1. Create directory structure:**
+
+```
+my-mock-project/
+├── docker-compose.yml
+├── moclojer.yml
+└── data/
+    ├── users.json
+    ├── products.json
+    └── orders.json
+```
+
+**2. Configure moclojer.yml with global folder:**
+
+```yaml
+# Global configuration for external bodies
+- external-body:
+    folder: /app/data
+
+# Endpoints use simple filenames
+- endpoint:
+    method: GET
+    path: /api/users
+    response:
+      status: 200
+      external-body:
+        provider: json
+        path: users.json  # Resolves to /app/data/users.json
+
+- endpoint:
+    method: GET
+    path: /api/products
+    response:
+      status: 200
+      external-body:
+        provider: json
+        path: products.json  # Resolves to /app/data/products.json
+```
+
+**3. docker-compose.yml:**
+
+```yaml
+services:
+  moclojer:
+    image: ghcr.io/moclojer/moclojer:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./moclojer.yml:/app/moclojer.yml:ro
+      - ./data:/app/data:ro  # Mount data directory
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+```
+
+**4. Run:**
+
+```bash
+docker-compose up
+```
+
+### Benefits
+
+✅ **Clean configuration**: No repeated paths
+✅ **Easy updates**: Update JSON files without changing config
+✅ **Volume management**: Single mount point for all data
+✅ **Team collaboration**: Clear separation between config and data
+
+### Testing
+
+```bash
+# Get users
+curl http://localhost:8000/api/users
+
+# Get products
+curl http://localhost:8000/api/products
+```
+
+### See Example
+
+Full working example available at: [`examples/external-body-global/`](https://github.com/moclojer/moclojer/tree/main/examples/external-body-global)
+
+---
+
 ## Multiple Environments
 
 ### File Structure

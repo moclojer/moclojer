@@ -35,10 +35,14 @@
        :content (json/write-str {:message (.getMessage e)})})))
 
 (defn enrich-external-body
-  "Enriches the external body with a resolved path."
-  [external-body request]
-  (let [{:keys [content]} (render-template (:path external-body) request)]
-    (assoc external-body :path content)))
+  "Enriches the external body with a resolved path.
+   If global-folder is provided, prepends it to the path."
+  [external-body request & [global-folder]]
+  (let [{:keys [content]} (render-template (:path external-body) request)
+        final-path (if (and global-folder (not (string/starts-with? content "/")))
+                     (str global-folder "/" content)
+                     content)]
+    (assoc external-body :path final-path)))
 
 (defn parse-json-safely
   "Tries to parse a JSON, returning the original content in case of error"
@@ -53,19 +57,19 @@
 
 (defn get-response-body
   "Gets the correct response body (processing external-body if necessary)"
-  [response request]
+  [response request & [global-folder]]
   (if-let [?external-body (:external-body response)]
     (-> ?external-body
-        (enrich-external-body request)
+        (enrich-external-body request global-folder)
         ext-body/type-identification)
     (:body response)))
 
 (defn build-body
   "Builds the body from the response."
-  [response request]
+  [response request & [global-folder]]
   (try
     (let [{:keys [content error?]} (-> response
-                                       (get-response-body request)
+                                       (get-response-body request global-folder)
                                        (render-template request))]
       (cond
         error?
@@ -130,8 +134,9 @@
 (defn generic-reitit-handler
   "Builds a reitit handler that responds with pre-defined `response`.
    Since we also support `webhooks`, given `webhook-config` is used
-   when necessary in together with the `response`."
-  [response webhook-config]
+   when necessary in together with the `response`.
+   Accepts optional `global-folder` for external-body path resolution."
+  [response webhook-config & [global-folder]]
   (fn [request]
     (when webhook-config
       (webhook/request-after-delay
@@ -150,7 +155,7 @@
                      (:headers request))
         :sleep-time (:sleep-time webhook-config)}))
     (let [parameters (build-parameters (:parameters request))
-          body-result (build-body response parameters)]
+          body-result (build-body response parameters global-folder)]
       (log/log :info :body body-result)
       (if (and (map? body-result) (:error body-result))
         {:body (json/write-str body-result)
@@ -253,33 +258,35 @@
                  :message (.getMessage e))))))
 
 (defn process-http-routes
-  "Process HTTP endpoints and return route configurations"
-  [spec]
-  (for [[[host path method tag] endpoints]
-        (group-by (juxt :host :path #(generate-method (:method %)) :tag)
-                  (remove nil? (map :endpoint (filter #(contains? % :endpoint) spec))))]
-    (let [method (generate-method method)
-          route-name (generate-route-name host path method)
-          endpoint (first endpoints)
-          response (:response endpoint)
-          real-path (create-url path)
-          rate-limit (:rate-limit endpoint)
-          create-params-fn #(create-swagger-parameters
-                             (make-path-parameters path %)
-                             (make-query-parameters (:query endpoint) %)
-                             (make-body (:body endpoint) :request))]
-      [real-path
-       {:data {:host (or host "localhost")
-               :rate-limit rate-limit}
-        (keyword method)
-        {:summary (if-not (string/blank? real-path)
-                    (str "Generated from " real-path)
-                    "Auto-generated")
-         :swagger {:tags [(or tag route-name)]}
-         :parameters (create-params-fn true)
-         :responses {(or (:status response) 200)
-                     {:body any?}}
-         :handler (generic-reitit-handler response nil)}}])))
+  "Process HTTP endpoints and return route configurations.
+   Accepts optional global-config with external-body folder configuration."
+  [spec & [global-config]]
+  (let [global-folder (get-in global-config [:external-body :folder])]
+    (for [[[host path method tag] endpoints]
+          (group-by (juxt :host :path #(generate-method (:method %)) :tag)
+                    (remove nil? (map :endpoint (filter #(contains? % :endpoint) spec))))]
+      (let [method (generate-method method)
+            route-name (generate-route-name host path method)
+            endpoint (first endpoints)
+            response (:response endpoint)
+            real-path (create-url path)
+            rate-limit (:rate-limit endpoint)
+            create-params-fn #(create-swagger-parameters
+                               (make-path-parameters path %)
+                               (make-query-parameters (:query endpoint) %)
+                               (make-body (:body endpoint) :request))]
+        [real-path
+         {:data {:host (or host "localhost")
+                 :rate-limit rate-limit}
+          (keyword method)
+          {:summary (if-not (string/blank? real-path)
+                      (str "Generated from " real-path)
+                      "Auto-generated")
+           :swagger {:tags [(or tag route-name)]}
+           :parameters (create-params-fn true)
+           :responses {(or (:status response) 200)
+                       {:body any?}}
+           :handler (generic-reitit-handler response nil global-folder)}}]))))
 
 (defn create-ws-handler
   "Create WebSocket handler function with connection and message handling"
@@ -344,9 +351,16 @@
 (defn ->reitit
   "Adapts given moclojer endpoints to reitit's data based routes, while
    parsing request data types throughout the way. Supports both HTTP endpoints
-   and WebSocket endpoints."
+   and WebSocket endpoints.
+
+   Supports global configuration via special keys (e.g., :external-body)."
   [spec]
-  (let [http-routes (process-http-routes spec)
+  (let [;; Extract global configuration (items with :external-body key but no :endpoint/:websocket)
+        global-config (first (filter #(and (contains? % :external-body)
+                                           (not (contains? % :endpoint))
+                                           (not (contains? % :websocket)))
+                                     spec))
+        http-routes (process-http-routes spec global-config)
         ws-routes (process-ws-routes spec)
         swagger-route (create-swagger-route)
         all-routes (concat http-routes ws-routes swagger-route)]
