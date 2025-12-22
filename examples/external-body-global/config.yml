@@ -1,0 +1,40 @@
+# Global external-body configuration example
+# This demonstrates how to use a base folder for all external body files
+
+# Configure global folder for all external bodies
+- external-body:
+    folder: examples/external-body-global/data
+
+# Endpoints using relative paths (will be combined with global folder)
+- endpoint:
+    method: GET
+    path: /api/users
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: json
+        path: users.json  # Resolves to: examples/external-body-global/data/users.json
+
+- endpoint:
+    method: GET
+    path: /api/products
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: json
+        path: products.json  # Resolves to: examples/external-body-global/data/products.json
+
+- endpoint:
+    method: GET
+    path: /api/users/:id
+    response:
+      status: 200
+      headers:
+        Content-Type: application/json
+      external-body:
+        provider: json
+        path: users/{{path-params.id}}.json  # Dynamic path

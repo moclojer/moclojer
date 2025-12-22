@@ -51,7 +51,7 @@ clj -X:deploy-clojars
 ### Key Components
 
 - **Template Engine**: Uses Selmer for dynamic responses. Variables: `{{path-params.name}}`, `{{query-params.name}}`, `{{json-params.field}}`
-- **External Body**: Supports JSON and XLSX files as response sources (`com.moclojer.external-body.*`)
+- **External Body**: Supports JSON and XLSX files as response sources (`com.moclojer.external-body.*`). Global folder configuration available via `- external-body: { folder: path }` in spec.
 - **Middleware**: Rate limiting (`middleware/rate_limit.clj`) and latency simulation (`middleware/latency.clj`)
 - **Webhooks**: Async webhook calls with configurable delay and conditions (`com.moclojer.webhook`)
 - **File Watcher**: Hot reload on config changes (disabled in GraalVM native image)
@@ -243,14 +243,16 @@ io-utils/open-file (parse to Clojure data)
 router/smart-router (detect spec format: :moclojer, :openapi, :postman)
         ↓
 specs/moclojer/->reitit or specs/openapi/->moclojer or specs/postman/->moclojer
+  ├─ Extract global config (e.g., external-body folder)
+  └─ Pass global config to route processors
         ↓
-Reitit route definitions with handlers
+Reitit route definitions with handlers (handlers close over global config)
         ↓
 server/reitit-router (wrap with middleware chain)
         ↓
 http-kit/run-server (start listening)
         ↓
-Request → Middleware → Handler → selmer/render → Response
+Request → Middleware → Handler → enrich-external-body (with global folder) → selmer/render → Response
 ```
 
 ## Common Tasks

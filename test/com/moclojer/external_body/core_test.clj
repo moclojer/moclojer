@@ -46,3 +46,17 @@
                    (:status (server {:request-method :get
                                      :uri (str "/pokemon/" name)})))
       ["kabuto" "marowak"])))
+
+(deftest global-folder-config-test
+  (testing "global external-body folder configuration"
+    (let [server (helpers/service-fn
+                  "test/com/moclojer/resources/external-body-global-config.yml")]
+      (testing "endpoint using global folder"
+        (is (= (jsond/write-str ret-text)
+               (:body (server {:request-method :get
+                               :uri "/with-global-folder"})))))
+
+      (testing "endpoint without external-body is not affected by global config"
+        (is (= "{\"msg\":\"hello world\"}"
+               (:body (server {:request-method :get
+                               :uri "/without-external-body"}))))))))

@@ -84,7 +84,7 @@
 
   (testing "handles external body"
     (let [response {:external-body {:path "/some/path" :content "external content"}}
-          enrich-mock (fn [body _] body)
+          enrich-mock (fn [body _ & _] body)
           type-mock (fn [body] (assoc body :content "processed content"))
           render-mock (fn [_ _] {:content "processed content"})
           result (with-redefs [render-template render-mock

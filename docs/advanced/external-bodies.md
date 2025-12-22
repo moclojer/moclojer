@@ -65,6 +65,108 @@ Replace `body` with `external-body`:
 | `path` | Yes | File path (local or HTTP URL) |
 | `sheet-name` | No | Excel sheet name (xlsx only) |
 
+## 🌍 Global Configuration
+
+To avoid repeating the folder path in every endpoint, you can configure a global base folder for external bodies:
+
+```yaml
+# Global configuration
+- external-body:
+    folder: data/responses
+
+# Endpoints can now use relative paths
+- endpoint:
+    method: GET
+    path: /api/users
+    response:
+      status: 200
+      external-body:
+        provider: json
+        path: users.json  # Will resolve to: data/responses/users.json
+
+- endpoint:
+    method: GET
+    path: /api/products
+    response:
+      status: 200
+      external-body:
+        provider: json
+        path: products.json  # Will resolve to: data/responses/products.json
+```
+
+### When to Use Global Configuration
+
+**Perfect for:**
+
+- ✅ Docker/Kubernetes deployments with mounted volumes
+- ✅ Consistent folder structure across all endpoints
+- ✅ Reducing configuration duplication
+- ✅ Cleaner, more maintainable configuration
+
+**Example: Docker Compose Setup**
+
+```yaml
+# docker-compose.yml
+services:
+  moclojer:
+    image: moclojer/moclojer:latest
+    volumes:
+      - ./config.yml:/config.yml
+      - ./mock-data:/app/bodies  # Mount data directory
+    command: --config /config.yml
+```
+
+```yaml
+# config.yml
+- external-body:
+    folder: /app/bodies  # All files loaded from here
+
+- endpoint:
+    method: GET
+    path: /api/users
+    response:
+      external-body:
+        provider: json
+        path: users.json  # Loads from /app/bodies/users.json
+```
+
+### Path Resolution Rules
+
+When a global folder is configured:
+
+1. **Relative paths** (e.g., `users.json`) → Combined with global folder
+2. **Absolute paths** (e.g., `/tmp/data.json`) → Global folder is ignored
+3. **URLs** (e.g., `https://...`) → Global folder is ignored
+
+```yaml
+- external-body:
+    folder: data/mocks
+
+- endpoint:
+    method: GET
+    path: /relative
+    response:
+      external-body:
+        provider: json
+        path: users.json  # ✅ Resolves to: data/mocks/users.json
+
+- endpoint:
+    method: GET
+    path: /absolute
+    response:
+      external-body:
+        provider: json
+        path: /tmp/users.json  # ✅ Uses absolute path as-is
+
+- endpoint:
+    method: GET
+    path: /remote
+    response:
+      external-body:
+        provider: json
+        path: https://api.example.com/users  # ✅ URL works as-is
+```
+
 ## 📄 JSON Provider
 
 ### Local File
@@ -415,6 +517,7 @@ curl http://localhost:8000/api/data?version=v2  # uses data/v2/response.json
 - ✅ Use meaningful file names (`users.json`, not `data1.json`)
 - ✅ Version control your data files alongside config
 - ✅ Use relative paths for portability
+- ✅ Use global configuration when all files are in the same folder
 - ✅ Document file structure in README
 
 **Don't:**

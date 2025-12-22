@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  moclojer:
+    image: moclojer:test  # Use ghcr.io/moclojer/moclojer:latest in production
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./docker-config.yml:/app/moclojer.yml
+      - ./data:/config/data
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+    # The entrypoint uses CONFIG env var by default pointing to /app/moclojer.yml
