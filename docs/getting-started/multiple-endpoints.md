@@ -20,6 +20,7 @@ In the previous tutorials, you learned to create basic endpoints and make them d
 ## What you'll build
 
 A complete user management API with these endpoints:
+
 - `GET /users` - List all users
 - `GET /users/:id` - Get a specific user
 - `POST /users` - Create a new user
@@ -40,6 +41,7 @@ A complete user management API with these endpoints:
 Before writing configuration, let's plan our API structure:
 
 **Users Resource:**
+
 - List users: `GET /users`
 - Get user: `GET /users/:id`
 - Create user: `POST /users`
@@ -47,11 +49,13 @@ Before writing configuration, let's plan our API structure:
 - Delete user: `DELETE /users/:id`
 
 **Posts Resource (nested under users):**
+
 - Get user posts: `GET /users/:id/posts`
 - Create user post: `POST /users/:id/posts`
 - Get specific post: `GET /users/:id/posts/:postId`
 
 **Error Handling:**
+
 - 404 for not found resources
 - 400 for bad requests
 - 422 for validation errors
@@ -481,9 +485,11 @@ curl http://localhost:8000/docs
 Your API now follows several important best practices:
 
 ### ✅ **Consistent Response Format**
+
 All responses have similar structure with consistent field names.
 
 ### ✅ **Proper HTTP Status Codes**
+
 - 200 for successful GET, PUT, DELETE
 - 201 for successful POST (creation)
 - 404 for not found
@@ -491,17 +497,21 @@ All responses have similar structure with consistent field names.
 - 422 for validation errors
 
 ### ✅ **RESTful URL Structure**
+
 - `/users` for the collection
 - `/users/:id` for individual resources
 - `/users/:id/posts` for nested resources
 
 ### ✅ **Meaningful Error Messages**
+
 Error responses include helpful information for debugging.
 
 ### ✅ **Resource Relationships**
+
 Posts are properly nested under users, showing the relationship.
 
 ### ✅ **Pagination Support**
+
 List endpoints include pagination metadata.
 
 ## Your complete API configuration

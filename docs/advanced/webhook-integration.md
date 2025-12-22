@@ -58,6 +58,7 @@ sequenceDiagram
 ```
 
 **What happens:**
+
 1. Client sends POST to `/orders`
 2. moclojer responds with `201 Created` immediately
 3. moclojer sends POST to `https://api.example.com/notifications` in the background
@@ -260,8 +261,8 @@ webhook:
     {"test": "data"}
 ```
 
-4. Make a request to your endpoint
-5. View the webhook payload at webhook.site
+1. Make a request to your endpoint
+2. View the webhook payload at webhook.site
 
 ### Local Testing with ngrok
 
@@ -280,6 +281,7 @@ webhook:
 ## ✅ Best Practices
 
 **Do:**
+
 - ✅ Use `sleep-time` to simulate realistic processing delays
 - ✅ Add conditions with `if` to trigger webhooks selectively
 - ✅ Include correlation IDs for tracing (use `{{json-params.correlation_id}}`)
@@ -287,6 +289,7 @@ webhook:
 - ✅ Use template variables to pass dynamic data
 
 **Don't:**
+
 - ❌ Rely on webhook responses (they're ignored by design)
 - ❌ Use webhooks for critical synchronous operations
 - ❌ Set `sleep-time` too high in tests (slows down test suites)

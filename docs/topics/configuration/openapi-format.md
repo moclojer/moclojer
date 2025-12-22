@@ -11,6 +11,7 @@ Moclojer suporta **OpenAPI 3.0 e 3.1** (anteriormente conhecido como Swagger), p
 ## O Que É OpenAPI?
 
 **OpenAPI Specification** é um padrão para descrever APIs RESTful de forma legível por máquinas. É amplamente usado para:
+
 - Documentação de APIs
 - Geração automática de SDKs
 - Validação de contratos
@@ -27,11 +28,13 @@ Moclojer suporta **OpenAPI 3.0 e 3.1** (anteriormente conhecido como Swagger), p
 ## Suporte OpenAPI no Moclojer
 
 ### Versões Suportadas
+
 - ✅ OpenAPI 3.0.x
 - ✅ OpenAPI 3.1.x
 - ⚠️ Swagger 2.0 (suporte parcial - recomenda-se converter para 3.x)
 
 ### Formatos Aceitos
+
 - ✅ JSON (`.json`)
 - ✅ YAML (`.yml`, `.yaml`)
 
@@ -91,6 +94,7 @@ curl http://localhost:8000/users
 ```
 
 **Resposta:**
+
 ```json
 [
   {"id": 1, "name": "Alice"},
@@ -123,6 +127,7 @@ paths:
 ```
 
 **Resulta em (equivalente moclojer interno):**
+
 ```yaml
 - endpoint:
     method: GET
@@ -161,6 +166,7 @@ paths:
 **Convertido para:** `/users/:userId/posts/:postId`
 
 **Com tipos:**
+
 - `type: integer` → `:userId|int`
 - `type: string` → `:userId|string`
 
@@ -183,6 +189,7 @@ paths:
 ```
 
 **Moclojer entende e aceita:**
+
 ```bash
 curl "http://localhost:8000/products?category=electronics&limit=10"
 ```
@@ -419,6 +426,7 @@ components:
 ```
 
 **Testar:**
+
 ```bash
 # Listar usuários
 curl http://localhost:8000/users
@@ -587,6 +595,7 @@ paths:
 **Moclojer usa o primeiro `example` encontrado (geralmente 200).**
 
 Para simular erros, crie endpoints específicos:
+
 ```yaml
 # No moclojer, adicione endpoints separados para erros
 - endpoint:
@@ -622,6 +631,7 @@ responses:
 ```
 
 **Moclojer adiciona automaticamente:**
+
 - `Content-Type` baseado em `content`
 - Headers customizados definidos em `headers`
 
@@ -721,7 +731,7 @@ paths:
 ### Editores OpenAPI
 
 1. **Swagger Editor** (online)
-   - https://editor.swagger.io/
+   - <https://editor.swagger.io/>
    - Valida spec em tempo real
 
 2. **VS Code Extension**
@@ -729,7 +739,7 @@ paths:
    - Autocompletion e validação
 
 3. **Stoplight Studio**
-   - https://stoplight.io/studio
+   - <https://stoplight.io/studio>
    - Editor visual
 
 ### Validação de Specs
@@ -803,12 +813,14 @@ requestBody:
 | **Curva de aprendizado** | Maior (spec complexa) | Menor (YAML simples) |
 
 **Quando usar OpenAPI:**
+
 - Já tem specs OpenAPI existentes
 - Quer gerar SDKs/documentação
 - Precisa de padronização entre equipes
 - API vai além de mocks (produção)
 
 **Quando usar YAML nativo:**
+
 - Quer respostas dinâmicas com templates
 - Precisa de mocks rápidos e simples
 - Não precisa de portabilidade
@@ -829,12 +841,14 @@ project/
 ```
 
 **Iniciar com múltiplos arquivos:**
+
 ```bash
 # Moclojer não suporta múltiplos configs diretamente
 # Workaround: combinar em um arquivo ou usar proxy
 ```
 
 **Alternativa:** Converter OpenAPI para moclojer YAML:
+
 ```bash
 # Ferramentas de conversão (criar um script)
 # openapi.yml → moclojer.yml
@@ -847,6 +861,7 @@ project/
 ### ✅ Faça
 
 1. **Use `examples` em todos os endpoints**
+
    ```yaml
    responses:
      '200':
@@ -858,6 +873,7 @@ project/
    ```
 
 2. **Defina tipos de path parameters**
+
    ```yaml
    parameters:
      - name: id
@@ -867,6 +883,7 @@ project/
    ```
 
 3. **Organize com tags**
+
    ```yaml
    paths:
      /users:
@@ -878,6 +895,7 @@ project/
    ```
 
 4. **Use `$ref` para reutilizar**
+
    ```yaml
    components:
      schemas:
@@ -897,6 +915,7 @@ project/
 ### ❌ Evite
 
 1. **Specs sem `examples`**
+
    ```yaml
    # ❌ Moclojer não sabe o que retornar
    responses:
@@ -908,6 +927,7 @@ project/
    ```
 
 2. **Caminhos complexos sem tipos**
+
    ```yaml
    # ⚠️ Sem tipo, aceita qualquer string
    /users/{id}:  # Defina type: integer!
@@ -922,6 +942,7 @@ project/
 **Causa:** Falta campo obrigatório `openapi`.
 
 **Solução:**
+
 ```yaml
 # ✅ Adicione no topo
 openapi: 3.0.0
@@ -935,6 +956,7 @@ info:
 **Causa:** Spec sem `example` ou `examples`.
 
 **Solução:** Adicione examples explícitos:
+
 ```yaml
 responses:
   '200':
@@ -949,6 +971,7 @@ responses:
 **Causa:** Sintaxe incorreta.
 
 **Solução:**
+
 ```yaml
 # ✅ OpenAPI usa {param}
 /users/{id}:

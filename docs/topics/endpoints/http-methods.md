@@ -54,6 +54,7 @@ Moclojer suporta todos os métodos HTTP padrão:
 **Propósito:** Recuperar dados sem modificá-los.
 
 **Características:**
+
 - **Safe**: Não altera dados no servidor
 - **Idempotente**: Múltiplas chamadas retornam o mesmo resultado
 - **Cacheable**: Respostas podem ser cacheadas
@@ -79,6 +80,7 @@ Moclojer suporta todos os métodos HTTP padrão:
 ```
 
 **Uso:**
+
 ```bash
 curl http://localhost:8000/users
 ```
@@ -102,6 +104,7 @@ curl http://localhost:8000/users
 ```
 
 **Uso:**
+
 ```bash
 curl http://localhost:8000/users/123
 ```
@@ -125,6 +128,7 @@ curl http://localhost:8000/users/123
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/products?category=electronics&min_price=100"
 ```
@@ -132,12 +136,14 @@ curl "http://localhost:8000/products?category=electronics&min_price=100"
 ### Quando Usar GET
 
 ✅ **Use GET para:**
+
 - Listar recursos (`GET /users`)
 - Obter detalhes (`GET /users/123`)
 - Buscar/filtrar (`GET /search?q=term`)
 - Exportar dados (`GET /reports/sales`)
 
 ❌ **Não use GET para:**
+
 - Criar recursos (use POST)
 - Atualizar recursos (use PUT/PATCH)
 - Deletar recursos (use DELETE)
@@ -150,6 +156,7 @@ curl "http://localhost:8000/products?category=electronics&min_price=100"
 **Propósito:** Criar novos recursos ou processar dados.
 
 **Características:**
+
 - **Não idempotente**: Múltiplas chamadas criam múltiplos recursos
 - **Não safe**: Modifica o estado do servidor
 - **Com body**: Geralmente envia dados no corpo
@@ -176,6 +183,7 @@ curl "http://localhost:8000/products?category=electronics&min_price=100"
 ```
 
 **Uso:**
+
 ```bash
 curl -X POST http://localhost:8000/users \
   -H "Content-Type: application/json" \
@@ -183,6 +191,7 @@ curl -X POST http://localhost:8000/users \
 ```
 
 **Resposta:**
+
 ```json
 {
   "id": 123,
@@ -210,6 +219,7 @@ curl -X POST http://localhost:8000/users \
 ```
 
 **Uso:**
+
 ```bash
 curl -X POST http://localhost:8000/users/123/activate
 ```
@@ -217,6 +227,7 @@ curl -X POST http://localhost:8000/users/123/activate
 ### Quando Usar POST
 
 ✅ **Use POST para:**
+
 - Criar novos recursos (`POST /users`)
 - Upload de arquivos (`POST /upload`)
 - Ações customizadas (`POST /users/123/activate`)
@@ -224,6 +235,7 @@ curl -X POST http://localhost:8000/users/123/activate
 - Quando a operação não é idempotente
 
 ❌ **Não use POST para:**
+
 - Leitura de dados (use GET)
 - Atualização completa (use PUT)
 - Remoção (use DELETE)
@@ -235,6 +247,7 @@ curl -X POST http://localhost:8000/users/123/activate
 **Propósito:** Substituir completamente um recurso existente.
 
 **Características:**
+
 - **Idempotente**: Múltiplas chamadas têm o mesmo efeito
 - **Substitui completamente**: Todos os campos devem ser enviados
 - **Requer ID**: Geralmente usado com `/resource/:id`
@@ -261,6 +274,7 @@ curl -X POST http://localhost:8000/users/123/activate
 ```
 
 **Uso:**
+
 ```bash
 curl -X PUT http://localhost:8000/users/123 \
   -H "Content-Type: application/json" \
@@ -274,6 +288,7 @@ curl -X PUT http://localhost:8000/users/123 \
 ### PUT vs POST
 
 **PUT** é idempotente:
+
 ```bash
 # Chamar 5 vezes resulta no mesmo estado
 PUT /users/123 {"name": "John"}
@@ -283,6 +298,7 @@ PUT /users/123 {"name": "John"}
 ```
 
 **POST** não é idempotente:
+
 ```bash
 # Chamar 5 vezes cria 5 recursos
 POST /users {"name": "John"}  # Cria user 1
@@ -294,11 +310,13 @@ POST /users {"name": "John"}  # Cria user 3
 ### Quando Usar PUT
 
 ✅ **Use PUT para:**
+
 - Atualizar recurso completo (`PUT /users/123`)
 - Substituir configurações (`PUT /settings`)
 - Operações idempotentes de atualização
 
 ❌ **Não use PUT para:**
+
 - Criar recursos (use POST)
 - Atualização parcial (use PATCH)
 - Coleções (`PUT /users` não faz sentido)
@@ -310,6 +328,7 @@ POST /users {"name": "John"}  # Cria user 3
 **Propósito:** Atualizar apenas alguns campos de um recurso.
 
 **Características:**
+
 - **Parcial**: Envia apenas campos que mudaram
 - **Mais eficiente**: Menos dados trafegados
 - **Não necessariamente idempotente**: Depende da implementação
@@ -336,6 +355,7 @@ POST /users {"name": "John"}  # Cria user 3
 ```
 
 **Uso:**
+
 ```bash
 # Atualiza apenas o email (name continua o mesmo)
 curl -X PATCH http://localhost:8000/users/123 \
@@ -355,11 +375,13 @@ curl -X PATCH http://localhost:8000/users/123 \
 ### Quando Usar PATCH
 
 ✅ **Use PATCH para:**
+
 - Atualizar poucos campos (`PATCH /users/123`)
 - Alternar flags (`PATCH /posts/1 {"published": true}`)
 - Operações de edição parcial
 
 ❌ **Não use PATCH para:**
+
 - Substituir recurso completo (use PUT)
 - Criar recursos (use POST)
 
@@ -370,6 +392,7 @@ curl -X PATCH http://localhost:8000/users/123 \
 **Propósito:** Remover um recurso.
 
 **Características:**
+
 - **Idempotente**: Deletar múltiplas vezes = deletar uma vez
 - **Sem body na resposta**: Geralmente retorna 204 No Content
 - **Irreversível**: (em APIs reais, considere soft delete)
@@ -385,6 +408,7 @@ curl -X PATCH http://localhost:8000/users/123 \
 ```
 
 **Uso:**
+
 ```bash
 curl -X DELETE http://localhost:8000/users/123
 ```
@@ -426,11 +450,13 @@ curl -X DELETE http://localhost:8000/users/123
 ### Quando Usar DELETE
 
 ✅ **Use DELETE para:**
+
 - Remover recursos (`DELETE /users/123`)
 - Limpar dados (`DELETE /cache`)
 - Logout (`DELETE /sessions/current`)
 
 ❌ **Não use DELETE para:**
+
 - Leitura (use GET)
 - Atualização (use PUT/PATCH)
 - Ações que não removem dados
@@ -442,6 +468,7 @@ curl -X DELETE http://localhost:8000/users/123
 **Propósito:** Obter headers de uma resposta sem o corpo.
 
 **Características:**
+
 - Idêntico ao GET, mas **sem corpo na resposta**
 - Útil para checar se recurso existe
 - Verificar tamanho do arquivo antes de baixar
@@ -462,6 +489,7 @@ curl -X DELETE http://localhost:8000/users/123
 ```
 
 **Uso:**
+
 ```bash
 curl -I http://localhost:8000/users/123
 # Retorna apenas headers, sem body
@@ -470,6 +498,7 @@ curl -I http://localhost:8000/users/123
 ### Quando Usar HEAD
 
 ✅ **Use HEAD para:**
+
 - Verificar se recurso existe
 - Checar `Last-Modified` ou `ETag`
 - Ver tamanho do arquivo (`Content-Length`)
@@ -481,6 +510,7 @@ curl -I http://localhost:8000/users/123
 **Propósito:** Descobrir quais métodos HTTP são suportados.
 
 **Características:**
+
 - Usado em **CORS preflight requests**
 - Retorna métodos permitidos em `Allow` header
 
@@ -499,6 +529,7 @@ curl -I http://localhost:8000/users/123
 ```
 
 **Uso:**
+
 ```bash
 curl -X OPTIONS http://localhost:8000/users
 ```
@@ -552,6 +583,7 @@ Você pode ter o mesmo path com métodos diferentes:
 ```
 
 **Resultado:**
+
 - `GET /users` → lista users
 - `POST /users` → cria user
 - `DELETE /users` → remove todos (cuidado!)
@@ -656,6 +688,7 @@ Exemplo de CRUD completo:
 ### ✅ Faça
 
 1. **Use o método semântico correto**
+
    ```yaml
    # ✅ Correto
    GET /users        # Ler
@@ -666,6 +699,7 @@ Exemplo de CRUD completo:
    ```
 
 2. **GET e HEAD não devem modificar dados**
+
    ```yaml
    # ❌ Errado - GET não deve deletar!
    GET /users/:id/delete
@@ -675,6 +709,7 @@ Exemplo de CRUD completo:
    ```
 
 3. **Use status codes apropriados**
+
    ```yaml
    POST: 201 Created
    PUT: 200 OK
@@ -682,6 +717,7 @@ Exemplo de CRUD completo:
    ```
 
 4. **Implemente OPTIONS para CORS**
+
    ```yaml
    - endpoint:
        method: OPTIONS
@@ -695,6 +731,7 @@ Exemplo de CRUD completo:
 ### ❌ Evite
 
 1. **Métodos na URL**
+
    ```yaml
    # ❌ Não faça
    GET /users/create
@@ -708,6 +745,7 @@ Exemplo de CRUD completo:
    ```
 
 2. **POST para tudo**
+
    ```yaml
    # ❌ Anti-pattern
    POST /getUsers

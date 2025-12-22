@@ -27,6 +27,7 @@ ghcr.io/moclojer/moclojer:latest
 ```
 
 **Tags disponíveis:**
+
 - `latest` - Última versão estável
 - `v0.4.0` - Versão específica
 - `main` - Build da branch main (bleeding edge)
@@ -151,21 +152,25 @@ services:
 ```
 
 **Rodar:**
+
 ```bash
 docker-compose up
 ```
 
 **Rodar em background:**
+
 ```bash
 docker-compose up -d
 ```
 
 **Ver logs:**
+
 ```bash
 docker-compose logs -f moclojer
 ```
 
 **Parar:**
+
 ```bash
 docker-compose down
 ```
@@ -206,6 +211,7 @@ services:
 ```
 
 **Criar `.env`:**
+
 ```env
 MOCLOJER_PORT=3000
 ENV=staging
@@ -213,6 +219,7 @@ ENABLE_CORS=true
 ```
 
 **Rodar:**
+
 ```bash
 docker-compose up
 ```
@@ -239,6 +246,7 @@ services:
 ```
 
 **Verificar status:**
+
 ```bash
 docker-compose ps
 ```
@@ -278,6 +286,7 @@ services:
 ### .env files
 
 **`.env.dev`:**
+
 ```env
 ENV=dev
 PORT=8000
@@ -285,6 +294,7 @@ MOCLOJER_VERSION=latest
 ```
 
 **`.env.staging`:**
+
 ```env
 ENV=staging
 PORT=8001
@@ -292,6 +302,7 @@ MOCLOJER_VERSION=v0.4.0
 ```
 
 **`.env.prod`:**
+
 ```env
 ENV=prod
 PORT=8080
@@ -299,6 +310,7 @@ MOCLOJER_VERSION=v0.4.0
 ```
 
 **Rodar:**
+
 ```bash
 # Development
 docker-compose --env-file .env.dev up
@@ -445,6 +457,7 @@ docker-compose -f docker-compose.ci.yml down
 ```
 
 **docker-compose.ci.yml:**
+
 ```yaml
 version: '3.8'
 
@@ -513,6 +526,7 @@ volumes:
 ```
 
 **Deploy:**
+
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
 ```
@@ -544,6 +558,7 @@ services:
 ```
 
 **nginx.conf:**
+
 ```nginx
 upstream moclojer {
     server moclojer:8000;
@@ -572,6 +587,7 @@ server {
 **Problema:** `docker: Error response from daemon: Conflict`
 
 **Solução:** Remover container antigo
+
 ```bash
 docker rm -f moclojer
 docker-compose down
@@ -582,6 +598,7 @@ docker-compose down
 **Problema:** `Config file not found`
 
 **Solução:** Verificar mount
+
 ```bash
 # Listar arquivos dentro do container
 docker run --rm \
@@ -597,6 +614,7 @@ docker run --rm \
 **Problema:** `Bind for 0.0.0.0:8000 failed: port is already allocated`
 
 **Solução:** Mudar porta do host
+
 ```bash
 docker run -p 8001:8000 ...
 # Ou
@@ -608,10 +626,12 @@ docker-compose -f docker-compose.yml up  # com ports: "8001:8000"
 **Problema:** Mudanças no arquivo não recarregam
 
 **Causas:**
+
 1. Não passou `--watch`
 2. Usando imagem nativa (GraalVM) - não suporta watch
 
 **Solução:**
+
 ```bash
 # Verificar se é nativa
 docker run --rm ghcr.io/moclojer/moclojer:latest --version
@@ -626,6 +646,7 @@ docker-compose restart moclojer
 **Problema:** Permission denied
 
 **Solução:** Ajustar permissões
+
 ```bash
 chmod 644 moclojer.yml
 ```
@@ -637,24 +658,28 @@ chmod 644 moclojer.yml
 ### ✅ Faça
 
 1. **Use versões fixadas em produção**
+
    ```yaml
    image: ghcr.io/moclojer/moclojer:v0.4.0  # ✅
    # image: ghcr.io/moclojer/moclojer:latest  # ❌ Em prod
    ```
 
 2. **Read-only volumes quando possível**
+
    ```yaml
    volumes:
      - ./moclojer.yml:/app/moclojer.yml:ro  # Read-only
    ```
 
 3. **Health checks**
+
    ```yaml
    healthcheck:
      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
    ```
 
 4. **Resource limits**
+
    ```yaml
    deploy:
      resources:
@@ -664,6 +689,7 @@ chmod 644 moclojer.yml
    ```
 
 5. **Logging configurado**
+
    ```yaml
    logging:
      driver: "json-file"
@@ -719,6 +745,7 @@ services:
 ```
 
 **Rodar testes:**
+
 ```bash
 docker-compose -f docker-compose.test.yml run --rm tests
 ```

@@ -13,6 +13,7 @@ moclojer's template system is what makes your mock APIs dynamic and realistic. I
 Templates are special placeholders in your response configuration that get replaced with actual values when a request is processed. They use a simple `{{variable}}` syntax that's easy to read and write.
 
 **Example:**
+
 ```yaml
 - endpoint:
     method: GET
@@ -27,6 +28,7 @@ Templates are special placeholders in your response configuration that get repla
 ```
 
 When someone requests `/users/123`, the response becomes:
+
 ```json
 {
   "id": "123",
@@ -38,6 +40,7 @@ When someone requests `/users/123`, the response becomes:
 ## Why use templates?
 
 ### 🎯 **Realistic Testing**
+
 Simulate how real APIs behave by returning different data based on the request:
 
 ```yaml
@@ -56,6 +59,7 @@ Simulate how real APIs behave by returning different data based on the request:
 ```
 
 ### 🔄 **Dynamic Responses**
+
 Create responses that reflect the input data:
 
 ```yaml
@@ -73,6 +77,7 @@ Create responses that reflect the input data:
 ```
 
 ### 🧪 **Flexible Testing**
+
 Test different scenarios without creating multiple endpoint configurations:
 
 ```yaml
@@ -93,7 +98,9 @@ Test different scenarios without creating multiple endpoint configurations:
 moclojer provides several types of template variables:
 
 ### Path Parameters
+
 Extract values from URL paths:
+
 ```yaml
 path: /users/:id/posts/:postId
 body: >
@@ -104,7 +111,9 @@ body: >
 ```
 
 ### Query Parameters
+
 Use URL query string values:
+
 ```yaml
 # For request: /search?q=javascript&limit=10
 body: >
@@ -116,7 +125,9 @@ body: >
 ```
 
 ### JSON Body Parameters
+
 Access data from JSON request bodies:
+
 ```yaml
 # For POST with body: {"name": "John", "email": "john@example.com"}
 body: >
@@ -129,7 +140,9 @@ body: >
 ```
 
 ### Request Headers
+
 Use values from HTTP headers:
+
 ```yaml
 body: >
   {
@@ -140,7 +153,9 @@ body: >
 ```
 
 ### Built-in Functions
+
 Special functions for common needs:
+
 ```yaml
 body: >
   {
@@ -153,7 +168,9 @@ body: >
 ## Common Patterns
 
 ### Echo Responses
+
 Return the same data that was sent:
+
 ```yaml
 - endpoint:
     method: POST
@@ -170,7 +187,9 @@ Return the same data that was sent:
 ```
 
 ### Personalized Responses
+
 Create user-specific responses:
+
 ```yaml
 - endpoint:
     method: GET
@@ -185,7 +204,9 @@ Create user-specific responses:
 ```
 
 ### Search Results
+
 Dynamic search responses:
+
 ```yaml
 - endpoint:
     method: GET
@@ -203,7 +224,9 @@ Dynamic search responses:
 ```
 
 ### API Keys and Authentication
+
 Handle authentication scenarios:
+
 ```yaml
 - endpoint:
     method: GET
@@ -220,6 +243,7 @@ Handle authentication scenarios:
 ## Template Best Practices
 
 ### 1. **Use Meaningful Names**
+
 ```yaml
 # Good
 path: /users/:userId/orders/:orderId
@@ -229,7 +253,9 @@ path: /users/:id1/orders/:id2
 ```
 
 ### 2. **Handle Missing Values**
+
 Provide defaults for optional parameters:
+
 ```yaml
 body: >
   {
@@ -240,7 +266,9 @@ body: >
 ```
 
 ### 3. **Keep Templates Readable**
+
 Break complex templates into logical sections:
+
 ```yaml
 body: >
   {
@@ -256,7 +284,9 @@ body: >
 ```
 
 ### 4. **Use Consistent Formatting**
+
 Follow JSON formatting rules:
+
 ```yaml
 # Strings need quotes
 "name": "{{json-params.name}}"
@@ -271,7 +301,9 @@ Follow JSON formatting rules:
 ## Advanced Template Features
 
 ### Nested Object Access
+
 Access nested properties from JSON:
+
 ```yaml
 # For body: {"user": {"profile": {"name": "John"}}}
 body: >
@@ -281,7 +313,9 @@ body: >
 ```
 
 ### Conditional Content
+
 Simple conditional logic:
+
 ```yaml
 body: >
   {
@@ -290,7 +324,9 @@ body: >
 ```
 
 ### Array Handling
+
 Work with array data:
+
 ```yaml
 # For body: {"tags": ["javascript", "tutorial"]}
 body: >
@@ -327,6 +363,7 @@ Now that you understand the template system basics, dive deeper into specific ar
 ## Examples in Action
 
 See templates in real-world scenarios:
+
 - **[REST API Example](../../examples/rest-api-mocking.md)** - Complete API with templates
 - **[E-commerce API](../../examples/ecommerce-api.md)** - Product catalog with dynamic data
 - **[User Management](../../examples/user-management.md)** - User CRUD operations

@@ -11,12 +11,14 @@ O YAML é o formato de configuração mais comum no moclojer. Ele é simples de 
 ## Por que YAML?
 
 **Vantagens:**
+
 - ✅ **Legível**: Parece inglês, fácil de entender
 - ✅ **Simples**: Menos verboso que JSON ou XML
 - ✅ **Estruturado**: Mantém hierarquia clara
 - ✅ **Comentários**: Pode documentar inline
 
 **Quando usar YAML:**
+
 - Você está começando com moclojer
 - Precisa de configuração simples e clara
 - Quer colaborar com não-programadores
@@ -43,6 +45,7 @@ Todo arquivo YAML do moclojer é uma **lista de endpoints**:
 ```
 
 **Anatomia:**
+
 - Cada endpoint começa com `- endpoint:`
 - Indentação com **2 espaços** (não tabs!)
 - Chaves obrigatórias: `path`, `response`
@@ -64,6 +67,7 @@ A indentação define a hierarquia:
 ```
 
 ⚠️ **IMPORTANTE:**
+
 - Use sempre **2 espaços** por nível
 - Nunca misture espaços e tabs
 - Ferramentas: configure seu editor para "soft tabs"
@@ -227,6 +231,7 @@ headers:
 ### ✅ Faça
 
 1. **Use indentação consistente (2 espaços)**
+
    ```yaml
    - endpoint:
        method: GET    # 2 espaços
@@ -234,6 +239,7 @@ headers:
    ```
 
 2. **Adicione comentários explicativos**
+
    ```yaml
    # Health check endpoint para monitoramento
    - endpoint:
@@ -242,12 +248,14 @@ headers:
    ```
 
 3. **Use `>` para JSON inline**
+
    ```yaml
    body: >
      {"key": "value"}
    ```
 
 4. **Agrupe endpoints relacionados**
+
    ```yaml
    # === USER ENDPOINTS ===
    - endpoint: ...
@@ -258,6 +266,7 @@ headers:
    ```
 
 5. **Ordene por método e path**
+
    ```yaml
    - GET /users
    - GET /users/:id
@@ -269,18 +278,21 @@ headers:
 ### ❌ Evite
 
 1. **Tabs para indentação**
+
    ```yaml
    - endpoint:
-   	method: GET    # ❌ Tab causa erro
+    method: GET    # ❌ Tab causa erro
    ```
 
 2. **Aspas desnecessárias**
+
    ```yaml
    method: "GET"       # ❌ Desnecessário
    method: GET         # ✅ Melhor
    ```
 
 3. **JSON sem `>`**
+
    ```yaml
    body: {"key": "value"}   # ❌ Pode quebrar com strings complexas
    body: >                  # ✅ Sempre funciona
@@ -288,6 +300,7 @@ headers:
    ```
 
 4. **Endpoints sem comentários em arquivos grandes**
+
    ```yaml
    # ✅ Boa prática em arquivos grandes
    # Autenticação - Login de usuário
@@ -344,15 +357,18 @@ body: >
 ## Validação de YAML
 
 ### Online
+
 - [YAML Lint](http://www.yamllint.com/) - valida sintaxe
 - [YAML to JSON](https://onlineyamltools.com/convert-yaml-to-json) - vê como será parseado
 
 ### Editores
+
 - **VS Code**: extensão "YAML" by Red Hat
 - **Sublime**: extensão "YAML Nav"
 - **Vim**: plugin "vim-yaml"
 
 ### Linha de comando
+
 ```bash
 # Validar sintaxe
 yamllint moclojer.yml
@@ -393,17 +409,20 @@ moclojer --validate moclojer.yml
 ```
 
 **YAML ganha em:**
+
 - Legibilidade (50% menos caracteres)
 - Comentários nativos
 - Strings multi-linha
 
 **JSON ganha em:**
+
 - Parsing mais rápido
 - Suporte universal
 
 ### YAML vs EDN
 
 Para a maioria dos usuários, **YAML é mais simples**. Use EDN apenas se você:
+
 - Trabalha com Clojure
 - Precisa de estruturas de dados complexas
 - Quer integração programática

@@ -56,6 +56,7 @@ sequenceDiagram
 ```
 
 **Testing:**
+
 ```bash
 # Using websocat
 websocat ws://localhost:8000/ws/echo
@@ -65,6 +66,7 @@ wscat -c ws://localhost:8000/ws/echo
 ```
 
 **Interaction:**
+
 ```text
 < {"status": "connected", "message": "Welcome to Echo Server!"}
 > ping
@@ -143,6 +145,7 @@ Real-time chat with username support:
 ```
 
 **Testing the chat:**
+
 ```javascript
 const ws = new WebSocket('ws://localhost:8000/ws/chat/general');
 
@@ -415,6 +418,7 @@ WebSocket responses support all template variables:
 ## ✅ Best Practices
 
 **Do:**
+
 - ✅ Send `on-connect` message for initialization
 - ✅ Use JSON for structured messages
 - ✅ Include timestamps in responses for debugging
@@ -423,6 +427,7 @@ WebSocket responses support all template variables:
 - ✅ Include message types for client-side routing
 
 **Don't:**
+
 - ❌ Hardcode dynamic data (use template variables)
 - ❌ Forget to handle connection/disconnection events
 - ❌ Send large binary data (WebSockets are for text/small payloads)

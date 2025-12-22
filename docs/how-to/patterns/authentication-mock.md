@@ -301,12 +301,14 @@ curl "http://localhost:8000/oauth/authorize?client_id=123&redirect_uri=http://lo
 ## ✅ Best Practices
 
 **Do ✅:**
+
 - Simulate realistic token formats
 - Include proper HTTP status codes (401, 403)
 - Return meaningful error messages
 - Test both success and failure scenarios
 
 **Don't ❌:**
+
 - Don't use real passwords or secrets
 - Don't skip error responses
 - Don't forget token expiration simulation

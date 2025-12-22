@@ -65,6 +65,7 @@ Vamos criar uma API completa de gerenciamento de tarefas com todas as operaçõe
 ```
 
 **Testar:**
+
 ```bash
 curl -X POST http://localhost:8000/api/tasks \
   -H "Content-Type: application/json" \
@@ -76,6 +77,7 @@ curl -X POST http://localhost:8000/api/tasks \
 ```
 
 **Resposta (201 Created):**
+
 ```json
 {
   "id": 1,
@@ -167,6 +169,7 @@ curl -X POST http://localhost:8000/api/tasks \
 ```
 
 **Testar:**
+
 ```bash
 curl http://localhost:8000/api/tasks
 ```
@@ -207,6 +210,7 @@ curl http://localhost:8000/api/tasks
 ```
 
 **Testar:**
+
 ```bash
 curl "http://localhost:8000/api/tasks?page=1&limit=10"
 ```
@@ -239,6 +243,7 @@ curl "http://localhost:8000/api/tasks?page=1&limit=10"
 ```
 
 **Testar:**
+
 ```bash
 curl http://localhost:8000/api/tasks/1
 curl http://localhost:8000/api/tasks/42
@@ -263,6 +268,7 @@ curl http://localhost:8000/api/tasks/42
 ```
 
 **Testar:**
+
 ```bash
 curl http://localhost:8000/api/tasks/999
 ```
@@ -294,6 +300,7 @@ curl http://localhost:8000/api/tasks/999
 ```
 
 **Testar:**
+
 ```bash
 curl "http://localhost:8000/api/tasks?completed=false&priority=high"
 curl "http://localhost:8000/api/tasks?q=comprar"
@@ -328,6 +335,7 @@ curl "http://localhost:8000/api/tasks?q=comprar"
 ```
 
 **Testar:**
+
 ```bash
 curl -X PUT http://localhost:8000/api/tasks/1 \
   -H "Content-Type: application/json" \
@@ -364,6 +372,7 @@ curl -X PUT http://localhost:8000/api/tasks/1 \
 ```
 
 **Testar (atualizar apenas completed):**
+
 ```bash
 curl -X PATCH http://localhost:8000/api/tasks/1 \
   -H "Content-Type: application/json" \
@@ -371,6 +380,7 @@ curl -X PATCH http://localhost:8000/api/tasks/1 \
 ```
 
 **Testar (atualizar título e prioridade):**
+
 ```bash
 curl -X PATCH http://localhost:8000/api/tasks/1 \
   -H "Content-Type: application/json" \
@@ -400,6 +410,7 @@ curl -X PATCH http://localhost:8000/api/tasks/1 \
 ```
 
 **Testar:**
+
 ```bash
 curl -X PATCH http://localhost:8000/api/tasks/1/complete
 ```
@@ -443,6 +454,7 @@ curl -X PATCH http://localhost:8000/api/tasks/1/complete
 ```
 
 **Testar:**
+
 ```bash
 curl -X DELETE http://localhost:8000/api/tasks/1
 # Resposta vazia com status 204
@@ -470,6 +482,7 @@ Alguns preferem retornar 200 com mensagem:
 ```
 
 **Testar:**
+
 ```bash
 curl -X DELETE http://localhost:8000/api/tasks/1
 ```
@@ -510,6 +523,7 @@ curl -X DELETE http://localhost:8000/api/tasks/1
 ```
 
 **Testar:**
+
 ```bash
 curl -X DELETE http://localhost:8000/api/tasks/completed
 ```
@@ -703,6 +717,7 @@ echo -e "\n"
 ```
 
 Salve como `test-crud.sh`, dê permissão e execute:
+
 ```bash
 chmod +x test-crud.sh
 ./test-crud.sh
@@ -722,6 +737,7 @@ chmod +x test-crud.sh
    - `422 Unprocessable Entity` para erros de validação
 
 2. **Retorne o recurso criado/atualizado**
+
    ```json
    // POST response
    {
@@ -731,12 +747,14 @@ chmod +x test-crud.sh
    ```
 
 3. **Use rotas específicas antes de genéricas**
+
    ```yaml
    - path: /api/tasks/999  # 404 específico
    - path: /api/tasks/:id  # genérico (vem depois!)
    ```
 
 4. **Inclua metadata em listas**
+
    ```json
    {
      "data": [...],
@@ -745,6 +763,7 @@ chmod +x test-crud.sh
    ```
 
 5. **Header `Location` em recursos criados**
+
    ```yaml
    headers:
      Location: /api/tasks/1
@@ -753,6 +772,7 @@ chmod +x test-crud.sh
 ### ❌ Evite
 
 1. **DELETE retornando 200 com recurso deletado**
+
    ```yaml
    # ❌ Prefira 204 No Content
    DELETE /tasks/1 → 200 {"id": 1, "deleted": true}
@@ -762,6 +782,7 @@ chmod +x test-crud.sh
    ```
 
 2. **GET modificando dados**
+
    ```yaml
    # ❌ NUNCA!
    GET /tasks/1/delete
@@ -771,6 +792,7 @@ chmod +x test-crud.sh
    ```
 
 3. **Campos ID no body de POST**
+
    ```json
    // ❌ Cliente não deve enviar ID
    POST /tasks {"id": 123, "title": "..."}

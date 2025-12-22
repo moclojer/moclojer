@@ -16,11 +16,13 @@ Paginação é essencial em APIs que retornam listas grandes de dados. Este guia
 ✅ **Custo**: Menos processamento no servidor
 
 **Sem paginação:**
+
 ```json
 GET /users → [10.000 usuários] 😱
 ```
 
 **Com paginação:**
+
 ```json
 GET /users?page=1&limit=20 → [20 usuários] ✅
 ```
@@ -34,15 +36,18 @@ GET /users?page=1&limit=20 → [20 usuários] ✅
 **Conceito:** Pule X itens, retorne Y itens.
 
 **Parâmetros:**
+
 - `limit` (ou `per_page`): Quantidade por página
 - `offset` (ou `skip`): Quantos pular
 
 **Matemática:**
+
 ```
 offset = (page - 1) * limit
 ```
 
 **Exemplo:**
+
 ```yaml
 - endpoint:
     method: GET
@@ -68,6 +73,7 @@ offset = (page - 1) * limit
 ```
 
 **Uso:**
+
 ```bash
 # Primeira página (0-19)
 curl "http://localhost:8000/api/users?offset=0&limit=20"
@@ -86,10 +92,12 @@ curl "http://localhost:8000/api/users?offset=40&limit=20"
 **Conceito:** Número da página + itens por página.
 
 **Parâmetros:**
+
 - `page`: Número da página (começa em 1)
 - `limit` (ou `per_page`): Itens por página
 
 **Exemplo:**
+
 ```yaml
 - endpoint:
     method: GET
@@ -118,6 +126,7 @@ curl "http://localhost:8000/api/users?offset=40&limit=20"
 ```
 
 **Uso:**
+
 ```bash
 # Primeira página
 curl "http://localhost:8000/api/products?page=1&limit=10"
@@ -136,11 +145,13 @@ curl "http://localhost:8000/api/products?page=5&limit=25"
 **Conceito:** Usa um cursor (ID, timestamp) para marcar posição.
 
 **Vantagens:**
+
 - Consistente mesmo com novos itens
 - Perfeito para infinite scroll
 - Não permite pular páginas (mais seguro)
 
 **Exemplo:**
+
 ```yaml
 - endpoint:
     method: GET
@@ -167,6 +178,7 @@ curl "http://localhost:8000/api/products?page=5&limit=25"
 ```
 
 **Uso:**
+
 ```bash
 # Primeira requisição (sem cursor)
 curl "http://localhost:8000/api/posts?limit=10"
@@ -286,6 +298,7 @@ curl "http://localhost:8000/api/posts?cursor=203&limit=10"
 ```
 
 **Uso:**
+
 ```bash
 # Primeira página de eletrônicos
 curl "http://localhost:8000/api/products?category=electronics&page=1&limit=20"
@@ -330,6 +343,7 @@ curl "http://localhost:8000/api/products?category=electronics&min_price=100&max_
 ```
 
 **Uso:**
+
 ```bash
 # Primeira carga
 curl "http://localhost:8000/api/posts?limit=20"
@@ -373,6 +387,7 @@ curl "http://localhost:8000/api/posts?cursor=102&limit=20"
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/api/posts/42/comments?page=1&limit=10"
 ```
@@ -405,6 +420,7 @@ curl "http://localhost:8000/api/posts/42/comments?page=1&limit=10"
 ```
 
 **Uso:**
+
 ```bash
 # Sem parâmetros (cliente usa defaults da response)
 curl "http://localhost:8000/api/users"
@@ -437,11 +453,13 @@ Padrão para navegação de paginação via headers:
 ```
 
 **Formato:**
+
 ```
 Link: <URL>; rel="relation"
 ```
 
 **Relações:**
+
 - `first`: Primeira página
 - `prev`: Página anterior
 - `next`: Próxima página
@@ -449,6 +467,7 @@ Link: <URL>; rel="relation"
 - `self`: Página atual
 
 **Exemplo do GitHub API:**
+
 ```
 Link: <https://api.github.com/repos?page=2>; rel="next",
       <https://api.github.com/repos?page=50>; rel="last"
@@ -482,6 +501,7 @@ Link: <https://api.github.com/repos?page=2>; rel="next",
 ```
 
 **Uso:**
+
 ```bash
 # Ordenar por nome (A-Z), página 1
 curl "http://localhost:8000/api/users?sort=name&order=asc&page=1&limit=20"
@@ -521,6 +541,7 @@ curl "http://localhost:8000/api/users?sort=createdAt&order=desc&page=2&limit=20"
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/api/products?category=electronics&brand=sony&in_stock=true&sort=price&order=asc&page=1&limit=20"
 ```
@@ -554,6 +575,7 @@ curl "http://localhost:8000/api/products?category=electronics&brand=sony&in_stoc
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
 ```
@@ -565,6 +587,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
 ### ✅ Faça
 
 1. **Sempre retorne metadados**
+
    ```json
    {
      "data": [...],
@@ -577,6 +600,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    ```
 
 2. **Use headers para totais**
+
    ```yaml
    headers:
      X-Total-Count: "1000"
@@ -584,6 +608,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    ```
 
 3. **Forneça links de navegação**
+
    ```json
    {
      "links": {
@@ -595,6 +620,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    ```
 
 4. **Limite máximo de itens**
+
    ```json
    {
      "meta": {
@@ -605,6 +631,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    ```
 
 5. **Consistência nos nomes**
+
    ```bash
    # ✅ Escolha um padrão e siga
    ?page=1&limit=20
@@ -618,6 +645,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
 ### ❌ Evite
 
 1. **Paginação sem total**
+
    ```json
    // ❌ Difícil saber quantas páginas existem
    {"data": [...]}
@@ -627,6 +655,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    ```
 
 2. **Limites muito altos**
+
    ```bash
    # ❌ Pode sobrecarregar
    ?limit=10000
@@ -636,6 +665,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    ```
 
 3. **Offset sem limit**
+
    ```bash
    # ❌ Ambíguo
    ?offset=100
@@ -645,6 +675,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    ```
 
 4. **Links quebrados**
+
    ```json
    // ❌ Link inválido
    "next": "/api/items?page=undefined"
@@ -660,6 +691,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
 ### Problema: Cliente não sabe total de páginas
 
 **Solução:** Retorne `totalPages` ou `X-Total-Pages` header
+
 ```yaml
 headers:
   X-Total-Pages: "50"
@@ -670,6 +702,7 @@ body: >
 ### Problema: Links de navegação quebrados
 
 **Solução:** Use template vars corretamente
+
 ```yaml
 # ✅ Correto
 "next": "/api/items?page=2&limit={{query-params.limit}}"
@@ -681,6 +714,7 @@ body: >
 ### Problema: Paginação + Filtros perdidos
 
 **Solução:** Preserve todos query params nos links
+
 ```yaml
 "next": "/api/products?category={{query-params.category}}&page=2&limit={{query-params.limit}}"
 ```

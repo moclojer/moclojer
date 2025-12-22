@@ -11,6 +11,7 @@ Learn advanced path pattern techniques to create flexible and powerful URL routi
 ## 📋 Pattern Types
 
 ### 1. Static Paths
+
 ```yaml
 - endpoint:
     path: /users
@@ -19,6 +20,7 @@ Learn advanced path pattern techniques to create flexible and powerful URL routi
 ```
 
 ### 2. Path Parameters
+
 ```yaml
 # Single parameter
 - endpoint:
@@ -35,6 +37,7 @@ Learn advanced path pattern techniques to create flexible and powerful URL routi
 ```
 
 ### 3. Wildcards
+
 ```yaml
 # Match any subpath
 - endpoint:
@@ -65,11 +68,13 @@ moclojer matches routes in this order:
 ## ✅ Best Practices
 
 **Do ✅:**
+
 - Use specific patterns before generic ones
 - Type your parameters (`:id|int`)
 - Document complex patterns
 
 **Don't ❌:**
+
 - Don't rely on order for precedence
 - Avoid overlapping patterns
 

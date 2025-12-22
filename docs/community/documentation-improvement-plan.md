@@ -131,6 +131,7 @@ docs/
 **Objetivo:** Completar Core Concepts e criar estrutura base
 
 #### 1.1 Core Concepts - Configuration
+
 - [ ] `docs/topics/configuration/yaml-format.md`
   - Estrutura YAML básica
   - Sintaxe e regras de indentação
@@ -156,6 +157,7 @@ docs/
   - Exemplo prático
 
 #### 1.2 Core Concepts - Endpoints
+
 - [ ] `docs/topics/endpoints/http-methods.md`
   - GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
   - Quando usar cada método
@@ -174,6 +176,7 @@ docs/
   - Body formats (JSON, XML, plain text)
 
 #### 1.3 Core Concepts - Parameters
+
 - [ ] `docs/topics/parameters/path-parameters.md`
   - Sintaxe `:paramName`
   - Tipos disponíveis (`int`, `uuid`, `string`, etc.)
@@ -198,6 +201,7 @@ docs/
   - Headers comuns (Content-Type, Authorization, etc.)
 
 #### 1.4 Reference Documentation
+
 - [ ] `docs/reference/cli-reference.md`
   - Todos os flags: `--config`, `--port`, `--host`, etc.
   - Variáveis de ambiente
@@ -228,6 +232,7 @@ docs/
 **Objetivo:** Criar receitas práticas para casos de uso comuns
 
 #### 2.1 Testing
+
 - [ ] `docs/how-to/testing/integration-testing.md`
   - Setup de ambiente de testes
   - Exemplos com Jest/Mocha/Pytest
@@ -245,6 +250,7 @@ docs/
   - Consumer-driven contracts
 
 #### 2.2 Deployment
+
 - [ ] `docs/how-to/deployment/docker.md`
   - Dockerfile exemplo
   - Docker Compose setup
@@ -263,6 +269,7 @@ docs/
   - Secrets e env vars
 
 #### 2.3 Common Patterns
+
 - [ ] `docs/how-to/patterns/crud-operations.md`
   - Implementar CRUD completo
   - Validação de dados
@@ -294,6 +301,7 @@ docs/
 **Objetivo:** Casos de uso reais e completos
 
 #### 3.1 REST API Examples
+
 - [ ] `docs/examples/rest-api/basic-crud.md`
   - Todo app completo
   - Arquivo de configuração
@@ -307,6 +315,7 @@ docs/
   - Configuração completa
 
 #### 3.2 Third-Party API Mocks
+
 - [ ] `docs/examples/third-party/stripe-mock.md`
   - Endpoints principais: charges, customers, etc.
   - Webhooks simulation
@@ -323,6 +332,7 @@ docs/
   - OAuth flow
 
 #### 3.3 Microservices Examples
+
 - [ ] `docs/examples/microservices/service-mesh.md`
   - 3+ serviços comunicando
   - Service discovery simulation
@@ -333,17 +343,20 @@ docs/
 ### Fase 4: Melhorias Incrementais (Ongoing)
 
 #### 4.1 Expandir FAQs
+
 - [ ] Adicionar 20+ perguntas comuns
 - [ ] Organizar por categorias
 - [ ] Links para guias relevantes
 
 #### 4.2 Melhorar Tutoriais Existentes
+
 - [ ] Revisar todos os tutoriais First Steps
 - [ ] Adicionar mais screenshots/diagramas
 - [ ] Adicionar "troubleshooting" sections
 - [ ] Testar todos os exemplos
 
 #### 4.3 Cross-linking
+
 - [ ] Adicionar links entre docs relacionadas
 - [ ] "See also" sections
 - [ ] Breadcrumbs navigation
@@ -386,6 +399,7 @@ Explicação clara com exemplos práticos.
 ```
 
 **O que esse código faz:**
+
 - Explicação linha a linha quando necessário
 
 ## [Seção Principal 2]
@@ -395,16 +409,19 @@ Continua...
 ## Troubleshooting Comum
 
 ### Problema 1
+
 **Sintoma:** ...
 **Solução:** ...
 
 ### Problema 2
+
 **Sintoma:** ...
 **Solução:** ...
 
 ## Próximos Passos
 
 Links para documentos relacionados:
+
 - [Documento relacionado 1](link.md)
 - [Documento relacionado 2](link.md)
 
@@ -412,6 +429,7 @@ Links para documentos relacionados:
 
 - [Referência relacionada](link.md)
 - [Tutorial relacionado](link.md)
+
 ```
 
 ---

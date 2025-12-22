@@ -52,11 +52,13 @@ Create `moclojer.edn`:
 ```
 
 **Run:**
+
 ```bash
 moclojer --config moclojer.edn
 ```
 
 **Test:**
+
 ```bash
 curl http://localhost:8000/hello
 # {"message": "Hello from EDN!"}
@@ -379,11 +381,13 @@ nil
 **Problem:** `Invalid EDN`
 
 **Solution:** Check for:
+
 - Unclosed brackets/braces `[ { } ]`
 - Missing commas in maps (EDN uses whitespace)
 - Invalid characters in keywords
 
 **Valid:**
+
 ```clojure
 {:key "value"}  ; ✅ Correct
 {:key, "value"} ; ✅ Also works (comma optional)

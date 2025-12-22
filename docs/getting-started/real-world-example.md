@@ -21,6 +21,7 @@ In this final tutorial, you'll build a complete e-commerce API that demonstrates
 ## What you'll build
 
 A complete e-commerce API with these features:
+
 - **Product catalog** with categories and search
 - **User management** with different roles
 - **Shopping cart** functionality
@@ -32,6 +33,7 @@ A complete e-commerce API with these features:
 ## API Overview
 
 ### Core Resources
+
 - **Products** - Product catalog management
 - **Categories** - Product categorization
 - **Users** - Customer and admin accounts
@@ -40,6 +42,7 @@ A complete e-commerce API with these features:
 - **Reviews** - Product reviews and ratings
 
 ### API Structure
+
 ```
 /api/v1/
 ├── auth/
@@ -1074,21 +1077,25 @@ curl http://localhost:8000/api/v1/products/99999  # 404
 ## Key takeaways
 
 ### ✅ **API Design Best Practices**
+
 - **Versioning**: `/api/v1/` allows future changes
 - **RESTful structure**: Resources and HTTP methods used correctly
 - **Consistent naming**: Clear, predictable endpoint names
 
 ### ✅ **Authentication Patterns**
+
 - **Token-based auth**: Simulated JWT tokens
 - **Protected routes**: Admin vs customer access
 - **Header authentication**: `Authorization: Bearer token`
 
 ### ✅ **Error Handling**
+
 - **Meaningful messages**: Errors explain what went wrong
 - **Error codes**: Machine-readable error identifiers
 - **Validation details**: Field-level error information
 
 ### ✅ **Real-World Features**
+
 - **Shopping cart**: Add, update, remove items
 - **Product search**: Query and category filters
 - **Order tracking**: Status updates and history
@@ -1099,11 +1106,13 @@ curl http://localhost:8000/api/v1/products/99999  # 404
 Congratulations! You've completed all the tutorials and built a production-quality e-commerce API mock. 🎉
 
 ### Expand your knowledge
+
 - **[Docker Deployment](../how-to/deployment/docker.md)** - Deploy your mock server
 - **[Pagination Patterns](../how-to/patterns/pagination.md)** - Advanced pagination strategies
 - **[Advanced Features](../advanced/)** - WebSockets, webhooks, rate limiting
 
 ### Reference documentation
+
 - **[Configuration Formats](../topics/configuration/yaml-format.md)** - Complete YAML reference
 - **[HTTP Methods](../topics/endpoints/http-methods.md)** - All HTTP methods explained
 - **[Template Variables](../topics/templates/template-variables.md)** - All available variables

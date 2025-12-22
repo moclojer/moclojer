@@ -602,18 +602,23 @@ async function createPayment() {
 ## 🎓 Use Cases
 
 ### 1. **Local Development**
+
 Test payment flows without real Stripe account or internet connection.
 
 ### 2. **CI/CD Pipelines**
+
 Run automated tests without external dependencies or API rate limits.
 
 ### 3. **Frontend Development**
+
 Build payment UIs before backend integration is ready.
 
 ### 4. **Error Handling Testing**
+
 Simulate all error scenarios (declined cards, insufficient funds, etc.).
 
 ### 5. **Load Testing**
+
 Test payment performance without hitting Stripe API limits.
 
 ## ⚠️ Important Notes
@@ -635,12 +640,7 @@ Test payment performance without hitting Stripe API limits.
 
 - **[Basic CRUD Example](../rest-api/basic-crud.md)** - CRUD fundamentals
 - **[Webhook Integration](../../advanced/webhook-integration.md)** - Webhook simulation
-- **[Error Handling Patterns](../../how-to/patterns/error-handling.md)** - Error responses (TODO)
-
-## 🚀 Next Steps
-
-- **[GitHub API Mock](github-api-mock.md)** - Mock GitHub API (TODO)
-- **[Slack API Mock](slack-api-mock.md)** - Mock Slack webhooks (TODO)
+- **[Error Handling Patterns](../../how-to/patterns/error-handling.md)** - Error responses
 - **Real Stripe Documentation**: [https://stripe.com/docs/api](https://stripe.com/docs/api)
 
 ---

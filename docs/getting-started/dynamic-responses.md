@@ -19,6 +19,7 @@ In the previous tutorial, you created static endpoints that always return the sa
 ## What you'll build
 
 An enhanced user API that responds dynamically to different inputs:
+
 - `GET /users/:id` - Returns user data based on the ID in the URL
 - `GET /users` - Filters users based on query parameters
 - `POST /users` - Creates users with data from the request body
@@ -35,12 +36,14 @@ An enhanced user API that responds dynamically to different inputs:
 Template variables are placeholders in your responses that get replaced with actual data from the request. They use the `{{variable}}` syntax.
 
 **Available template variables:**
+
 - `{{path-params.name}}` - Values from URL path (e.g., `:id`, `:username`)
 - `{{query-params.name}}` - Values from query string (e.g., `?search=value`)
 - `{{json-params.name}}` - Values from JSON request body
 - `{{header-params.name}}` - Values from HTTP headers
 
 > **📚 Deep dive:** For complete details on each parameter type, see our dedicated guides:
+>
 > - **[Path Parameters Guide](../topics/parameters/path-parameters.md)**
 > - **[Query Parameters Guide](../topics/parameters/query-parameters.md)**
 > - **[Body Parameters Guide](../topics/parameters/body-parameters.md)**

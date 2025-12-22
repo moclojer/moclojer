@@ -18,6 +18,7 @@ In this tutorial, you'll create a simple but functional mock API server from scr
 ## What you'll build
 
 A simple user API with these endpoints:
+
 - `GET /users` - List all users
 - `GET /users/123` - Get a specific user
 - `GET /health` - Health check endpoint
@@ -50,6 +51,7 @@ Create a new file called `moclojer.yml` in an empty directory:
 ```
 
 **What this does:**
+
 - Creates one endpoint that responds to `GET /health`
 - Returns HTTP status 200 (success)
 - Sets the response content type to JSON
@@ -71,6 +73,7 @@ java -jar moclojer.jar --config moclojer.yml
 ```
 
 You should see output similar to:
+
 ```
 Starting moclojer server on port 8000...
 Server started successfully!
@@ -85,6 +88,7 @@ curl http://localhost:8000/health
 ```
 
 You should get this response:
+
 ```json
 {
   "status": "ok",
@@ -162,6 +166,7 @@ Now let's expand your API. Stop the server (Ctrl+C) and update your `moclojer.ym
 ```
 
 **What's new:**
+
 - `/users` endpoint returns a list of users
 - `/users/1` endpoint returns details for a specific user
 - Each response includes different data structures (array vs object)
@@ -205,6 +210,7 @@ Let's add a POST endpoint to create users. Add this to your `moclojer.yml`:
 ```
 
 Test it:
+
 ```bash
 curl -X POST \
   -H "Content-Type: application/json" \
@@ -233,6 +239,7 @@ Real APIs return errors sometimes. Let's add a 404 response:
 ```
 
 Test it:
+
 ```bash
 curl http://localhost:8000/users/999
 ```
@@ -242,6 +249,7 @@ curl http://localhost:8000/users/999
 Let's break down what you've learned:
 
 ### Endpoint structure
+
 ```yaml
 - endpoint:           # Start of endpoint definition
     method: GET       # HTTP method (GET, POST, PUT, DELETE, etc.)
@@ -255,6 +263,7 @@ Let's break down what you've learned:
 ```
 
 ### Key concepts
+
 - **Method**: What HTTP verb this endpoint responds to
 - **Path**: The URL pattern to match
 - **Status**: HTTP status code (200=success, 404=not found, etc.)
@@ -262,6 +271,7 @@ Let's break down what you've learned:
 - **Body**: The actual response content
 
 ### YAML tips
+
 - Use `>` for multi-line strings (like JSON)
 - Indentation matters - use 2 spaces consistently
 - Each endpoint starts with `- endpoint:`
