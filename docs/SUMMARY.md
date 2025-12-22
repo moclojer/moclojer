@@ -17,22 +17,26 @@ Are you new to moclojer? This is the place to start!
 Learn the key concepts and understand how moclojer works.
 
 ### Configuration Formats
+
 * [YAML Format](topics/configuration/yaml-format.md)
 * [OpenAPI Format](topics/configuration/openapi-format.md)
 * [Postman Collection Format](topics/configuration/postman-format.md)
 * [EDN Format](topics/configuration/edn-format.md)
 
 ### Endpoints
+
 * [HTTP Methods](topics/endpoints/http-methods.md)
 * [Path Patterns](topics/endpoints/path-patterns.md)
 * [Response Structure](topics/endpoints/response-structure.md)
 * [Request Matching](topics/request-matching.md)
 
 ### Templates
+
 * [Template System Overview](topics/templates/template-system.md)
 * [Template Variables](topics/templates/template-variables.md)
 
 ### Parameters
+
 * [Path Parameters](topics/parameters/path-parameters.md)
 * [Query Parameters](topics/parameters/query-parameters.md)
 * [Body Parameters](topics/parameters/body-parameters.md)
@@ -43,16 +47,19 @@ Learn the key concepts and understand how moclojer works.
 Practical recipes for common use cases.
 
 ### Testing
+
 * [Integration Testing](how-to/testing/integration-testing.md)
 * [E2E Testing](how-to/testing/e2e-testing.md)
 * [Contract Testing](how-to/testing/contract-testing.md)
 
 ### Deployment
+
 * [Docker](how-to/deployment/docker.md)
 * [Kubernetes](how-to/deployment/kubernetes.md)
 * [Cloud Run](how-to/deployment/cloud-run.md)
 
 ### Common Patterns
+
 * [CRUD Operations](how-to/patterns/crud-operations.md)
 * [Pagination](how-to/patterns/pagination.md)
 * [Authentication Mock](how-to/patterns/authentication-mock.md)
@@ -92,10 +99,12 @@ Real-world examples and complete implementations.
 * [Examples Overview](examples/README.md)
 
 ### REST APIs
+
 * [Basic CRUD API](examples/rest-api/basic-crud.md)
 * [Blog API](examples/rest-api/blog-api.md)
 
 ### Third-Party API Mocks
+
 * [Stripe Mock](examples/third-party/stripe-mock.md)
 
 ## 🤝 Community and Contribution

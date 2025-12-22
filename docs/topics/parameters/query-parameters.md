@@ -11,6 +11,7 @@ Query parameters são valores passados na URL após o caractere `?`, usados para
 ## O Que São Query Parameters?
 
 **Anatomia de uma URL com query params:**
+
 ```
 https://api.example.com/users?role=admin&status=active&limit=10
                           └─┬─┘ └──┬───┘ └────┬────┘ └──┬──┘
@@ -22,6 +23,7 @@ https://api.example.com/users?role=admin&status=active&limit=10
 ```
 
 **Características:**
+
 - Começam com `?` após o path
 - Pares `chave=valor` separados por `&`
 - Opcionais (diferente de path params)
@@ -50,11 +52,13 @@ Use templates `{{query-params.nomeDaChave}}`:
 ```
 
 **Teste:**
+
 ```bash
 curl "http://localhost:8000/users?role=admin&status=active"
 ```
 
 **Resposta:**
+
 ```json
 {
   "filters": {
@@ -84,6 +88,7 @@ Todos os query params são opcionais por padrão:
 ```
 
 **Funciona com qualquer combinação:**
+
 ```bash
 # Todos os parâmetros
 curl "http://localhost:8000/products?category=electronics&min_price=100&max_price=500"
@@ -128,6 +133,7 @@ curl "http://localhost:8000/products"
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/posts?page=1&limit=10"
 curl "http://localhost:8000/posts?page=2&limit=20"
@@ -159,6 +165,7 @@ curl "http://localhost:8000/posts?page=2&limit=20"
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/products?category=electronics&brand=sony&in_stock=true"
 ```
@@ -186,6 +193,7 @@ curl "http://localhost:8000/products?category=electronics&brand=sony&in_stock=tr
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/search?q=moclojer&type=documentation"
 ```
@@ -216,6 +224,7 @@ curl "http://localhost:8000/search?q=moclojer&type=documentation"
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/users?sort=name&order=asc"
 curl "http://localhost:8000/users?sort=createdAt&order=desc"
@@ -243,6 +252,7 @@ curl "http://localhost:8000/users?sort=createdAt&order=desc"
 ```
 
 **Uso:**
+
 ```bash
 # Apenas alguns campos
 curl "http://localhost:8000/users/1?fields=id,name,email"
@@ -283,6 +293,7 @@ curl "http://localhost:8000/users/1"
 ```
 
 **Exemplo de uso completo:**
+
 ```bash
 curl "http://localhost:8000/api/products?category=electronics&min_price=100&max_price=1000&in_stock=true&page=1&limit=20&sort=price&order=asc&q=laptop"
 ```
@@ -320,6 +331,7 @@ Query params funcionam perfeitamente com path params:
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/users/42/posts?status=published&page=1&limit=10"
 ```
@@ -342,6 +354,7 @@ Quando um query param não é passado, o template retorna string vazia:
 ```
 
 **Teste sem parâmetros:**
+
 ```bash
 curl "http://localhost:8000/users"
 # {"limit": "", "page": ""}
@@ -371,6 +384,7 @@ Use múltiplos endpoints com precedência:
 ```
 
 **Alternativa melhor:**
+
 ```yaml
 - endpoint:
     method: GET
@@ -399,6 +413,7 @@ URLs podem ter múltiplos valores para a mesma chave:
 ```
 
 **No moclojer:**
+
 ```yaml
 - endpoint:
     method: GET
@@ -415,6 +430,7 @@ URLs podem ter múltiplos valores para a mesma chave:
 ⚠️ **Limitação:** Moclojer atualmente retorna apenas o **último valor** quando há duplicatas.
 
 **Workaround:** Use delimitadores
+
 ```bash
 # Ao invés de: ?id=1&id=2&id=3
 curl "http://localhost:8000/users?ids=1,2,3"
@@ -442,6 +458,7 @@ Query parameters devem ser URL-encoded:
 | `?` | `%3F` | `query=what%3F` |
 
 **Exemplo:**
+
 ```bash
 # Busca: "moclojer & API testing"
 curl "http://localhost:8000/search?q=moclojer%20%26%20API%20testing"
@@ -495,6 +512,7 @@ Ferramentas como `curl` e browsers fazem encoding automaticamente.
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/api/products?category=laptops&brand=dell&min_price=500&max_price=1500&on_sale=true&in_stock=true&sort_by=price&order=asc&page=1&limit=20&q=gaming"
 ```
@@ -536,6 +554,7 @@ curl "http://localhost:8000/api/products?category=laptops&brand=dell&min_price=5
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/api/posts?author=john&category=tech&tag=api&published=true&q=moclojer&from=2024-01-01&to=2024-12-31&page=1&limit=10"
 ```
@@ -569,6 +588,7 @@ curl "http://localhost:8000/api/posts?author=john&category=tech&tag=api&publishe
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01-31&metrics=pageviews,sessions&dimensions=country,device&granularity=day"
 ```
@@ -578,6 +598,7 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
 ### ✅ Faça
 
 1. **Use nomes descritivos e consistentes**
+
    ```bash
    # ✅ Bom
    ?page=1&limit=10&sort_by=name
@@ -587,6 +608,7 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
    ```
 
 2. **Use snake_case ou camelCase consistentemente**
+
    ```bash
    # ✅ snake_case
    ?min_price=100&max_price=500
@@ -599,6 +621,7 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
    ```
 
 3. **Valores booleanos como strings**
+
    ```yaml
    # Template sempre retorna string
    "inStock": "{{query-params.in_stock}}"
@@ -607,6 +630,7 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
    ```
 
 4. **Documente parâmetros opcionais**
+
    ```yaml
    # No response, inclua documentação
    response:
@@ -625,6 +649,7 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
 ### ❌ Evite
 
 1. **Parâmetros obrigatórios como query params**
+
    ```yaml
    # ❌ ID deveria ser path param
    path: /users
@@ -635,6 +660,7 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
    ```
 
 2. **Dados sensíveis em query params**
+
    ```bash
    # ❌ NUNCA faça isso!
    ?password=secret123
@@ -645,6 +671,7 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
    ```
 
 3. **Query params muito complexos**
+
    ```bash
    # ❌ Muito complexo para query param
    ?filter={"and":[{"field":"age","op":">","value":18}]}
@@ -657,6 +684,7 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
 ### Problema: Query param retorna vazio quando deveria ter valor
 
 **Causa 1:** Nome do parâmetro não corresponde
+
 ```yaml
 # ❌ Errado
 URL: ?limit=10
@@ -667,6 +695,7 @@ Template: {{query-params.limit}}
 ```
 
 **Causa 2:** Espaços no nome
+
 ```yaml
 # ❌ Não funciona
 {{query-params.min price}}
@@ -679,6 +708,7 @@ Template: {{query-params.limit}}
 ### Problema: Caractere especial quebra a URL
 
 **Solução:** Use URL encoding
+
 ```bash
 # ❌ Quebra
 curl "http://localhost:8000/search?q=A&B"
@@ -690,6 +720,7 @@ curl "http://localhost:8000/search?q=A%26B"
 ### Problema: Número vem como string
 
 **Causa:** Templates sempre retornam strings
+
 ```yaml
 # ❌ Retorna "10" (string)
 {"limit": "{{query-params.limit}}"}
@@ -701,6 +732,7 @@ curl "http://localhost:8000/search?q=A%26B"
 ⚠️ **Cuidado:** Sem aspas, se parâmetro estiver vazio, o JSON fica inválido!
 
 **Solução segura:**
+
 ```yaml
 # Cliente faz conversão
 {"limit": "{{query-params.limit}}"}

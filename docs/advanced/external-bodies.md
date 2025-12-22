@@ -11,12 +11,14 @@ Instead of embedding large response bodies directly in YAML configuration files,
 ## 🎯 Why Use External Bodies?
 
 **Problems with inline bodies:**
+
 - ❌ Large JSON responses make YAML files hard to read
 - ❌ Difficult to maintain complex data structures
 - ❌ Version control diffs become messy
 - ❌ Can't reuse existing data files
 
 **Benefits of external bodies:**
+
 - ✅ Keep YAML configuration clean and readable
 - ✅ Reuse existing JSON files and datasets
 - ✅ Proxy remote APIs without duplication
@@ -81,6 +83,7 @@ Replace `body` with `external-body`:
 ```
 
 **File: `data/users.json`**
+
 ```json
 {
   "users": [
@@ -92,11 +95,13 @@ Replace `body` with `external-body`:
 ```
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/api/users
 ```
 
 **Response:**
+
 ```json
 {
   "users": [
@@ -125,11 +130,13 @@ Proxy responses from real APIs:
 ```
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/pokemon/pikachu
 ```
 
 **Response:** (proxied from pokeapi.co)
+
 ```json
 {
   "name": "pikachu",
@@ -154,6 +161,7 @@ Use template variables to make paths dynamic:
 ```
 
 **File structure:**
+
 ```
 data/
   users/
@@ -190,11 +198,13 @@ Transform Excel spreadsheets into REST APIs:
 | 3 | Charlie | Sales | 70000 |
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/api/employees
 ```
 
 **Response:**
+
 ```json
 [
   {"id": 1, "name": "Alice", "department": "Engineering", "salary": 85000},
@@ -248,6 +258,7 @@ Non-technical teams can update product data:
 ```
 
 **Benefits:**
+
 - Business team updates Excel directly
 - No code changes needed
 - Version control for data files
@@ -303,6 +314,7 @@ Non-technical teams can update product data:
 ```
 
 **File structure:**
+
 ```
 test-data/
   happy-path.json
@@ -388,6 +400,7 @@ Use different files based on request:
 ```
 
 **Requests:**
+
 ```bash
 curl http://localhost:8000/api/data              # uses data/v1/response.json
 curl http://localhost:8000/api/data?version=v2  # uses data/v2/response.json
@@ -396,6 +409,7 @@ curl http://localhost:8000/api/data?version=v2  # uses data/v2/response.json
 ## ✅ Best Practices
 
 **Do:**
+
 - ✅ Use external bodies for responses > 50 lines
 - ✅ Organize files in logical directories (`data/`, `mocks/`, `fixtures/`)
 - ✅ Use meaningful file names (`users.json`, not `data1.json`)
@@ -404,6 +418,7 @@ curl http://localhost:8000/api/data?version=v2  # uses data/v2/response.json
 - ✅ Document file structure in README
 
 **Don't:**
+
 - ❌ Mix local and remote paths without clear documentation
 - ❌ Use absolute paths (breaks portability)
 - ❌ Store sensitive data in external files (use environment variables)
@@ -507,6 +522,7 @@ MOCLOJER_LOG_LEVEL=debug moclojer --config moclojer.yml
 | **XLSX (local)** | < 5MB | 50-200ms | Yes |
 
 **Tips:**
+
 - Keep local JSON files under 1MB for fast responses
 - Use remote URLs sparingly (network latency)
 - Large Excel files (> 10MB) may slow startup time

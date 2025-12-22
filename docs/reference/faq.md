@@ -65,6 +65,7 @@ sudo bash < <(curl -s https://raw.githubusercontent.com/moclojer/moclojer/main/i
 ### Where should I put my configuration file?
 
 moclojer looks for configuration files in this order:
+
 1. File specified with `--config` option
 2. `./moclojer.yml` (current directory)
 3. `~/.config/moclojer.yml` (user config directory)
@@ -95,6 +96,7 @@ Break your configuration into logical sections using YAML comments:
 ### Can I include other files in my configuration?
 
 Currently, moclojer doesn't support file includes, but you can:
+
 - Use external bodies to load response data from files
 - Combine multiple YAML files using tools like `yq`
 - Use environment variables for dynamic configuration
@@ -104,11 +106,13 @@ Currently, moclojer doesn't support file includes, but you can:
 ### My template variables show as empty strings
 
 This usually happens when:
+
 - Parameter name doesn't match (check spelling and case)
 - Parameter isn't present in the request
 - JSON body is malformed
 
 Debug by checking:
+
 ```yaml
 body: >
   {
@@ -233,6 +237,7 @@ moclojer doesn't cache responses by default - each request is processed fresh. T
 ### How do I simulate slow APIs?
 
 Currently, moclojer doesn't have built-in delay functionality. You can:
+
 - Use external tools like `tc` (traffic control) on Linux
 - Add delays in your client code
 - Use a proxy with delay capabilities
@@ -274,6 +279,7 @@ moclojer receives file upload data, but currently doesn't provide special templa
 ### Can I use moclojer with HTTPS?
 
 moclojer runs HTTP by default. For HTTPS:
+
 - Use a reverse proxy like nginx with SSL termination
 - Run moclojer behind a load balancer with SSL
 - Use Docker with SSL proxy containers
@@ -301,6 +307,7 @@ Yes! WebSocket responses support the same template variables as HTTP responses, 
 ### How do I test WebSocket endpoints?
 
 Use tools like:
+
 - `websocat` command line tool
 - Browser developer tools
 - WebSocket testing applications like Postman
@@ -310,6 +317,7 @@ Use tools like:
 ### Moclojer starts, but I get "connection refused"
 
 Check that:
+
 - moclojer is actually running (check terminal output)
 - You're using the correct port (default is 8000)
 - No firewall is blocking the connection
@@ -318,6 +326,7 @@ Check that:
 ### My configuration file isn't being loaded
 
 Verify:
+
 - File exists and is readable
 - YAML syntax is correct (use a YAML validator)
 - File path is correct when using `--config`
@@ -326,6 +335,7 @@ Verify:
 ### "Port already in use" error
 
 Another service is using port 8000. Either:
+
 - Stop the other service
 - Use a different port: `PORT=3000 moclojer`
 - Find what's using the port: `lsof -i :8000` (macOS/Linux)
@@ -333,6 +343,7 @@ Another service is using port 8000. Either:
 ### Template variables aren't working
 
 Common issues:
+
 - Typos in variable names
 - Using wrong parameter type (path-params vs query-params)
 - Malformed JSON in request body
@@ -357,6 +368,7 @@ Debug by adding a debug endpoint:
 ### Configuration changes aren't reflected
 
 moclojer loads configuration at startup. Restart the server after making changes:
+
 - Stop with Ctrl+C
 - Start again with the same command
 
@@ -397,6 +409,7 @@ Use Docker for consistent environments:
 ### Can I generate OpenAPI specs from moclojer configs?
 
 Currently, moclojer consumes OpenAPI specs but doesn't generate them. You can:
+
 - Write OpenAPI specs manually
 - Use tools to convert YAML to OpenAPI format
 - Generate documentation from your moclojer configurations using custom scripts
@@ -426,6 +439,7 @@ Currently, moclojer consumes OpenAPI specs but doesn't generate them. You can:
 ### Can I contribute to moclojer?
 
 Absolutely! See the [Contributing Guide](../community/contributing.md) for:
+
 - Setting up development environment
 - Code style guidelines
 - Pull request process

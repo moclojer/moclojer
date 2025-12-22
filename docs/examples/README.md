@@ -24,6 +24,7 @@ Perfect for learning CRUD operations and API design fundamentals.
 | **[Blog API](rest-api/blog-api.md)** | Complete blog platform | ⭐⭐ Intermediate | Nested resources, relationships, comments |
 
 **Learn:**
+
 - CRUD operations (Create, Read, Update, Delete)
 - Proper HTTP status codes
 - Pagination and filtering
@@ -41,6 +42,7 @@ Mock popular external APIs for testing without real API calls.
 | **Slack API Mock** 📝 | Team communication | ⭐⭐ Intermediate | Webhooks, bots (Coming Soon) |
 
 **Learn:**
+
 - Third-party API integration patterns
 - Payment flows without real transactions
 - Webhook event simulation
@@ -139,16 +141,19 @@ curl http://localhost:8000/health
 ## 🔗 Related Documentation
 
 ### Core Concepts
+
 - **[YAML Format Guide](../topics/configuration/yaml-format.md)** - Configuration syntax
 - **[HTTP Methods](../topics/endpoints/http-methods.md)** - GET, POST, PUT, DELETE
 - **[Template Variables](../topics/templates/template-variables.md)** - Dynamic content
 
 ### How-to Guides
+
 - **[CRUD Operations](../how-to/patterns/crud-operations.md)** - Detailed CRUD patterns
 - **[Pagination](../how-to/patterns/pagination.md)** - Pagination strategies
 - **[Docker Deployment](../how-to/deployment/docker.md)** - Production deployment
 
 ### Getting Started
+
 - **[Your First Mock Server](../getting-started/your-first-mock.md)** - Beginner tutorial
 - **[Dynamic Responses](../getting-started/dynamic-responses.md)** - Template variables
 - **[Multiple Endpoints](../getting-started/multiple-endpoints.md)** - API structure

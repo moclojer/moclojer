@@ -11,6 +11,7 @@ Path parameters permitem que você crie endpoints dinâmicos que respondem a dif
 ## Por que usar Path Parameters?
 
 **Antes (sem path params):**
+
 ```yaml
 - endpoint:
     path: /users/1
@@ -26,6 +27,7 @@ Path parameters permitem que você crie endpoints dinâmicos que respondem a dif
 ```
 
 **Depois (com path params):**
+
 ```yaml
 - endpoint:
     path: /users/:id
@@ -69,6 +71,7 @@ Use templates `{{path-params.nomeDoParametro}}`:
 ```
 
 **Teste:**
+
 ```bash
 curl http://localhost:8000/users/123
 # Resposta: {"id": "123", "message": "Você solicitou o usuário 123"}
@@ -89,6 +92,7 @@ path: /users/:username|string # Explícito (mesmo comportamento)
 ```
 
 **Matches:**
+
 - `/users/alice` ✅
 - `/users/bob123` ✅
 - `/users/João` ✅
@@ -100,11 +104,13 @@ path: /users/:id|int
 ```
 
 **Matches:**
+
 - `/users/1` ✅
 - `/users/999` ✅
 - `/users/0` ✅
 
 **Não matches:**
+
 - `/users/abc` ❌
 - `/users/1.5` ❌
 - `/users/` ❌
@@ -116,9 +122,11 @@ path: /sessions/:sessionId|uuid
 ```
 
 **Matches:**
+
 - `/sessions/550e8400-e29b-41d4-a716-446655440000` ✅
 
 **Não matches:**
+
 - `/sessions/abc123` ❌
 - `/sessions/123` ❌
 
@@ -129,10 +137,12 @@ path: /features/:enabled|boolean
 ```
 
 **Matches:**
+
 - `/features/true` ✅
 - `/features/false` ✅
 
 **Não matches:**
+
 - `/features/yes` ❌
 - `/features/1` ❌
 
@@ -159,11 +169,13 @@ Você pode ter vários parâmetros no mesmo path:
 ```
 
 **Teste:**
+
 ```bash
 curl http://localhost:8000/users/42/posts/7
 ```
 
 **Resposta:**
+
 ```json
 {
   "userId": "42",
@@ -199,6 +211,7 @@ curl http://localhost:8000/users/42/posts/7
 ```
 
 **Uso:**
+
 ```bash
 curl http://localhost:8000/products/101
 # {"id": 101, "name": "Product 101", "sku": "PRD-101", ...}
@@ -222,6 +235,7 @@ curl http://localhost:8000/products/101
 ```
 
 **Uso:**
+
 ```bash
 curl http://localhost:8000/blog/introducao-ao-moclojer
 curl http://localhost:8000/blog/path-parameters-guia
@@ -289,6 +303,7 @@ curl http://localhost:8000/blog/path-parameters-guia
 ```
 
 **Uso:**
+
 ```bash
 curl http://localhost:8000/organizations/1/teams/5/members/42
 ```
@@ -316,11 +331,13 @@ Path parameters funcionam junto com query params e body params:
 ```
 
 **Uso:**
+
 ```bash
 curl "http://localhost:8000/users/42/posts?limit=10&offset=0"
 ```
 
 **Resposta:**
+
 ```json
 {
   "userId": 42,
@@ -351,10 +368,12 @@ Quando múltiplos endpoints podem fazer match, moclojer usa a primeira ocorrênc
 ```
 
 **Como funciona:**
+
 - `GET /users/me` → match com endpoint #1 ✅
 - `GET /users/123` → match com endpoint #2 ✅
 
 **Se inverter a ordem:**
+
 ```yaml
 # ❌ PROBLEMA: rota genérica vem primeiro!
 - endpoint:
@@ -369,6 +388,7 @@ Quando múltiplos endpoints podem fazer match, moclojer usa a primeira ocorrênc
 ```
 
 **Resultado:**
+
 - `GET /users/me` → match com endpoint #1 (`:id` = "me") ❌ Errado!
 
 **Regra de ouro:** **Rotas específicas antes de rotas dinâmicas!**
@@ -385,6 +405,7 @@ Se você definir um tipo e o valor não corresponder:
 ```
 
 **Requests:**
+
 - `/users/123` → ✅ Match
 - `/users/abc` → ❌ Não match (moclojer retorna 404)
 
@@ -421,23 +442,27 @@ Se você definir um tipo e o valor não corresponder:
 ### ✅ Faça
 
 1. **Use tipos explícitos quando possível**
+
    ```yaml
    path: /users/:id|int      # ✅ Valida que é número
    ```
 
 2. **Nomes descritivos para parâmetros**
+
    ```yaml
    path: /posts/:postId      # ✅ Claro
    path: /posts/:id          # ⚠️ Menos claro em nested resources
    ```
 
 3. **Rotas específicas antes de dinâmicas**
+
    ```yaml
    - path: /users/me         # ✅ Primeiro
    - path: /users/:id        # ✅ Depois
    ```
 
 4. **Use o valor do parâmetro na resposta**
+
    ```yaml
    body: >
      {"id": "{{path-params.id}}"}  # ✅ Response reflete o input
@@ -446,18 +471,21 @@ Se você definir um tipo e o valor não corresponder:
 ### ❌ Evite
 
 1. **Parâmetros sem tipo quando deveria ter**
+
    ```yaml
    path: /users/:id          # ⚠️ Aceita "abc" como ID
    path: /users/:id|int      # ✅ Só aceita números
    ```
 
 2. **Nomes genéricos demais**
+
    ```yaml
    path: /api/:param1/:param2  # ❌ O que são?
    path: /api/:userId/:postId  # ✅ Autodocumentado
    ```
 
 3. **Muitos níveis de aninhamento**
+
    ```yaml
    path: /a/:b/c/:d/e/:f/g/:h  # ❌ Difícil de ler
    path: /users/:id/posts      # ✅ Máximo 2-3 níveis
@@ -470,18 +498,21 @@ Se você definir um tipo e o valor não corresponder:
 **Possíveis causas:**
 
 1. **Tipo de parâmetro incorreto**
+
    ```yaml
    path: /users/:id|int
    # Tentando: /users/abc → 404 (correto, não é int)
    ```
 
 2. **Ordem de rotas errada**
+
    ```yaml
    # Se /users/:id está antes de /users/me
    # /users/me vai fazer match com :id="me"
    ```
 
 3. **Método HTTP diferente**
+
    ```yaml
    method: GET
    path: /users/:id

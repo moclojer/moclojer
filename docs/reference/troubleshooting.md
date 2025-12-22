@@ -13,11 +13,13 @@ Este guia ajuda você a resolver problemas comuns ao usar moclojer. Os problemas
 **Antes de começar o troubleshooting:**
 
 1. ✅ Verifique a versão do moclojer
+
    ```bash
    moclojer --version
    ```
 
 2. ✅ Teste com configuração mínima
+
    ```yaml
    - endpoint:
        path: /test
@@ -26,6 +28,7 @@ Este guia ajuda você a resolver problemas comuns ao usar moclojer. Os problemas
    ```
 
 3. ✅ Verifique os logs do servidor
+
    ```bash
    moclojer --config mocks.yml 2>&1 | tee moclojer.log
    ```
@@ -37,6 +40,7 @@ Este guia ajuda você a resolver problemas comuns ao usar moclojer. Os problemas
 ### "Config file not found"
 
 **Sintoma:**
+
 ```
 Error: Config file not found: moclojer.yml
 ```
@@ -44,6 +48,7 @@ Error: Config file not found: moclojer.yml
 **Causas e Soluções:**
 
 1. **Arquivo não existe no caminho especificado**
+
    ```bash
    # Verificar se arquivo existe
    ls -la moclojer.yml
@@ -58,6 +63,7 @@ Error: Config file not found: moclojer.yml
    ```
 
 2. **Caminho relativo incorreto**
+
    ```bash
    # ❌ Errado (busca no diretório errado)
    cd /home/user
@@ -72,6 +78,7 @@ Error: Config file not found: moclojer.yml
    ```
 
 3. **Arquivo na localização XDG padrão**
+
    ```bash
    # Moclojer busca em ~/.config/moclojer.yml por padrão
    # Verificar
@@ -87,6 +94,7 @@ Error: Config file not found: moclojer.yml
 ### "YAML parse error"
 
 **Sintoma:**
+
 ```
 Error: YAML parse error at line 10: mapping values are not allowed here
 ```
@@ -94,10 +102,11 @@ Error: YAML parse error at line 10: mapping values are not allowed here
 **Causas e Soluções:**
 
 1. **Indentação incorreta (espaços vs tabs)**
+
    ```yaml
    # ❌ Errado (mistura tabs e espaços)
    - endpoint:
-   	method: GET    # Tab aqui!
+    method: GET    # Tab aqui!
        path: /users   # Espaços aqui!
 
    # ✅ Correto (sempre 2 espaços)
@@ -107,12 +116,14 @@ Error: YAML parse error at line 10: mapping values are not allowed here
    ```
 
    **Solução:** Configure seu editor para usar "soft tabs" (espaços)
+
    ```
    VS Code: "editor.insertSpaces": true, "editor.tabSize": 2
    Vim: set expandtab shiftwidth=2
    ```
 
 2. **Dois-pontos em string sem aspas**
+
    ```yaml
    # ❌ Errado
    body: http://example.com
@@ -126,6 +137,7 @@ Error: YAML parse error at line 10: mapping values are not allowed here
    ```
 
 3. **JSON inline mal formatado**
+
    ```yaml
    # ❌ Errado
    body: {"key": "value"}
@@ -142,6 +154,7 @@ Error: YAML parse error at line 10: mapping values are not allowed here
    ```
 
 4. **Aspas não fechadas**
+
    ```yaml
    # ❌ Errado
    body: "Hello
@@ -151,6 +164,7 @@ Error: YAML parse error at line 10: mapping values are not allowed here
    ```
 
 **Ferramentas de validação:**
+
 ```bash
 # Online
 # http://www.yamllint.com/
@@ -172,6 +186,7 @@ Response body não é JSON válido, mas você esperava JSON.
 **Soluções:**
 
 1. **Use `>` para JSON multi-linha**
+
    ```yaml
    # ❌ Pode quebrar
    body: {
@@ -186,6 +201,7 @@ Response body não é JSON válido, mas você esperava JSON.
    ```
 
 2. **Escape de aspas em templates**
+
    ```yaml
    # ❌ Quebra o JSON
    body: >
@@ -201,6 +217,7 @@ Response body não é JSON válido, mas você esperava JSON.
    ```
 
 3. **Números sem aspas, strings com aspas**
+
    ```yaml
    # Correto
    body: >
@@ -217,6 +234,7 @@ Response body não é JSON válido, mas você esperava JSON.
 ### "Address already in use"
 
 **Sintoma:**
+
 ```
 Error: Address already in use: 0.0.0.0:8000
 ```
@@ -226,6 +244,7 @@ Error: Address already in use: 0.0.0.0:8000
 **Soluções:**
 
 1. **Descobrir qual processo está usando a porta**
+
    ```bash
    # macOS/Linux
    lsof -i :8000
@@ -238,6 +257,7 @@ Error: Address already in use: 0.0.0.0:8000
    ```
 
 2. **Matar o processo**
+
    ```bash
    # macOS/Linux
    kill -9 <PID>
@@ -247,6 +267,7 @@ Error: Address already in use: 0.0.0.0:8000
    ```
 
 3. **Usar porta diferente**
+
    ```bash
    moclojer --port 8001
 
@@ -265,6 +286,7 @@ Servidor inicia, mas requests nunca respondem.
 **Causas e Soluções:**
 
 1. **Firewall bloqueando conexões**
+
    ```bash
    # macOS: permitir conexões entrantes
    # System Preferences > Security > Firewall
@@ -277,6 +299,7 @@ Servidor inicia, mas requests nunca respondem.
    ```
 
 2. **Binding em IP errado**
+
    ```bash
    # Se bindou em 127.0.0.1, apenas localhost funciona
    moclojer --host 127.0.0.1  # Apenas local
@@ -286,6 +309,7 @@ Servidor inicia, mas requests nunca respondem.
    ```
 
 3. **Proxy ou VPN interferindo**
+
    ```bash
    # Desabilitar proxy temporariamente
    unset HTTP_PROXY HTTPS_PROXY
@@ -306,6 +330,7 @@ Você faz um request mas recebe 404, mesmo tendo um endpoint configurado.
 **Debugging:**
 
 1. **Verificar método HTTP**
+
    ```yaml
    # Se configurou GET
    - endpoint:
@@ -320,6 +345,7 @@ Você faz um request mas recebe 404, mesmo tendo um endpoint configurado.
    ```
 
 2. **Verificar path exato**
+
    ```yaml
    # Configurado
    path: /api/users
@@ -332,6 +358,7 @@ Você faz um request mas recebe 404, mesmo tendo um endpoint configurado.
    ```
 
 3. **Case sensitivity**
+
    ```yaml
    # Configurado
    path: /Users
@@ -344,6 +371,7 @@ Você faz um request mas recebe 404, mesmo tendo um endpoint configurado.
    ```
 
 4. **Tipo de path parameter incorreto**
+
    ```yaml
    # Configurado com tipo int
    path: /users/:id|int
@@ -356,6 +384,7 @@ Você faz um request mas recebe 404, mesmo tendo um endpoint configurado.
    ```
 
 5. **Ordem de precedência**
+
    ```yaml
    # ❌ Ordem errada!
    - endpoint:
@@ -373,6 +402,7 @@ Você faz um request mas recebe 404, mesmo tendo um endpoint configurado.
    ```
 
 **Solução geral:** Adicione logging temporário
+
 ```yaml
 - endpoint:
     path: /:any
@@ -396,6 +426,7 @@ Response contém `{{path-params.id}}` literal ao invés do valor.
 **Causas e Soluções:**
 
 1. **Nome do parâmetro não corresponde**
+
    ```yaml
    # ❌ Errado
    path: /users/:userId
@@ -409,6 +440,7 @@ Response contém `{{path-params.id}}` literal ao invés do valor.
    ```
 
 2. **Sintaxe incorreta**
+
    ```yaml
    # ❌ Errado
    body: >
@@ -420,6 +452,7 @@ Response contém `{{path-params.id}}` literal ao invés do valor.
    ```
 
 3. **Query param não foi passado**
+
    ```yaml
    path: /users
    body: >
@@ -446,6 +479,7 @@ Você modifica moclojer.yml mas mudanças não aparecem.
 **Causas e Soluções:**
 
 1. **Não passou flag --watch**
+
    ```bash
    # ❌ Sem watch
    moclojer --config mocks.yml
@@ -455,6 +489,7 @@ Você modifica moclojer.yml mas mudanças não aparecem.
    ```
 
 2. **Usando binário nativo (GraalVM)**
+
    ```bash
    # Verificar
    moclojer --version
@@ -466,6 +501,7 @@ Você modifica moclojer.yml mas mudanças não aparecem.
    ```
 
 3. **Editor salvando em arquivo temporário**
+
    ```bash
    # Alguns editores salvam em .tmp primeiro
    # Moclojer pode não detectar
@@ -475,6 +511,7 @@ Você modifica moclojer.yml mas mudanças não aparecem.
    ```
 
 4. **Arquivo em filesystem remoto (NFS, etc)**
+
    ```bash
    # Hot-reload pode não funcionar em NFS/network drives
    # Solução: copiar arquivo localmente
@@ -492,6 +529,7 @@ Container do moclojer inicia mas você não consegue fazer requests.
 **Soluções:**
 
 1. **Port mapping incorreto**
+
    ```bash
    # ❌ Errado (porta do host diferente)
    docker run -p 3000:8000 moclojer
@@ -502,6 +540,7 @@ Container do moclojer inicia mas você não consegue fazer requests.
    ```
 
 2. **Config file não montado**
+
    ```bash
    # ❌ Config não está no container
    docker run -p 8000:8000 moclojer --config /app/mocks.yml
@@ -514,6 +553,7 @@ Container do moclojer inicia mas você não consegue fazer requests.
    ```
 
 3. **Servidor binding em 127.0.0.1 (dentro do container)**
+
    ```bash
    # ❌ Não acessível de fora do container
    moclojer --host 127.0.0.1
@@ -529,6 +569,7 @@ Container do moclojer inicia mas você não consegue fazer requests.
 ### "CORS error in browser"
 
 **Sintoma:**
+
 ```
 Access to fetch at 'http://localhost:8000/api' from origin 'http://localhost:3000'
 has been blocked by CORS policy
@@ -537,11 +578,13 @@ has been blocked by CORS policy
 **Solução:**
 
 1. **Habilitar CORS globalmente**
+
    ```bash
    moclojer --enable-cors --config mocks.yml
    ```
 
 2. **Configurar CORS por endpoint**
+
    ```yaml
    - endpoint:
        method: OPTIONS
@@ -564,6 +607,7 @@ has been blocked by CORS policy
    ```
 
 3. **CORS específico por origem**
+
    ```yaml
    headers:
      Access-Control-Allow-Origin: "http://localhost:3000"
@@ -629,17 +673,20 @@ curl http://localhost:8000/users | jq .
 Prepare as seguintes informações:
 
 1. **Versão do moclojer**
+
    ```bash
    moclojer --version
    ```
 
 2. **Sistema operacional**
+
    ```bash
    uname -a  # Linux/macOS
    ver       # Windows
    ```
 
 3. **Configuração mínima que reproduz o problema**
+
    ```yaml
    # moclojer.yml (reduzido ao mínimo)
    - endpoint:
@@ -649,16 +696,19 @@ Prepare as seguintes informações:
    ```
 
 4. **Comando exato usado**
+
    ```bash
    moclojer --config moclojer.yml --port 8000
    ```
 
 5. **Erro completo** (copie tudo!)
+
    ```
    Error: ...
    ```
 
 6. **Request que você está fazendo**
+
    ```bash
    curl -v http://localhost:8000/test
    ```
@@ -666,10 +716,10 @@ Prepare as seguintes informações:
 ### Onde Pedir Ajuda
 
 1. **GitHub Discussions** (perguntas gerais)
-   - https://github.com/moclojer/moclojer/discussions
+   - <https://github.com/moclojer/moclojer/discussions>
 
 2. **GitHub Issues** (bugs)
-   - https://github.com/moclojer/moclojer/issues
+   - <https://github.com/moclojer/moclojer/issues>
    - Use template de bug report
 
 3. **FAQ** (perguntas frequentes)

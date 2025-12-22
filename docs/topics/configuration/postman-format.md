@@ -11,6 +11,7 @@ moclojer suporta **Postman Collection v2.1**, permitindo que você use suas coll
 ## O Que São Postman Collections?
 
 **Postman Collections** são arquivos JSON que agrupam requisições HTTP, muito usados para:
+
 - Documentação de APIs
 - Testes de API
 - Compartilhamento entre equipe
@@ -29,10 +30,12 @@ moclojer suporta **Postman Collection v2.1**, permitindo que você use suas coll
 ## Suporte no moclojer
 
 ### Versões Suportadas
+
 - ✅ Postman Collection v2.1 (recomendado)
 - ⚠️ Postman Collection v2.0 (suporte parcial)
 
 ### Formatos Aceitos
+
 - ✅ JSON (`.json`)
 
 ---
@@ -42,6 +45,7 @@ moclojer suporta **Postman Collection v2.1**, permitindo que você use suas coll
 ### 1. Exportar do Postman
 
 **No Postman App:**
+
 1. Abra sua Collection
 2. Clique em `...` (três pontos)
 3. **Export** → Collection v2.1
@@ -70,6 +74,7 @@ curl http://localhost:8000/users/1
 ### Estrutura Básica
 
 **Postman Collection:**
+
 ```json
 {
   "info": {
@@ -103,6 +108,7 @@ curl http://localhost:8000/users/1
 ```
 
 **moclojer converte para:**
+
 ```yaml
 - endpoint:
     method: GET
@@ -121,6 +127,7 @@ curl http://localhost:8000/users/1
 ### Path Variables
 
 **Postman:**
+
 ```json
 {
   "request": {
@@ -144,6 +151,7 @@ curl http://localhost:8000/users/1
 ### Query Parameters
 
 **Postman:**
+
 ```json
 {
   "request": {
@@ -164,6 +172,7 @@ curl http://localhost:8000/users/1
 ### Request Body
 
 **Postman:**
+
 ```json
 {
   "request": {
@@ -183,6 +192,7 @@ curl http://localhost:8000/users/1
 ```
 
 **moclojer usa o exemplo de response:**
+
 ```json
 {
   "response": [
@@ -418,6 +428,7 @@ Postman Collections suportam pastas aninhadas:
 ```
 
 **moclojer resolve variáveis automaticamente:**
+
 - `{{baseUrl}}` → ignora (usa host do moclojer)
 - `{{apiVersion}}` → `/v1/users`
 
@@ -426,6 +437,7 @@ Postman Collections suportam pastas aninhadas:
 **Postman Environments** não são suportados diretamente.
 
 **Workaround:** Exporte collection com valores já resolvidos:
+
 1. No Postman, selecione Environment
 2. Export Collection (valores serão inline)
 
@@ -518,6 +530,7 @@ Postman permite múltiplos exemplos por request:
 **moclojer usa o primeiro exemplo** (geralmente 200 OK).
 
 **Para simular erros:** Crie requests separadas
+
 ```json
 {
   "name": "Get User - Not Found",
@@ -621,6 +634,7 @@ Postman Collections podem ter scripts Pre-request e Tests:
 **Limitação:** moclojer usa apenas o primeiro `response`.
 
 **Workaround:** Crie requests separadas para cada cenário:
+
 ```json
 // Request 1: Success
 {"name": "Get User - Success", "url": "/users/1", "response": [{"code": 200}]}
@@ -661,12 +675,14 @@ Postman Collections podem ter scripts Pre-request e Tests:
 | **Compartilhamento** | Fácil (workspace) | Arquivos Git |
 
 **Quando usar Postman:**
+
 - Já tem collections prontas
 - Time usa Postman diariamente
 - Quer interface visual
 - Precisa de documentação rica
 
 **Quando usar YAML:**
+
 - Quer templates dinâmicos (`{{path-params.id}}`)
 - Precisa de config minimalista
 - Versionar com Git
@@ -679,10 +695,12 @@ Postman Collections podem ter scripts Pre-request e Tests:
 Se quiser converter permanentemente:
 
 **Opção 1: Manual**
+
 1. Exportar Postman Collection
 2. Ler JSON e reescrever em YAML
 
 **Opção 2: Script (criar um)**
+
 ```javascript
 // postman-to-moclojer.js
 const collection = require('./collection.json');
@@ -708,6 +726,7 @@ console.log(YAML.stringify(endpoints));
 ### ✅ Faça
 
 1. **Use exemplos de response**
+
    ```json
    {
      "response": [
@@ -721,6 +740,7 @@ console.log(YAML.stringify(endpoints));
    ```
 
 2. **Organize com folders**
+
    ```json
    {
      "item": [
@@ -737,6 +757,7 @@ console.log(YAML.stringify(endpoints));
    ```
 
 3. **Documente requests**
+
    ```json
    {
      "name": "Get User by ID",
@@ -747,6 +768,7 @@ console.log(YAML.stringify(endpoints));
    ```
 
 4. **Versionamento no nome**
+
    ```json
    {
      "info": {
@@ -759,6 +781,7 @@ console.log(YAML.stringify(endpoints));
 ### ❌ Evite
 
 1. **Collections sem examples**
+
    ```json
    // ❌ moclojer não sabe o que retornar
    {
@@ -767,6 +790,7 @@ console.log(YAML.stringify(endpoints));
    ```
 
 2. **URLs absolutas hardcoded**
+
    ```json
    // ❌ Use variáveis
    "url": "http://localhost:8000/users"
@@ -776,6 +800,7 @@ console.log(YAML.stringify(endpoints));
    ```
 
 3. **Dependência de scripts**
+
    ```json
    // ❌ Scripts não rodam em moclojer
    "event": [{"script": {"exec": ["..."]}}]
@@ -790,6 +815,7 @@ console.log(YAML.stringify(endpoints));
 **Causa:** Versão não suportada ou JSON inválido.
 
 **Solução:**
+
 ```bash
 # Validar JSON
 cat postman_collection.json | jq .
@@ -804,6 +830,7 @@ cat postman_collection.json | jq '.info.schema'
 **Causa:** Requests sem exemplos de response.
 
 **Solução:** Adicionar examples no Postman:
+
 1. Faça request no Postman
 2. Clique "Save Response" → "Save as Example"
 3. Re-export Collection
@@ -813,6 +840,7 @@ cat postman_collection.json | jq '.info.schema'
 **Causa:** Sintaxe incorreta.
 
 **Solução:** Use `:paramName` no Postman
+
 ```json
 {
   "url": {

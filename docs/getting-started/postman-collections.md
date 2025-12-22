@@ -170,18 +170,22 @@ Let's create a complete Postman Collection for a pet store:
 Create a collection with these requests:
 
 **GET /pets** - List all pets
+
 - Response example: `200 OK`
 - Body: `[{"id": 1, "name": "Caramelo", "type": "dog"}]`
 
 **GET /pets/:id** - Get one pet
+
 - Response example: `200 OK`
 - Body: `{"id": 1, "name": "Caramelo", "type": "dog"}`
 
 **POST /pets** - Create a pet
+
 - Response example: `201 Created`
 - Body: `{"id": 2, "name": "New Pet", "type": "cat"}`
 
 **DELETE /pets/:id** - Delete a pet
+
 - Response example: `204 No Content`
 - Body: (empty)
 
@@ -215,7 +219,7 @@ curl -X DELETE http://localhost:8000/pets/123
 
 ## Tips and Best Practices
 
-### ✅ Do:
+### ✅ Do
 
 - **Save response examples** for every request you want to mock
 - **Use realistic data** in your examples
@@ -224,7 +228,7 @@ curl -X DELETE http://localhost:8000/pets/123
 - **Organize with folders** for clarity
 - **Use descriptive names** for requests and examples
 
-### ❌ Don't:
+### ❌ Don't
 
 - **Forget response examples** - Without them, you get default `200 {}` response
 - **Use Postman variables in URLs** - They won't be resolved (use full paths)

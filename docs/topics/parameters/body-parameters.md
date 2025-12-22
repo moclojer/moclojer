@@ -24,6 +24,7 @@ curl -X POST http://localhost:8000/users \
 ```
 
 **Diferença de outros parâmetros:**
+
 - **Path params**: Dados na URL (`/users/:id`)
 - **Query params**: Dados após `?` (`?page=1`)
 - **Body params**: Dados no corpo da requisição (JSON, form data)
@@ -36,12 +37,14 @@ curl -X POST http://localhost:8000/users \
 ✅ **Estruturado**: JSON permite hierarquias
 
 **Quando usar:**
+
 - Criar recursos (POST)
 - Atualizar recursos (PUT, PATCH)
 - Operações com muitos dados
 - Dados sensíveis (senhas, tokens)
 
 **Quando NÃO usar:**
+
 - GET requests (GET não deve ter body)
 - DELETE simples (use path params)
 - Filtros/paginação (use query params)
@@ -68,6 +71,7 @@ curl -X POST http://localhost:8000/users \
 ```
 
 **Testar:**
+
 ```bash
 curl -X POST http://localhost:8000/users \
   -H "Content-Type: application/json" \
@@ -79,6 +83,7 @@ curl -X POST http://localhost:8000/users \
 ```
 
 **Resposta:**
+
 ```json
 {
   "id": 1,
@@ -114,6 +119,7 @@ curl -X POST http://localhost:8000/users \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/tasks \
   -H "Content-Type: application/json" \
@@ -146,6 +152,7 @@ curl -X POST http://localhost:8000/api/tasks \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/users \
   -H "Content-Type: application/json" \
@@ -161,6 +168,7 @@ curl -X POST http://localhost:8000/api/users \
 ```
 
 **Resposta:**
+
 ```json
 {
   "id": 1,
@@ -191,6 +199,7 @@ curl -X POST http://localhost:8000/api/users \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/bulk-create \
   -H "Content-Type: application/json" \
@@ -283,6 +292,7 @@ body: >
 ```
 
 **Request:**
+
 ```bash
 curl -X PUT http://localhost:8000/users/42 \
   -H "Content-Type: application/json" \
@@ -293,6 +303,7 @@ curl -X PUT http://localhost:8000/users/42 \
 ```
 
 **Response:**
+
 ```json
 {
   "id": 42,
@@ -322,6 +333,7 @@ curl -X PUT http://localhost:8000/users/42 \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST "http://localhost:8000/api/search?q=laptop" \
   -H "Content-Type: application/json" \
@@ -349,6 +361,7 @@ curl -X POST "http://localhost:8000/api/search?q=laptop" \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/protected \
   -H "Content-Type: application/json" \
@@ -387,6 +400,7 @@ curl -X POST http://localhost:8000/api/protected \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/users \
   -H "Content-Type: application/json" \
@@ -418,6 +432,7 @@ curl -X POST http://localhost:8000/api/users \
 ```
 
 **Request:**
+
 ```bash
 curl -X PATCH http://localhost:8000/api/users/1/profile \
   -H "Content-Type: application/json" \
@@ -449,6 +464,7 @@ curl -X PATCH http://localhost:8000/api/users/1/profile \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/json" \
@@ -484,6 +500,7 @@ curl -X POST http://localhost:8000/api/auth/login \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/orders \
   -H "Content-Type: application/json" \
@@ -523,6 +540,7 @@ curl -X POST http://localhost:8000/api/orders \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/uploads \
   -H "Content-Type: application/json" \
@@ -634,6 +652,7 @@ Moclojer suporta form data (menos comum em APIs modernas):
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/form-submit \
   -H "Content-Type: application/x-www-form-urlencoded" \
@@ -649,6 +668,7 @@ curl -X POST http://localhost:8000/api/form-submit \
 ### ✅ Faça
 
 1. **Use JSON para APIs modernas**
+
    ```bash
    curl -X POST /api/users \
      -H "Content-Type: application/json" \
@@ -656,12 +676,14 @@ curl -X POST http://localhost:8000/api/form-submit \
    ```
 
 2. **Valide Content-Type no client**
+
    ```bash
    # ✅ Sempre especifique Content-Type
    -H "Content-Type: application/json"
    ```
 
 3. **Echo de dados recebidos**
+
    ```yaml
    # Cliente vê o que foi enviado
    response:
@@ -675,6 +697,7 @@ curl -X POST http://localhost:8000/api/form-submit \
    ```
 
 4. **Use números sem aspas**
+
    ```yaml
    # ✅ Correto (número)
    {"age": {{json-params.age}}}
@@ -684,6 +707,7 @@ curl -X POST http://localhost:8000/api/form-submit \
    ```
 
 5. **Endpoints de erro para validação**
+
    ```yaml
    # Simule erros de validação
    - endpoint:
@@ -696,6 +720,7 @@ curl -X POST http://localhost:8000/api/form-submit \
 ### ❌ Evite
 
 1. **GET com body**
+
    ```bash
    # ❌ GET não deve ter body
    curl -X GET /api/users \
@@ -706,6 +731,7 @@ curl -X POST http://localhost:8000/api/form-submit \
    ```
 
 2. **Dados sensíveis em GET**
+
    ```bash
    # ❌ NUNCA em query params
    curl "http://localhost:8000/login?password=secret"
@@ -716,6 +742,7 @@ curl -X POST http://localhost:8000/api/form-submit \
    ```
 
 3. **Body muito grande inline**
+
    ```yaml
    # ❌ Difícil de ler
    body: >

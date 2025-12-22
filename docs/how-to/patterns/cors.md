@@ -54,9 +54,11 @@ headers:
 ## ✅ Best Practices
 
 **Development:**
+
 - Use `Access-Control-Allow-Origin: "*"`
 
 **Production:**
+
 - Specify exact origins
 - Avoid wildcards
 - Use credentials carefully

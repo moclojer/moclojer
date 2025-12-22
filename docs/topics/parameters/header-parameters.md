@@ -22,6 +22,7 @@ Accept: application/json
 ```
 
 **Divididos em:**
+
 - **Request Headers**: Cliente → Servidor
 - **Response Headers**: Servidor → Cliente
 
@@ -56,6 +57,7 @@ Accept: application/json
 ```
 
 **Testar:**
+
 ```bash
 curl http://localhost:8000/api/protected \
   -H "Authorization: Bearer abc123" \
@@ -64,6 +66,7 @@ curl http://localhost:8000/api/protected \
 ```
 
 **Resposta:**
+
 ```json
 {
   "authenticated": true,
@@ -95,12 +98,14 @@ curl http://localhost:8000/api/protected \
 ```
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/api/me \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
 **Resposta:**
+
 ```json
 {
   "userId": 1,
@@ -127,6 +132,7 @@ curl http://localhost:8000/api/me \
 ```
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/api/analytics/track \
   -H "User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)"
@@ -148,6 +154,7 @@ curl http://localhost:8000/api/analytics/track \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/data \
   -H "Content-Type: application/json" \
@@ -172,12 +179,14 @@ curl -X POST http://localhost:8000/api/data \
 ```
 
 **Request JSON:**
+
 ```bash
 curl http://localhost:8000/api/users \
   -H "Accept: application/json"
 ```
 
 **Request XML (simulado):**
+
 ```bash
 curl http://localhost:8000/api/users \
   -H "Accept: application/xml"
@@ -201,6 +210,7 @@ curl http://localhost:8000/api/users \
 ```
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/api/service \
   -H "X-Request-ID: req-123" \
@@ -230,11 +240,13 @@ curl http://localhost:8000/api/service \
 ```
 
 **Teste:**
+
 ```bash
 curl -I http://localhost:8000/api/data
 ```
 
 **Headers da resposta:**
+
 ```
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -261,6 +273,7 @@ X-Rate-Limit: 100
 ```
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/api/echo \
   -H "User-Agent: MyClient/1.0" \
@@ -268,6 +281,7 @@ curl http://localhost:8000/api/echo \
 ```
 
 **Response headers incluem:**
+
 ```
 X-Echo-User-Agent: MyClient/1.0
 X-Echo-Auth: Bearer token123
@@ -291,6 +305,7 @@ X-Echo-Auth: Bearer token123
 ```
 
 **Ou use flag global:**
+
 ```bash
 moclojer --config mocks.yml --enable-cors
 ```
@@ -375,12 +390,14 @@ moclojer --config mocks.yml --enable-cors
 ```
 
 **Request v1:**
+
 ```bash
 curl http://localhost:8000/api/users \
   -H "X-API-Version: v1"
 ```
 
 **Request v2:**
+
 ```bash
 curl http://localhost:8000/api/users \
   -H "X-API-Version: v2"
@@ -408,6 +425,7 @@ curl http://localhost:8000/api/users \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST http://localhost:8000/api/events \
   -H "X-Request-ID: req-abc-123" \
@@ -436,6 +454,7 @@ curl -X POST http://localhost:8000/api/events \
 ```
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/api/data \
   -H "X-Tenant-ID: tenant-acme-corp"
@@ -479,6 +498,7 @@ curl http://localhost:8000/api/data \
 ```
 
 **Request:**
+
 ```bash
 curl http://localhost:8000/api/users \
   -H "Accept: application/json"
@@ -517,6 +537,7 @@ curl http://localhost:8000/api/users \
 ```
 
 **Request:**
+
 ```bash
 curl -X POST "http://localhost:8000/api/tenants/acme/users?role=admin" \
   -H "Content-Type: application/json" \
@@ -542,6 +563,7 @@ HTTP headers são **case-insensitive**:
 ```
 
 **Mas convenção:**
+
 - Use `Title-Case` nos headers: `Content-Type`, `Authorization`
 - Use exatamente como definido no template
 
@@ -562,6 +584,7 @@ Request-ID: abc123
 ```
 
 **Mas `X-` ainda é muito comum na prática:**
+
 - `X-Request-ID`
 - `X-Correlation-ID`
 - `X-API-Key`
@@ -585,6 +608,7 @@ X-Version: 1.0
 ### ✅ Faça
 
 1. **Use headers para metadata, não dados**
+
    ```yaml
    # ✅ Metadata
    headers:
@@ -597,6 +621,7 @@ X-Version: 1.0
    ```
 
 2. **CORS headers quando necessário**
+
    ```yaml
    headers:
      Access-Control-Allow-Origin: "*"
@@ -604,12 +629,14 @@ X-Version: 1.0
    ```
 
 3. **Content-Type sempre explícito**
+
    ```yaml
    headers:
      Content-Type: application/json
    ```
 
 4. **Request tracking headers**
+
    ```yaml
    headers:
      X-Request-ID: "{{header-params.X-Request-ID}}"
@@ -618,18 +645,21 @@ X-Version: 1.0
 ### ❌ Evite
 
 1. **Headers sensíveis em logs**
+
    ```yaml
    # ⚠️ Tokens aparecem em logs
    "token": "{{header-params.Authorization}}"
    ```
 
 2. **Headers gigantes**
+
    ```yaml
    # ❌ Headers têm limite de tamanho (~8KB)
    X-Large-Data: "..." (100KB)
    ```
 
 3. **Dados complexos em headers**
+
    ```yaml
    # ❌ Use body para isso
    X-User-Data: '{"name":"Alice","email":"alice@example.com"}'
@@ -667,6 +697,7 @@ response:
 ### Problema: CORS error
 
 **Solução:**
+
 ```bash
 # Habilitar CORS globalmente
 moclojer --enable-cors

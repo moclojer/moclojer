@@ -282,6 +282,7 @@ curl http://localhost:8000/tasks
 ```
 
 **With pagination:**
+
 ```bash
 curl "http://localhost:8000/tasks?page=2&per_page=5"
 ```
@@ -405,6 +406,7 @@ echo -e "\n✅ All tests completed!"
 ```
 
 **Run tests:**
+
 ```bash
 chmod +x test-tasks-api.sh
 ./test-tasks-api.sh
@@ -413,6 +415,7 @@ chmod +x test-tasks-api.sh
 ## 🎓 Learning Points
 
 ### HTTP Status Codes
+
 - **200 OK** - Successful GET, PUT
 - **201 Created** - Successful POST (resource created)
 - **204 No Content** - Successful DELETE (no response body)
@@ -420,12 +423,14 @@ chmod +x test-tasks-api.sh
 - **404 Not Found** - Resource doesn't exist
 
 ### RESTful Conventions
+
 - **Resource naming**: Plural nouns (`/tasks`, not `/task`)
 - **HTTP methods**: Match CRUD operations semantically
 - **Status codes**: Use appropriate codes for each response
 - **Location header**: Return URL of created resource
 
 ### Best Practices Demonstrated
+
 ✅ Consistent response format across endpoints
 ✅ Pagination metadata for list endpoints
 ✅ Detailed error messages with codes
@@ -444,7 +449,7 @@ chmod +x test-tasks-api.sh
 
 - **[Blog API Example](blog-api.md)** - More complex example with nested resources
 - **[Pagination Guide](../../how-to/patterns/pagination.md)** - Advanced pagination strategies
-- **[Error Handling](../../how-to/patterns/error-handling.md)** - Comprehensive error patterns (TODO)
+- **[Error Handling](../../how-to/patterns/error-handling.md)** - Comprehensive error patterns
 
 ---
 

@@ -198,6 +198,7 @@ spec:
 ## ✅ Best Practices
 
 **Do ✅:**
+
 - Use ConfigMaps for configuration
 - Set resource limits
 - Configure health checks
@@ -205,6 +206,7 @@ spec:
 - Enable horizontal scaling
 
 **Don't ❌:**
+
 - Don't hardcode configs in images
 - Don't skip health checks
 - Don't use excessive resources

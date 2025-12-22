@@ -25,6 +25,7 @@ Especifica o caminho para o arquivo de configuração.
 **Formatos suportados:** `.yml`, `.yaml`, `.edn`, `.json`
 
 **Exemplos:**
+
 ```bash
 # YAML
 moclojer --config api-mock.yml
@@ -39,6 +40,7 @@ moclojer --config postman_collection.json
 ```
 
 **Notas:**
+
 - Caminhos relativos são resolvidos a partir do diretório atual
 - Se não especificado, moclojer busca `moclojer.yml` no XDG_CONFIG_HOME
 - Pode ser um arquivo local ou URL (veja `--remote-config`)
@@ -54,12 +56,14 @@ Define a porta onde o servidor HTTP vai escutar.
 **Range válido:** `1-65535`
 
 **Exemplos:**
+
 ```bash
 moclojer --port 3000
 moclojer -p 8080
 ```
 
 **Variável de ambiente:** `MOCLOJER_PORT`
+
 ```bash
 export MOCLOJER_PORT=3000
 moclojer  # Usa porta 3000
@@ -77,6 +81,7 @@ Define o endereço IP onde o servidor vai escutar.
 **Padrão:** `0.0.0.0` (todas as interfaces)
 
 **Exemplos:**
+
 ```bash
 # Aceitar conexões de qualquer interface
 moclojer --host 0.0.0.0
@@ -89,12 +94,14 @@ moclojer --host 192.168.1.100
 ```
 
 **Variável de ambiente:** `MOCLOJER_HOST`
+
 ```bash
 export MOCLOJER_HOST=127.0.0.1
 moclojer
 ```
 
 **Segurança:**
+
 - `0.0.0.0` - Aceita de qualquer rede (cuidado em produção!)
 - `127.0.0.1` - Apenas local (recomendado para dev)
 
@@ -108,12 +115,14 @@ Habilita CORS (Cross-Origin Resource Sharing) para todas as respostas.
 **Padrão:** `false`
 
 **Exemplo:**
+
 ```bash
 moclojer --enable-cors
 ```
 
 **O que faz:**
 Adiciona os seguintes headers a todas as respostas:
+
 ```
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
@@ -121,11 +130,13 @@ Access-Control-Allow-Headers: *
 ```
 
 **Quando usar:**
+
 - Desenvolvimento frontend em localhost diferente
 - APIs consumidas por browsers
 - Aplicações SPA (React, Vue, Angular)
 
 **Quando NÃO usar:**
+
 - Produção (use configuração de CORS específica)
 - APIs internas sem necessidade de browser access
 
@@ -139,21 +150,25 @@ Habilita hot-reload: recarrega configuração quando o arquivo muda.
 **Padrão:** `false` (true em modo dev)
 
 **Exemplo:**
+
 ```bash
 moclojer --watch --config api.yml
 ```
 
 **Comportamento:**
+
 1. Moclojer monitora o arquivo de config
 2. Quando detecta mudança, recarrega automaticamente
 3. Servidor continua rodando sem interrupção
 4. Rotas são atualizadas instantaneamente
 
 **Limitações:**
+
 - **Não disponível em binário nativo (GraalVM)** - requer JVM
 - Monitora apenas o arquivo de config principal (não includes)
 
 **Uso recomendado:**
+
 ```bash
 # Desenvolvimento
 moclojer --watch --config mocks.yml
@@ -169,11 +184,13 @@ moclojer --config mocks.yml
 Exibe ajuda com todas as opções disponíveis.
 
 **Exemplo:**
+
 ```bash
 moclojer --help
 ```
 
 **Output:**
+
 ```
 moclojer - Simple and efficient HTTP mock server
 
@@ -196,6 +213,7 @@ Options:
 Exibe a versão do moclojer.
 
 **Exemplo:**
+
 ```bash
 moclojer --version
 # moclojer version 0.4.0
@@ -290,6 +308,7 @@ esac
 ```
 
 **Uso:**
+
 ```bash
 chmod +x start-mocks.sh
 ./start-mocks.sh dev
@@ -329,6 +348,7 @@ config:
 **Causa:** Porta já está sendo usada por outro processo.
 
 **Solução:**
+
 ```bash
 # Descobrir quem está usando a porta 8000
 lsof -i :8000
@@ -347,6 +367,7 @@ kill -9 <PID>
 **Causa:** Arquivo não existe no caminho especificado.
 
 **Solução:**
+
 ```bash
 # Verificar se arquivo existe
 ls -la moclojer.yml
@@ -366,6 +387,7 @@ moclojer --config ./mocks.yml
 **Causa:** Sintaxe YAML inválida no arquivo de config.
 
 **Solução:**
+
 ```bash
 # Validar YAML online
 # http://www.yamllint.com/
@@ -384,6 +406,7 @@ moclojer --config mocks.yml 2>&1 | grep -A 5 "parse error"
 **Causa:** Usando binário nativo (GraalVM) ou não passou `--watch`.
 
 **Solução:**
+
 ```bash
 # Verificar se é binário nativo
 moclojer --version
@@ -411,6 +434,7 @@ alias mock-prod='moclojer --config ./prod-mocks.yml --port 8080'
 ```
 
 **Uso:**
+
 ```bash
 mock        # Inicia com config padrão e watch
 mock-test   # Inicia ambiente de testes
@@ -441,6 +465,7 @@ exit 1
 ```
 
 **Uso em CI:**
+
 ```bash
 moclojer --config mocks.yml &
 ./wait-for-mock.sh 8000 30

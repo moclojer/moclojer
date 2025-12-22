@@ -11,15 +11,19 @@ description: >-
 ## Why use moclojer?
 
 ### 🚀 **Faster Development**
+
 Start building your frontend or application immediately, even when the backend APIs aren't ready yet. No more waiting for other teams or services.
 
 ### 🧪 **Better Testing**
+
 Create predictable test scenarios by controlling exactly what your API returns. Test error cases, edge conditions, and different response formats easily.
 
 ### 🔧 **Simple Configuration**
+
 Define your mock APIs using simple YAML files. No complex setup, no programming required for basic mocks.
 
 ### 📱 **Realistic Simulations**
+
 Support for dynamic responses, path parameters, query parameters, WebSockets, webhooks, and more advanced features.
 
 ## How does it work?
@@ -70,6 +74,7 @@ Notice how `{{path-params.id}}` automatically gets replaced with the actual ID f
 ## Common use cases
 
 ### Frontend Development
+
 Mock your backend APIs so frontend developers can work independently:
 
 ```yaml
@@ -85,6 +90,7 @@ Mock your backend APIs so frontend developers can work independently:
 ```
 
 ### API Testing
+
 Create specific test scenarios including error conditions:
 
 ```yaml
@@ -101,6 +107,7 @@ Create specific test scenarios including error conditions:
 ```
 
 ### Microservices Development
+
 Mock dependencies between services:
 
 ```yaml
@@ -118,6 +125,7 @@ Mock dependencies between services:
 ```
 
 ### Third-Party API Simulation
+
 Mock external APIs for development and testing:
 
 ```yaml
@@ -166,17 +174,20 @@ Each tutorial builds on the previous one, so you'll have a solid understanding o
 Once you're comfortable with the basics, dive deeper into moclojer's features:
 
 ### Configuration Formats
+
 - **[YAML Format Guide](../topics/configuration/yaml-format.md)** - Complete YAML syntax and best practices
 - **[OpenAPI Format](../topics/configuration/openapi-format.md)** - Import OpenAPI 3.x specifications
 - **[Postman Collection Format](../topics/configuration/postman-format.md)** - Use Postman Collections v2.1
 
 ### Parameters
+
 - **[Path Parameters](../topics/parameters/path-parameters.md)** - Dynamic URL parameters
 - **[Query Parameters](../topics/parameters/query-parameters.md)** - Filters, pagination, and search
 - **[Body Parameters](../topics/parameters/body-parameters.md)** - JSON request body handling
 - **[Header Parameters](../topics/parameters/header-parameters.md)** - HTTP headers and authentication
 
 ### Practical Guides
+
 - **[CRUD Operations](../how-to/patterns/crud-operations.md)** - Complete Create, Read, Update, Delete examples
 - **[Pagination](../how-to/patterns/pagination.md)** - Implement pagination strategies
 - **[Docker Deployment](../how-to/deployment/docker.md)** - Production-ready Docker setup

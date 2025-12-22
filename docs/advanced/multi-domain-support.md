@@ -46,11 +46,13 @@ flowchart LR
 ```
 
 **Request:**
+
 ```bash
 curl -H "Host: api.example.com" http://localhost:8000/users
 ```
 
 **Response:**
+
 ```json
 {
   "domain": "api.example.com",
@@ -106,6 +108,7 @@ Serve different data based on subdomain:
 ```
 
 **Testing:**
+
 ```bash
 # Tenant A
 curl -H "Host: tenant-a.saas.com" http://localhost:8000/api/settings
@@ -268,6 +271,7 @@ Edit `/etc/hosts` (Linux/Mac) or `C:\Windows\System32\drivers\etc\hosts` (Window
 ```
 
 Then access directly:
+
 ```bash
 curl http://tenant-a.localhost:8000/api/data
 curl http://tenant-b.localhost:8000/api/data
@@ -309,6 +313,7 @@ networks:
 ## ✅ Best Practices
 
 **Do:**
+
 - ✅ Use host-specific endpoints for multi-tenant isolation
 - ✅ Provide fallback endpoints without `host` for common resources
 - ✅ Document which domains are expected in production
@@ -316,6 +321,7 @@ networks:
 - ✅ Use environment variables for dynamic host configuration
 
 **Don't:**
+
 - ❌ Mix host-specific and host-agnostic endpoints for the same path without clear intent
 - ❌ Forget to test Host header matching in CI/CD
 - ❌ Hardcode production domains in development mocks

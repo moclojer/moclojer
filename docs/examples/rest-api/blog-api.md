@@ -600,6 +600,7 @@ curl "http://localhost:8000/api/v1/search?q=api&category=tutorial&tag=beginner"
 ## 🎓 Key Concepts Demonstrated
 
 ### 1. Nested Resources
+
 ```
 /posts/:postId/comments     # Comments belong to posts
 /authors/:id/posts          # Posts belong to authors
@@ -607,12 +608,14 @@ curl "http://localhost:8000/api/v1/search?q=api&category=tutorial&tag=beginner"
 ```
 
 ### 2. Resource Relationships
+
 - **One-to-Many**: Author has many Posts
 - **One-to-Many**: Post has many Comments
 - **Many-to-Many**: Posts have many Tags
 - **Self-Referential**: Comments reply to Comments (threading)
 
 ### 3. Content Workflow
+
 - **Draft** → **Published** → **Archived**
 - Author can edit their own posts
 - Moderator can approve comments
@@ -620,14 +623,14 @@ curl "http://localhost:8000/api/v1/search?q=api&category=tutorial&tag=beginner"
 ## 🔗 Related Documentation
 
 - **[Basic CRUD Example](basic-crud.md)** - Simpler CRUD example
-- **[Nested Resources](../../topics/endpoints/nested-resources.md)** - Nested endpoint patterns (TODO)
 - **[Pagination Guide](../../how-to/patterns/pagination.md)** - Advanced pagination
 - **[Query Parameters](../../topics/parameters/query-parameters.md)** - Filters and search
+- **[Path Parameters](../../topics/parameters/path-parameters.md)** - Dynamic URL parameters
 
 ## 🚀 Next Steps
 
 - **[Stripe Mock](../third-party/stripe-mock.md)** - Third-party API example
-- **[Authentication Patterns](../../how-to/patterns/authentication-mock.md)** - Auth implementation (TODO)
+- **[Authentication Patterns](../../how-to/patterns/authentication-mock.md)** - Auth implementation
 
 ---
 

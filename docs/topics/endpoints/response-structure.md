@@ -31,6 +31,7 @@ Learn how to structure responses in moclojer for consistent, professional APIs.
 ## 🎯 Status Codes
 
 ### Success (2xx)
+
 ```yaml
 status: 200  # OK - successful GET, PUT, DELETE
 status: 201  # Created - successful POST
@@ -38,6 +39,7 @@ status: 204  # No Content - successful DELETE (no body)
 ```
 
 ### Client Errors (4xx)
+
 ```yaml
 status: 400  # Bad Request - validation error
 status: 401  # Unauthorized - authentication required
@@ -46,6 +48,7 @@ status: 422  # Unprocessable Entity - validation failed
 ```
 
 ### Server Errors (5xx)
+
 ```yaml
 status: 500  # Internal Server Error
 status: 503  # Service Unavailable
@@ -54,6 +57,7 @@ status: 503  # Service Unavailable
 ## 📤 Body Formats
 
 ### JSON (Most Common)
+
 ```yaml
 body: >
   {
@@ -66,11 +70,13 @@ body: >
 ```
 
 ### Plain Text
+
 ```yaml
 body: "Hello World"
 ```
 
 ### XML
+
 ```yaml
 headers:
   Content-Type: application/xml
@@ -85,6 +91,7 @@ body: >
 ## ✅ Best Practices
 
 ### Consistent Format
+
 ```yaml
 # ✅ Good - Consistent structure
 body: >
@@ -96,6 +103,7 @@ body: >
 ```
 
 ### Error Responses
+
 ```yaml
 # ✅ Good - Informative errors
 status: 404

@@ -11,6 +11,7 @@ Learn to create consistent, informative error responses in moclojer.
 ## 📋 Common Error Patterns
 
 ### 404 Not Found
+
 ```yaml
 - endpoint:
     method: GET
@@ -29,6 +30,7 @@ Learn to create consistent, informative error responses in moclojer.
 ```
 
 ### 400 Bad Request
+
 ```yaml
 - endpoint:
     method: POST
@@ -46,6 +48,7 @@ Learn to create consistent, informative error responses in moclojer.
 ```
 
 ### 422 Validation Error
+
 ```yaml
 - endpoint:
     method: POST
@@ -72,6 +75,7 @@ Learn to create consistent, informative error responses in moclojer.
 ```
 
 ### 401 Unauthorized
+
 ```yaml
 - endpoint:
     method: GET
@@ -89,6 +93,7 @@ Learn to create consistent, informative error responses in moclojer.
 ```
 
 ### 403 Forbidden
+
 ```yaml
 - endpoint:
     method: DELETE
@@ -106,6 +111,7 @@ Learn to create consistent, informative error responses in moclojer.
 ```
 
 ### 500 Internal Server Error
+
 ```yaml
 - endpoint:
     method: GET
@@ -126,6 +132,7 @@ Learn to create consistent, informative error responses in moclojer.
 ## ✅ Best Practices
 
 **Consistent Format:**
+
 ```yaml
 {
   "error": "Error Type",
@@ -137,6 +144,7 @@ Learn to create consistent, informative error responses in moclojer.
 ```
 
 **Include:**
+
 - ✅ Error type
 - ✅ Readable message
 - ✅ Machine-readable code
@@ -144,6 +152,7 @@ Learn to create consistent, informative error responses in moclojer.
 - ✅ Request ID (for tracking)
 
 **Field-Level Errors:**
+
 ```yaml
 {
   "error": "Validation Failed",
