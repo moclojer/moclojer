@@ -1,16 +1,16 @@
 ---
 description: >-
-  Aprenda a usar query parameters (parâmetros de consulta) no moclojer para
-  criar endpoints que respondem a filtros, paginação, busca e ordenação.
+  Learn how to use query parameters in moclojer to create endpoints that
+  respond to filters, pagination, search, and sorting.
 ---
 
-# Query Parameters (Parâmetros de Consulta)
+# Query Parameters
 
-Query parameters são valores passados na URL após o caractere `?`, usados para filtrar, paginar, ordenar ou buscar dados. Eles são essenciais para criar APIs RESTful flexíveis e dinâmicas.
+Query parameters are values passed in the URL after the `?` character, used to filter, paginate, sort, or search data. They are essential for creating flexible and dynamic RESTful APIs.
 
-## O Que São Query Parameters?
+## What Are Query Parameters?
 
-**Anatomia de uma URL com query params:**
+**Anatomy of a URL with query params:**
 
 ```
 https://api.example.com/users?role=admin&status=active&limit=10
@@ -19,21 +19,21 @@ https://api.example.com/users?role=admin&status=active&limit=10
                             │      │          │         └─ limit=10
                             │      │          └─────────── status=active
                             │      └──────────────────── role=admin
-                            └───────────────────────── Separador ?
+                            └───────────────────────── Separator ?
 ```
 
-**Características:**
+**Characteristics:**
 
-- Começam com `?` após o path
-- Pares `chave=valor` separados por `&`
-- Opcionais (diferente de path params)
-- Ideais para filtros, paginação, busca
+- Start with `?` after the path
+- `key=value` pairs separated by `&`
+- Optional (unlike path params)
+- Ideal for filters, pagination, search
 
-## Sintaxe Básica
+## Basic Syntax
 
-### Acessando Query Parameters
+### Accessing Query Parameters
 
-Use templates `{{query-params.nomeDaChave}}`:
+Use templates `{{query-params.keyName}}`:
 
 ```yaml
 - endpoint:
@@ -51,13 +51,13 @@ Use templates `{{query-params.nomeDaChave}}`:
         }
 ```
 
-**Teste:**
+**Test:**
 
 ```bash
 curl "http://localhost:8000/users?role=admin&status=active"
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 {
@@ -69,9 +69,9 @@ curl "http://localhost:8000/users?role=admin&status=active"
 }
 ```
 
-### Query Parameters Opcionais
+### Optional Query Parameters
 
-Todos os query params são opcionais por padrão:
+All query params are optional by default:
 
 ```yaml
 - endpoint:
@@ -87,23 +87,23 @@ Todos os query params são opcionais por padrão:
         }
 ```
 
-**Funciona com qualquer combinação:**
+**Works with any combination:**
 
 ```bash
-# Todos os parâmetros
+# All parameters
 curl "http://localhost:8000/products?category=electronics&min_price=100&max_price=500"
 
-# Apenas alguns
+# Only some
 curl "http://localhost:8000/products?category=electronics"
 
-# Nenhum parâmetro
+# No parameters
 curl "http://localhost:8000/products"
 # {"category": "", "minPrice": "", "maxPrice": ""}
 ```
 
-## Casos de Uso Comuns
+## Common Use Cases
 
-### 1. Paginação
+### 1. Pagination
 
 ```yaml
 - endpoint:
@@ -132,14 +132,14 @@ curl "http://localhost:8000/products"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/posts?page=1&limit=10"
 curl "http://localhost:8000/posts?page=2&limit=20"
 ```
 
-### 2. Filtros
+### 2. Filters
 
 ```yaml
 - endpoint:
@@ -164,13 +164,13 @@ curl "http://localhost:8000/posts?page=2&limit=20"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/products?category=electronics&brand=sony&in_stock=true"
 ```
 
-### 3. Busca (Search)
+### 3. Search
 
 ```yaml
 - endpoint:
@@ -192,13 +192,13 @@ curl "http://localhost:8000/products?category=electronics&brand=sony&in_stock=tr
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/search?q=moclojer&type=documentation"
 ```
 
-### 4. Ordenação (Sorting)
+### 4. Sorting
 
 ```yaml
 - endpoint:
@@ -223,14 +223,14 @@ curl "http://localhost:8000/search?q=moclojer&type=documentation"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/users?sort=name&order=asc"
 curl "http://localhost:8000/users?sort=createdAt&order=desc"
 ```
 
-### 5. Seleção de Campos (Field Selection)
+### 5. Field Selection
 
 ```yaml
 - endpoint:
@@ -251,17 +251,17 @@ curl "http://localhost:8000/users?sort=createdAt&order=desc"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Apenas alguns campos
+# Only some fields
 curl "http://localhost:8000/users/1?fields=id,name,email"
 
-# Todos os campos
+# All fields
 curl "http://localhost:8000/users/1"
 ```
 
-## Combinando Múltiplos Query Parameters
+## Combining Multiple Query Parameters
 
 ```yaml
 - endpoint:
@@ -292,15 +292,15 @@ curl "http://localhost:8000/users/1"
         }
 ```
 
-**Exemplo de uso completo:**
+**Complete usage example:**
 
 ```bash
 curl "http://localhost:8000/api/products?category=electronics&min_price=100&max_price=1000&in_stock=true&page=1&limit=20&sort=price&order=asc&q=laptop"
 ```
 
-## Query Parameters com Path Parameters
+## Query Parameters with Path Parameters
 
-Query params funcionam perfeitamente com path params:
+Query params work perfectly with path params:
 
 ```yaml
 - endpoint:
@@ -330,17 +330,17 @@ Query params funcionam perfeitamente com path params:
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/users/42/posts?status=published&page=1&limit=10"
 ```
 
-## Valores Padrão e Valores Ausentes
+## Default Values and Missing Values
 
-### Query Param Não Fornecido
+### Query Param Not Provided
 
-Quando um query param não é passado, o template retorna string vazia:
+When a query param is not passed, the template returns an empty string:
 
 ```yaml
 - endpoint:
@@ -353,19 +353,19 @@ Quando um query param não é passado, o template retorna string vazia:
         }
 ```
 
-**Teste sem parâmetros:**
+**Test without parameters:**
 
 ```bash
 curl "http://localhost:8000/users"
 # {"limit": "", "page": ""}
 ```
 
-### Simulando Valores Padrão
+### Simulating Default Values
 
-Use múltiplos endpoints com precedência:
+Use multiple endpoints with precedence:
 
 ```yaml
-# 1. Endpoint SEM query params (usa valores padrão)
+# 1. Endpoint WITHOUT query params (uses default values)
 - endpoint:
     method: GET
     path: /users
@@ -378,12 +378,12 @@ Use múltiplos endpoints com precedência:
           "note": "Using default values"
         }
 
-# 2. Endpoint COM query params (valores customizados)
-# NOTA: Moclojer não diferencia presença/ausência de query params
-# Ambos os endpoints acima vão responder. Use lógica no client.
+# 2. Endpoint WITH query params (custom values)
+# NOTE: Moclojer doesn't differentiate presence/absence of query params
+# Both endpoints above will respond. Use logic in client.
 ```
 
-**Alternativa melhor:**
+**Better alternative:**
 
 ```yaml
 - endpoint:
@@ -403,16 +403,16 @@ Use múltiplos endpoints com precedência:
         }
 ```
 
-## Arrays em Query Parameters
+## Arrays in Query Parameters
 
-URLs podem ter múltiplos valores para a mesma chave:
+URLs can have multiple values for the same key:
 
 ```
 /users?id=1&id=2&id=3
 /tags?tag=javascript&tag=clojure&tag=api
 ```
 
-**No moclojer:**
+**In moclojer:**
 
 ```yaml
 - endpoint:
@@ -427,12 +427,12 @@ URLs podem ter múltiplos valores para a mesma chave:
         }
 ```
 
-⚠️ **Limitação:** Moclojer atualmente retorna apenas o **último valor** quando há duplicatas.
+⚠️ **Limitation:** Moclojer currently returns only the **last value** when there are duplicates.
 
-**Workaround:** Use delimitadores
+**Workaround:** Use delimiters
 
 ```bash
-# Ao invés de: ?id=1&id=2&id=3
+# Instead of: ?id=1&id=2&id=3
 curl "http://localhost:8000/users?ids=1,2,3"
 ```
 
@@ -445,30 +445,30 @@ response:
     }
 ```
 
-## Caracteres Especiais
+## Special Characters
 
-Query parameters devem ser URL-encoded:
+Query parameters must be URL-encoded:
 
-| Caractere | Encoding | Exemplo |
+| Character | Encoding | Example |
 |-----------|----------|---------|
-| Espaço | `%20` ou `+` | `q=hello%20world` |
+| Space | `%20` or `+` | `q=hello%20world` |
 | `&` | `%26` | `company=A%26B` |
 | `=` | `%3D` | `equation=x%3D5` |
 | `#` | `%23` | `tag=%23moclojer` |
 | `?` | `%3F` | `query=what%3F` |
 
-**Exemplo:**
+**Example:**
 
 ```bash
-# Busca: "moclojer & API testing"
+# Search: "moclojer & API testing"
 curl "http://localhost:8000/search?q=moclojer%20%26%20API%20testing"
 ```
 
-Ferramentas como `curl` e browsers fazem encoding automaticamente.
+Tools like `curl` and browsers do encoding automatically.
 
-## Exemplos Práticos Completos
+## Complete Practical Examples
 
-### Exemplo 1: API de E-commerce
+### Example 1: E-commerce API
 
 ```yaml
 - endpoint:
@@ -511,13 +511,13 @@ Ferramentas como `curl` e browsers fazem encoding automaticamente.
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/api/products?category=laptops&brand=dell&min_price=500&max_price=1500&on_sale=true&in_stock=true&sort_by=price&order=asc&page=1&limit=20&q=gaming"
 ```
 
-### Exemplo 2: API de Blog
+### Example 2: Blog API
 
 ```yaml
 - endpoint:
@@ -553,13 +553,13 @@ curl "http://localhost:8000/api/products?category=laptops&brand=dell&min_price=5
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/api/posts?author=john&category=tech&tag=api&published=true&q=moclojer&from=2024-01-01&to=2024-12-31&page=1&limit=10"
 ```
 
-### Exemplo 3: API Analytics
+### Example 3: Analytics API
 
 ```yaml
 - endpoint:
@@ -587,27 +587,27 @@ curl "http://localhost:8000/api/posts?author=john&category=tech&tag=api&publishe
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01-31&metrics=pageviews,sessions&dimensions=country,device&granularity=day"
 ```
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use nomes descritivos e consistentes**
+1. **Use descriptive and consistent names**
 
    ```bash
-   # ✅ Bom
+   # ✅ Good
    ?page=1&limit=10&sort_by=name
 
-   # ❌ Evite
+   # ❌ Avoid
    ?p=1&l=10&s=name
    ```
 
-2. **Use snake_case ou camelCase consistentemente**
+2. **Use snake_case or camelCase consistently**
 
    ```bash
    # ✅ snake_case
@@ -616,23 +616,23 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
    # ✅ camelCase
    ?minPrice=100&maxPrice=500
 
-   # ❌ Misturado
+   # ❌ Mixed
    ?min_price=100&maxPrice=500
    ```
 
-3. **Valores booleanos como strings**
+3. **Boolean values as strings**
 
    ```yaml
-   # Template sempre retorna string
+   # Template always returns string
    "inStock": "{{query-params.in_stock}}"
 
-   # Cliente interpreta "true"/"false"
+   # Client interprets "true"/"false"
    ```
 
-4. **Documente parâmetros opcionais**
+4. **Document optional parameters**
 
    ```yaml
-   # No response, inclua documentação
+   # In response, include documentation
    response:
      body: >
        {
@@ -646,109 +646,109 @@ curl "http://localhost:8000/api/analytics?start_date=2024-01-01&end_date=2024-01
        }
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Parâmetros obrigatórios como query params**
+1. **Required parameters as query params**
 
    ```yaml
-   # ❌ ID deveria ser path param
+   # ❌ ID should be path param
    path: /users
    # ?id=123
 
-   # ✅ Use path param para IDs
+   # ✅ Use path param for IDs
    path: /users/:id
    ```
 
-2. **Dados sensíveis em query params**
+2. **Sensitive data in query params**
 
    ```bash
-   # ❌ NUNCA faça isso!
+   # ❌ NEVER do this!
    ?password=secret123
    ?api_key=sk_live_abc123
 
-   # ✅ Use headers ou body
+   # ✅ Use headers or body
    Authorization: Bearer token
    ```
 
-3. **Query params muito complexos**
+3. **Query params too complex**
 
    ```bash
-   # ❌ Muito complexo para query param
+   # ❌ Too complex for query param
    ?filter={"and":[{"field":"age","op":">","value":18}]}
 
-   # ✅ Use POST com body para filtros complexos
+   # ✅ Use POST with body for complex filters
    ```
 
 ## Troubleshooting
 
-### Problema: Query param retorna vazio quando deveria ter valor
+### Problem: Query param returns empty when should have value
 
-**Causa 1:** Nome do parâmetro não corresponde
+**Cause 1:** Parameter name doesn't match
 
 ```yaml
-# ❌ Errado
+# ❌ Wrong
 URL: ?limit=10
 Template: {{query-params.lim}}  # Typo!
 
-# ✅ Correto
+# ✅ Correct
 Template: {{query-params.limit}}
 ```
 
-**Causa 2:** Espaços no nome
+**Cause 2:** Spaces in name
 
 ```yaml
-# ❌ Não funciona
+# ❌ Doesn't work
 {{query-params.min price}}
 
-# ✅ Use underscore ou camelCase
+# ✅ Use underscore or camelCase
 {{query-params.min_price}}
 {{query-params.minPrice}}
 ```
 
-### Problema: Caractere especial quebra a URL
+### Problem: Special character breaks URL
 
-**Solução:** Use URL encoding
+**Solution:** Use URL encoding
 
 ```bash
-# ❌ Quebra
+# ❌ Breaks
 curl "http://localhost:8000/search?q=A&B"
 
 # ✅ Encode
 curl "http://localhost:8000/search?q=A%26B"
 ```
 
-### Problema: Número vem como string
+### Problem: Number comes as string
 
-**Causa:** Templates sempre retornam strings
+**Cause:** Templates always return strings
 
 ```yaml
-# ❌ Retorna "10" (string)
+# ❌ Returns "10" (string)
 {"limit": "{{query-params.limit}}"}
 
-# ✅ Retorna 10 (número) - sem aspas!
+# ✅ Returns 10 (number) - no quotes!
 {"limit": {{query-params.limit}}}
 ```
 
-⚠️ **Cuidado:** Sem aspas, se parâmetro estiver vazio, o JSON fica inválido!
+⚠️ **Caution:** Without quotes, if parameter is empty, JSON becomes invalid!
 
-**Solução segura:**
+**Safe solution:**
 
 ```yaml
-# Cliente faz conversão
+# Client does conversion
 {"limit": "{{query-params.limit}}"}
-# Cliente: parseInt(data.limit) || 10
+# Client: parseInt(data.limit) || 10
 ```
 
-## Próximos Passos
+## Next Steps
 
-Agora que você domina query parameters:
+Now that you've mastered query parameters:
 
-1. **[Path Parameters](path-parameters.md)** - Parâmetros na URL
-2. **[Body Parameters](body-parameters.md)** - Dados no corpo da requisição
-3. **[Template Variables](../templates/template-variables.md)** - Referência completa
+1. **[Path Parameters](path-parameters.md)** - Parameters in the URL
+2. **[Body Parameters](body-parameters.md)** - Data in the request body
+3. **[Template Variables](../templates/template-variables.md)** - Complete reference
 
-## Veja Também
+## See Also
 
-- [Pagination How-to](../../how-to/patterns/pagination.md) - Implementar paginação
-- [Dynamic Responses Tutorial](../../getting-started/dynamic-responses.md) - Tutorial prático
-- [Request Matching](../request-matching.md) - Como moclojer escolhe endpoints
+- [Pagination How-to](../../how-to/patterns/pagination.md) - Implement pagination
+- [Dynamic Responses Tutorial](../../getting-started/dynamic-responses.md) - Practical tutorial
+- [Request Matching](../request-matching.md) - How moclojer chooses endpoints

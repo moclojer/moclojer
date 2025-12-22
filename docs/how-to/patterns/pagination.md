@@ -1,52 +1,52 @@
 ---
 description: >-
-  Aprenda a implementar paginação em APIs mock com moclojer. Offset/Limit,
-  Cursor-based, Page-based e Link headers (RFC 5988).
+  Learn how to implement pagination in mock APIs with moclojer. Offset/Limit,
+  Cursor-based, Page-based and Link headers (RFC 5988).
 ---
 
-# Pagination (Paginação)
+# Pagination
 
-Paginação é essencial em APIs que retornam listas grandes de dados. Este guia mostra como implementar diferentes estratégias de paginação com moclojer.
+Pagination is essential in APIs that return large lists of data. This guide shows how to implement different pagination strategies with moclojer.
 
-## Por Que Paginar?
+## Why Paginate?
 
-✅ **Performance**: Não carregar 10.000 itens de uma vez
-✅ **UX**: Melhor experiência do usuário
-✅ **Bandwidth**: Menos dados trafegados
-✅ **Custo**: Menos processamento no servidor
+✅ **Performance**: Don't load 10,000 items at once
+✅ **UX**: Better user experience
+✅ **Bandwidth**: Less data transferred
+✅ **Cost**: Less server processing
 
-**Sem paginação:**
+**Without pagination:**
 
 ```json
-GET /users → [10.000 usuários] 😱
+GET /users → [10,000 users] 😱
 ```
 
-**Com paginação:**
+**With pagination:**
 
 ```json
-GET /users?page=1&limit=20 → [20 usuários] ✅
+GET /users?page=1&limit=20 → [20 users] ✅
 ```
 
 ---
 
-## Estratégias de Paginação
+## Pagination Strategies
 
-### 1. Offset/Limit (Mais Comum)
+### 1. Offset/Limit (Most Common)
 
-**Conceito:** Pule X itens, retorne Y itens.
+**Concept:** Skip X items, return Y items.
 
-**Parâmetros:**
+**Parameters:**
 
-- `limit` (ou `per_page`): Quantidade por página
-- `offset` (ou `skip`): Quantos pular
+- `limit` (or `per_page`): Quantity per page
+- `offset` (or `skip`): How many to skip
 
-**Matemática:**
+**Math:**
 
 ```
 offset = (page - 1) * limit
 ```
 
-**Exemplo:**
+**Example:**
 
 ```yaml
 - endpoint:
@@ -72,31 +72,31 @@ offset = (page - 1) * limit
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Primeira página (0-19)
+# First page (0-19)
 curl "http://localhost:8000/api/users?offset=0&limit=20"
 
-# Segunda página (20-39)
+# Second page (20-39)
 curl "http://localhost:8000/api/users?offset=20&limit=20"
 
-# Terceira página (40-59)
+# Third page (40-59)
 curl "http://localhost:8000/api/users?offset=40&limit=20"
 ```
 
 ---
 
-### 2. Page/Limit (Mais Intuitivo)
+### 2. Page/Limit (More Intuitive)
 
-**Conceito:** Número da página + itens por página.
+**Concept:** Page number + items per page.
 
-**Parâmetros:**
+**Parameters:**
 
-- `page`: Número da página (começa em 1)
-- `limit` (ou `per_page`): Itens por página
+- `page`: Page number (starts at 1)
+- `limit` (or `per_page`): Items per page
 
-**Exemplo:**
+**Example:**
 
 ```yaml
 - endpoint:
@@ -125,32 +125,32 @@ curl "http://localhost:8000/api/users?offset=40&limit=20"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Primeira página
+# First page
 curl "http://localhost:8000/api/products?page=1&limit=10"
 
-# Segunda página
+# Second page
 curl "http://localhost:8000/api/products?page=2&limit=10"
 
-# Página 5 com 25 itens
+# Page 5 with 25 items
 curl "http://localhost:8000/api/products?page=5&limit=25"
 ```
 
 ---
 
-### 3. Cursor-Based (Para Feeds Dinâmicos)
+### 3. Cursor-Based (For Dynamic Feeds)
 
-**Conceito:** Usa um cursor (ID, timestamp) para marcar posição.
+**Concept:** Uses a cursor (ID, timestamp) to mark position.
 
-**Vantagens:**
+**Advantages:**
 
-- Consistente mesmo com novos itens
-- Perfeito para infinite scroll
-- Não permite pular páginas (mais seguro)
+- Consistent even with new items
+- Perfect for infinite scroll
+- Doesn't allow skipping pages (more secure)
 
-**Exemplo:**
+**Example:**
 
 ```yaml
 - endpoint:
@@ -177,24 +177,24 @@ curl "http://localhost:8000/api/products?page=5&limit=25"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Primeira requisição (sem cursor)
+# First request (no cursor)
 curl "http://localhost:8000/api/posts?limit=10"
 
-# Próxima página (usa cursor retornado)
+# Next page (use returned cursor)
 curl "http://localhost:8000/api/posts?cursor=103&limit=10"
 
-# Mais uma página
+# Another page
 curl "http://localhost:8000/api/posts?cursor=203&limit=10"
 ```
 
 ---
 
-## Metadados de Paginação
+## Pagination Metadata
 
-### Estrutura Completa
+### Complete Structure
 
 ```yaml
 - endpoint:
@@ -230,7 +230,7 @@ curl "http://localhost:8000/api/posts?cursor=203&limit=10"
         }
 ```
 
-### Headers de Paginação
+### Pagination Headers
 
 ```yaml
 - endpoint:
@@ -253,9 +253,9 @@ curl "http://localhost:8000/api/posts?cursor=203&limit=10"
 
 ---
 
-## Exemplos Práticos
+## Practical Examples
 
-### 1. API de E-commerce (Products)
+### 1. E-commerce API (Products)
 
 ```yaml
 - endpoint:
@@ -297,17 +297,17 @@ curl "http://localhost:8000/api/posts?cursor=203&limit=10"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Primeira página de eletrônicos
+# First page of electronics
 curl "http://localhost:8000/api/products?category=electronics&page=1&limit=20"
 
-# Segunda página com filtro de preço
+# Second page with price filter
 curl "http://localhost:8000/api/products?category=electronics&min_price=100&max_price=500&page=2&limit=20"
 ```
 
-### 2. API de Blog (Posts com Cursor)
+### 2. Blog API (Posts with Cursor)
 
 ```yaml
 - endpoint:
@@ -342,17 +342,17 @@ curl "http://localhost:8000/api/products?category=electronics&min_price=100&max_
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Primeira carga
+# First load
 curl "http://localhost:8000/api/posts?limit=20"
 
-# Scroll infinito (próxima página)
+# Infinite scroll (next page)
 curl "http://localhost:8000/api/posts?cursor=102&limit=20"
 ```
 
-### 3. API de Comentários (Nested Pagination)
+### 3. Comments API (Nested Pagination)
 
 ```yaml
 - endpoint:
@@ -386,16 +386,16 @@ curl "http://localhost:8000/api/posts?cursor=102&limit=20"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/api/posts/42/comments?page=1&limit=10"
 ```
 
-### 4. API com Valores Padrão
+### 4. API with Default Values
 
 ```yaml
-# Endpoint SEM parâmetros (usa defaults)
+# Endpoint WITHOUT parameters (uses defaults)
 - endpoint:
     method: GET
     path: /api/users
@@ -419,13 +419,13 @@ curl "http://localhost:8000/api/posts/42/comments?page=1&limit=10"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Sem parâmetros (cliente usa defaults da response)
+# Without parameters (client uses defaults from response)
 curl "http://localhost:8000/api/users"
 
-# Com parâmetros
+# With parameters
 curl "http://localhost:8000/api/users?page=2&limit=50"
 ```
 
@@ -433,7 +433,7 @@ curl "http://localhost:8000/api/users?page=2&limit=50"
 
 ## Link Headers (RFC 5988)
 
-Padrão para navegação de paginação via headers:
+Standard for pagination navigation via headers:
 
 ```yaml
 - endpoint:
@@ -452,21 +452,21 @@ Padrão para navegação de paginação via headers:
         }
 ```
 
-**Formato:**
+**Format:**
 
 ```
 Link: <URL>; rel="relation"
 ```
 
-**Relações:**
+**Relations:**
 
-- `first`: Primeira página
-- `prev`: Página anterior
-- `next`: Próxima página
-- `last`: Última página
-- `self`: Página atual
+- `first`: First page
+- `prev`: Previous page
+- `next`: Next page
+- `last`: Last page
+- `self`: Current page
 
-**Exemplo do GitHub API:**
+**GitHub API Example:**
 
 ```
 Link: <https://api.github.com/repos?page=2>; rel="next",
@@ -475,7 +475,7 @@ Link: <https://api.github.com/repos?page=2>; rel="next",
 
 ---
 
-## Ordenação + Paginação
+## Sorting + Pagination
 
 ```yaml
 - endpoint:
@@ -500,19 +500,19 @@ Link: <https://api.github.com/repos?page=2>; rel="next",
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Ordenar por nome (A-Z), página 1
+# Sort by name (A-Z), page 1
 curl "http://localhost:8000/api/users?sort=name&order=asc&page=1&limit=20"
 
-# Ordenar por data (mais recente), página 2
+# Sort by date (most recent), page 2
 curl "http://localhost:8000/api/users?sort=createdAt&order=desc&page=2&limit=20"
 ```
 
 ---
 
-## Filtros + Paginação
+## Filters + Pagination
 
 ```yaml
 - endpoint:
@@ -540,7 +540,7 @@ curl "http://localhost:8000/api/users?sort=createdAt&order=desc&page=2&limit=20"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/api/products?category=electronics&brand=sony&in_stock=true&sort=price&order=asc&page=1&limit=20"
@@ -548,7 +548,7 @@ curl "http://localhost:8000/api/products?category=electronics&brand=sony&in_stoc
 
 ---
 
-## Busca + Paginação
+## Search + Pagination
 
 ```yaml
 - endpoint:
@@ -574,7 +574,7 @@ curl "http://localhost:8000/api/products?category=electronics&brand=sony&in_stoc
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
@@ -582,11 +582,11 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
 
 ---
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Sempre retorne metadados**
+1. **Always return metadata**
 
    ```json
    {
@@ -599,7 +599,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    }
    ```
 
-2. **Use headers para totais**
+2. **Use headers for totals**
 
    ```yaml
    headers:
@@ -607,7 +607,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
      X-Total-Pages: "50"
    ```
 
-3. **Forneça links de navegação**
+3. **Provide navigation links**
 
    ```json
    {
@@ -619,7 +619,7 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    }
    ```
 
-4. **Limite máximo de itens**
+4. **Maximum item limit**
 
    ```json
    {
@@ -630,57 +630,57 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
    }
    ```
 
-5. **Consistência nos nomes**
+5. **Consistency in names**
 
    ```bash
-   # ✅ Escolha um padrão e siga
+   # ✅ Choose a pattern and follow it
    ?page=1&limit=20
    ?page=1&per_page=20
 
-   # ❌ Não misture
+   # ❌ Don't mix
    ?page=1&limit=20
    ?offset=0&per_page=20
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Paginação sem total**
+1. **Pagination without total**
 
    ```json
-   // ❌ Difícil saber quantas páginas existem
+   // ❌ Hard to know how many pages exist
    {"data": [...]}
 
-   // ✅ Inclua totais
+   // ✅ Include totals
    {"data": [...], "total": 1000}
    ```
 
-2. **Limites muito altos**
+2. **Very high limits**
 
    ```bash
-   # ❌ Pode sobrecarregar
+   # ❌ May overload
    ?limit=10000
 
-   # ✅ Defina máximo razoável
+   # ✅ Define reasonable maximum
    ?limit=100  # max
    ```
 
-3. **Offset sem limit**
+3. **Offset without limit**
 
    ```bash
-   # ❌ Ambíguo
+   # ❌ Ambiguous
    ?offset=100
 
-   # ✅ Sempre juntos
+   # ✅ Always together
    ?offset=100&limit=20
    ```
 
-4. **Links quebrados**
+4. **Broken links**
 
    ```json
-   // ❌ Link inválido
+   // ❌ Invalid link
    "next": "/api/items?page=undefined"
 
-   // ✅ Validar antes de retornar
+   // ✅ Validate before returning
    "next": "/api/items?page=2&limit=20"
    ```
 
@@ -688,9 +688,9 @@ curl "http://localhost:8000/api/search?q=moclojer&page=1&limit=10"
 
 ## Troubleshooting
 
-### Problema: Cliente não sabe total de páginas
+### Problem: Client doesn't know total pages
 
-**Solução:** Retorne `totalPages` ou `X-Total-Pages` header
+**Solution:** Return `totalPages` or `X-Total-Pages` header
 
 ```yaml
 headers:
@@ -699,21 +699,21 @@ body: >
   {"meta": {"totalPages": 50}}
 ```
 
-### Problema: Links de navegação quebrados
+### Problem: Broken navigation links
 
-**Solução:** Use template vars corretamente
+**Solution:** Use template vars correctly
 
 ```yaml
-# ✅ Correto
+# ✅ Correct
 "next": "/api/items?page=2&limit={{query-params.limit}}"
 
-# ❌ Errado (hardcoded)
+# ❌ Wrong (hardcoded)
 "next": "/api/items?page=2&limit=10"
 ```
 
-### Problema: Paginação + Filtros perdidos
+### Problem: Pagination + Lost filters
 
-**Solução:** Preserve todos query params nos links
+**Solution:** Preserve all query params in links
 
 ```yaml
 "next": "/api/products?category={{query-params.category}}&page=2&limit={{query-params.limit}}"
@@ -721,23 +721,23 @@ body: >
 
 ---
 
-## Comparação de Estratégias
+## Strategy Comparison
 
-| Estratégia | Prós | Contras | Quando Usar |
+| Strategy | Pros | Cons | When to Use |
 |------------|------|---------|-------------|
-| **Offset/Limit** | Simples, permite pular páginas | Inconsistente com mudanças | APIs tradicionais |
-| **Page/Limit** | Intuitivo, fácil entender | Mesmos problemas de offset | UIs com paginação |
-| **Cursor** | Consistente, perfeito p/ feeds | Não permite pular, mais complexo | Infinite scroll, feeds |
+| **Offset/Limit** | Simple, allows jumping pages | Inconsistent with changes | Traditional APIs |
+| **Page/Limit** | Intuitive, easy to understand | Same offset problems | UIs with pagination |
+| **Cursor** | Consistent, perfect for feeds | Can't jump, more complex | Infinite scroll, feeds |
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- **[Query Parameters](../../topics/parameters/query-parameters.md)** - Filtros e busca
-- **[CRUD Operations](crud-operations.md)** - Operações completas
-- **[Authentication Mock](authentication-mock.md)** - Simular autenticação
+- **[Query Parameters](../../topics/parameters/query-parameters.md)** - Filters and search
+- **[CRUD Operations](crud-operations.md)** - Complete operations
+- **[Authentication Mock](authentication-mock.md)** - Simulate authentication
 
-## Veja Também
+## See Also
 
 - [GitHub API Pagination](https://docs.github.com/en/rest/guides/using-pagination-in-the-rest-api)
 - [RFC 5988 (Link Headers)](https://tools.ietf.org/html/rfc5988)

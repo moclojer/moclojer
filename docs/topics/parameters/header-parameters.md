@@ -1,16 +1,16 @@
 ---
 description: >-
-  Aprenda a trabalhar com HTTP headers no moclojer. Acesse e use headers de
-  requisição em respostas dinâmicas (Authorization, User-Agent, etc).
+  Learn how to work with HTTP headers in moclojer. Access and use request
+  headers in dynamic responses (Authorization, User-Agent, etc).
 ---
 
-# Header Parameters (Parâmetros de Headers HTTP)
+# Header Parameters (HTTP Header Parameters)
 
-Headers HTTP carregam metadata sobre a requisição e resposta. No moclojer, você pode acessar headers enviados pelo cliente e usá-los em respostas dinâmicas, além de definir headers customizados nas respostas.
+HTTP headers carry metadata about the request and response. In moclojer, you can access headers sent by the client and use them in dynamic responses, as well as define custom headers in responses.
 
-## O Que São HTTP Headers?
+## What Are HTTP Headers?
 
-**Headers** são pares chave-valor enviados em requisições e respostas HTTP:
+**Headers** are key-value pairs sent in HTTP requests and responses:
 
 ```http
 GET /api/users HTTP/1.1
@@ -21,14 +21,14 @@ User-Agent: curl/7.64.1
 Accept: application/json
 ```
 
-**Divididos em:**
+**Divided into:**
 
-- **Request Headers**: Cliente → Servidor
-- **Response Headers**: Servidor → Cliente
+- **Request Headers**: Client → Server
+- **Response Headers**: Server → Client
 
-## Por Que Usar Headers?
+## Why Use Headers?
 
-✅ **Autenticação**: `Authorization: Bearer token`
+✅ **Authentication**: `Authorization: Bearer token`
 ✅ **Content Negotiation**: `Accept: application/json`
 ✅ **Caching**: `Cache-Control`, `ETag`
 ✅ **CORS**: `Access-Control-Allow-Origin`
@@ -37,9 +37,9 @@ Accept: application/json
 
 ---
 
-## Acessando Request Headers
+## Accessing Request Headers
 
-### Sintaxe: `{{header-params.NomeDoHeader}}`
+### Syntax: `{{header-params.HeaderName}}`
 
 ```yaml
 - endpoint:
@@ -56,7 +56,7 @@ Accept: application/json
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl http://localhost:8000/api/protected \
@@ -65,7 +65,7 @@ curl http://localhost:8000/api/protected \
   -H "X-Request-ID: req-456"
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 {
@@ -78,9 +78,9 @@ curl http://localhost:8000/api/protected \
 
 ---
 
-## Headers Comuns
+## Common Headers
 
-### 1. Authorization (Autenticação)
+### 1. Authorization (Authentication)
 
 ```yaml
 - endpoint:
@@ -104,7 +104,7 @@ curl http://localhost:8000/api/me \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 {
@@ -115,7 +115,7 @@ curl http://localhost:8000/api/me \
 }
 ```
 
-### 2. User-Agent (Cliente)
+### 2. User-Agent (Client)
 
 ```yaml
 - endpoint:
@@ -185,7 +185,7 @@ curl http://localhost:8000/api/users \
   -H "Accept: application/json"
 ```
 
-**Request XML (simulado):**
+**Request XML (simulated):**
 
 ```bash
 curl http://localhost:8000/api/users \
@@ -221,9 +221,9 @@ curl http://localhost:8000/api/service \
 
 ---
 
-## Definindo Response Headers
+## Defining Response Headers
 
-### Headers Simples
+### Simple Headers
 
 ```yaml
 - endpoint:
@@ -239,13 +239,13 @@ curl http://localhost:8000/api/service \
         {"data": []}
 ```
 
-**Teste:**
+**Test:**
 
 ```bash
 curl -I http://localhost:8000/api/data
 ```
 
-**Headers da resposta:**
+**Response headers:**
 
 ```
 HTTP/1.1 200 OK
@@ -254,7 +254,7 @@ X-Custom-Header: custom-value
 X-Rate-Limit: 100
 ```
 
-### Headers Dinâmicos
+### Dynamic Headers
 
 ```yaml
 - endpoint:
@@ -280,7 +280,7 @@ curl http://localhost:8000/api/echo \
   -H "Authorization: Bearer token123"
 ```
 
-**Response headers incluem:**
+**Response headers include:**
 
 ```
 X-Echo-User-Agent: MyClient/1.0
@@ -304,7 +304,7 @@ X-Echo-Auth: Bearer token123
         {"message": "CORS enabled"}
 ```
 
-**Ou use flag global:**
+**Or use global flag:**
 
 ```bash
 moclojer --config mocks.yml --enable-cors
@@ -329,12 +329,12 @@ moclojer --config mocks.yml --enable-cors
 
 ---
 
-## Casos de Uso Práticos
+## Practical Use Cases
 
-### 1. Autenticação Bearer Token
+### 1. Bearer Token Authentication
 
 ```yaml
-# Endpoint protegido - requer token
+# Protected endpoint - requires token
 - endpoint:
     method: GET
     path: /api/protected
@@ -351,7 +351,7 @@ moclojer --config mocks.yml --enable-cors
           }
         }
 
-# Endpoint sem token - retorna 401
+# Endpoint without token - returns 401
 - endpoint:
     method: GET
     path: /api/protected
@@ -367,7 +367,7 @@ moclojer --config mocks.yml --enable-cors
         }
 ```
 
-⚠️ **Nota:** moclojer não valida tokens. Ambos endpoints respondem. Use ordem correta ou ferramentas de validação.
+⚠️ **Note:** moclojer doesn't validate tokens. Both endpoints will respond. Use correct order or validation tools.
 
 ### 2. API Versioning via Header
 
@@ -509,7 +509,7 @@ curl http://localhost:8000/api/users \
 
 ---
 
-## Combinando Parâmetros
+## Combining Parameters
 
 ### Headers + Path + Query + Body
 
@@ -553,74 +553,74 @@ curl -X POST "http://localhost:8000/api/tenants/acme/users?role=admin" \
 
 ## Headers Case-Insensitive
 
-HTTP headers são **case-insensitive**:
+HTTP headers are **case-insensitive**:
 
 ```yaml
-# Todos funcionam:
+# All work:
 {{header-params.Authorization}}
 {{header-params.authorization}}
 {{header-params.AUTHORIZATION}}
 ```
 
-**Mas convenção:**
+**But convention:**
 
-- Use `Title-Case` nos headers: `Content-Type`, `Authorization`
-- Use exatamente como definido no template
+- Use `Title-Case` in headers: `Content-Type`, `Authorization`
+- Use exactly as defined in template
 
 ---
 
-## Headers Standard vs Custom
+## Standard Headers vs Custom
 
-### Standard Headers (Evite prefixo X-)
+### Standard Headers (Avoid X- prefix)
 
-RFC 6648 desencoraja `X-` em novos headers:
+RFC 6648 discourages `X-` in new headers:
 
 ```yaml
-# ❌ Desatualizado
+# ❌ Outdated
 X-Request-ID: abc123
 
-# ✅ Moderno
+# ✅ Modern
 Request-ID: abc123
 ```
 
-**Mas `X-` ainda é muito comum na prática:**
+**But `X-` is still very common in practice:**
 
 - `X-Request-ID`
 - `X-Correlation-ID`
 - `X-API-Key`
 - `X-Forwarded-For`
 
-### Custom Headers (Use prefixo específico)
+### Custom Headers (Use specific prefix)
 
 ```yaml
-# ✅ Bom (identificável)
+# ✅ Good (identifiable)
 X-MyApp-Version: 1.0
 X-MyApp-Client-ID: client-123
 
-# ❌ Genérico demais
+# ❌ Too generic
 X-Version: 1.0
 ```
 
 ---
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use headers para metadata, não dados**
+1. **Use headers for metadata, not data**
 
    ```yaml
    # ✅ Metadata
    headers:
      Authorization: Bearer token
 
-   # ❌ Dados devem ir no body
+   # ❌ Data should go in body
    headers:
      X-User-Name: Alice
      X-User-Email: alice@example.com
    ```
 
-2. **CORS headers quando necessário**
+2. **CORS headers when needed**
 
    ```yaml
    headers:
@@ -628,7 +628,7 @@ X-Version: 1.0
      Access-Control-Allow-Methods: "GET, POST"
    ```
 
-3. **Content-Type sempre explícito**
+3. **Content-Type always explicit**
 
    ```yaml
    headers:
@@ -642,26 +642,26 @@ X-Version: 1.0
      X-Request-ID: "{{header-params.X-Request-ID}}"
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Headers sensíveis em logs**
+1. **Sensitive headers in logs**
 
    ```yaml
-   # ⚠️ Tokens aparecem em logs
+   # ⚠️ Tokens appear in logs
    "token": "{{header-params.Authorization}}"
    ```
 
-2. **Headers gigantes**
+2. **Giant headers**
 
    ```yaml
-   # ❌ Headers têm limite de tamanho (~8KB)
+   # ❌ Headers have size limit (~8KB)
    X-Large-Data: "..." (100KB)
    ```
 
-3. **Dados complexos em headers**
+3. **Complex data in headers**
 
    ```yaml
-   # ❌ Use body para isso
+   # ❌ Use body for this
    X-User-Data: '{"name":"Alice","email":"alice@example.com"}'
    ```
 
@@ -669,54 +669,54 @@ X-Version: 1.0
 
 ## Troubleshooting
 
-### Problema: Header não é substituído
+### Problem: Header is not replaced
 
-**Causa:** Nome incorreto (case-sensitive no template)
+**Cause:** Incorrect name (case-sensitive in template)
 
 ```yaml
 # Request: Authorization: Bearer token
 
-# ❌ Não funciona
+# ❌ Doesn't work
 {{header-params.authorization}}
 
-# ✅ Funciona
+# ✅ Works
 {{header-params.Authorization}}
 ```
 
-### Problema: Header customizado não aparece
+### Problem: Custom header doesn't appear
 
-**Causa:** Não definiu no response
+**Cause:** Not defined in response
 
 ```yaml
-# ✅ Defina explicitamente
+# ✅ Define explicitly
 response:
   headers:
     X-Custom: "value"
 ```
 
-### Problema: CORS error
+### Problem: CORS error
 
-**Solução:**
+**Solution:**
 
 ```bash
-# Habilitar CORS globalmente
+# Enable CORS globally
 moclojer --enable-cors
 
-# Ou por endpoint
+# Or per endpoint
 headers:
   Access-Control-Allow-Origin: "*"
 ```
 
 ---
 
-## Headers Importantes
+## Important Headers
 
-| Header | Uso | Exemplo |
+| Header | Usage | Example |
 |--------|-----|---------|
-| `Authorization` | Autenticação | `Bearer token123` |
-| `Content-Type` | Tipo do body | `application/json` |
-| `Accept` | Formato desejado | `application/json` |
-| `User-Agent` | Cliente info | `curl/7.64.1` |
+| `Authorization` | Authentication | `Bearer token123` |
+| `Content-Type` | Body type | `application/json` |
+| `Accept` | Desired format | `application/json` |
+| `User-Agent` | Client info | `curl/7.64.1` |
 | `X-Request-ID` | Request tracking | `req-abc-123` |
 | `X-API-Key` | API key auth | `sk_live_abc123` |
 | `Cache-Control` | Caching policy | `max-age=3600` |
@@ -724,15 +724,15 @@ headers:
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- **[Path Parameters](path-parameters.md)** - Parâmetros de URL
-- **[Query Parameters](query-parameters.md)** - Filtros e paginação
-- **[Body Parameters](body-parameters.md)** - Dados no corpo
+- **[Path Parameters](path-parameters.md)** - URL parameters
+- **[Query Parameters](query-parameters.md)** - Filters and pagination
+- **[Body Parameters](body-parameters.md)** - Data in body
 - **[HTTP Methods](../endpoints/http-methods.md)** - GET, POST, etc.
 
-## Veja Também
+## See Also
 
-- [Template Variables](../templates/template-variables.md) - Referência completa
-- [Dynamic Responses](../../getting-started/dynamic-responses.md) - Tutorial prático
-- [CRUD Operations](../../how-to/patterns/crud-operations.md) - Exemplos completos
+- [Template Variables](../templates/template-variables.md) - Complete reference
+- [Dynamic Responses](../../getting-started/dynamic-responses.md) - Practical tutorial
+- [CRUD Operations](../../how-to/patterns/crud-operations.md) - Complete examples

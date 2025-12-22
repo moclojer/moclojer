@@ -1,32 +1,32 @@
 ---
 description: >-
-  Aprenda a sintaxe YAML para configurar seus mocks no moclojer. Guia completo
-  com exemplos práticos e boas práticas.
+  Learn YAML syntax for configuring your mocks in moclojer. Complete guide
+  with practical examples and best practices.
 ---
 
-# Formato YAML de Configuração
+# YAML Configuration Format
 
-O YAML é o formato de configuração mais comum no moclojer. Ele é simples de ler e escrever, não requer conhecimento de programação, e é perfeito para definir APIs mock de forma declarativa.
+YAML is the most common configuration format in moclojer. It's simple to read and write, requires no programming knowledge, and is perfect for defining mock APIs declaratively.
 
-## Por que YAML?
+## Why YAML?
 
-**Vantagens:**
+**Advantages:**
 
-- ✅ **Legível**: Parece inglês, fácil de entender
-- ✅ **Simples**: Menos verboso que JSON ou XML
-- ✅ **Estruturado**: Mantém hierarquia clara
-- ✅ **Comentários**: Pode documentar inline
+- ✅ **Readable**: Looks like English, easy to understand
+- ✅ **Simple**: Less verbose than JSON or XML
+- ✅ **Structured**: Maintains clear hierarchy
+- ✅ **Comments**: Can document inline
 
-**Quando usar YAML:**
+**When to use YAML:**
 
-- Você está começando com moclojer
-- Precisa de configuração simples e clara
-- Quer colaborar com não-programadores
-- Prefere arquivos de configuração legíveis
+- You're starting with moclojer
+- Need simple and clear configuration
+- Want to collaborate with non-programmers
+- Prefer readable configuration files
 
-## Estrutura Básica
+## Basic Structure
 
-Todo arquivo YAML do moclojer é uma **lista de endpoints**:
+Every moclojer YAML file is a **list of endpoints**:
 
 ```yaml
 - endpoint:
@@ -44,59 +44,59 @@ Todo arquivo YAML do moclojer é uma **lista de endpoints**:
       body: '{"id": 1, "name": "Alice"}'
 ```
 
-**Anatomia:**
+**Anatomy:**
 
-- Cada endpoint começa com `- endpoint:`
-- Indentação com **2 espaços** (não tabs!)
-- Chaves obrigatórias: `path`, `response`
-- Chave opcional mas recomendada: `method`
+- Each endpoint starts with `- endpoint:`
+- Indentation with **2 spaces** (not tabs!)
+- Required keys: `path`, `response`
+- Optional but recommended key: `method`
 
-## Sintaxe YAML Essencial
+## Essential YAML Syntax
 
-### 1. Indentação
+### 1. Indentation
 
-A indentação define a hierarquia:
+Indentation defines hierarchy:
 
 ```yaml
-- endpoint:           # Nível 0
-    method: GET       # Nível 1 (2 espaços)
-    path: /users      # Nível 1
-    response:         # Nível 1
-      status: 200     # Nível 2 (4 espaços)
-      body: "data"    # Nível 2
+- endpoint:           # Level 0
+    method: GET       # Level 1 (2 spaces)
+    path: /users      # Level 1
+    response:         # Level 1
+      status: 200     # Level 2 (4 spaces)
+      body: "data"    # Level 2
 ```
 
-⚠️ **IMPORTANTE:**
+⚠️ **IMPORTANT:**
 
-- Use sempre **2 espaços** por nível
-- Nunca misture espaços e tabs
-- Ferramentas: configure seu editor para "soft tabs"
+- Always use **2 spaces** per level
+- Never mix spaces and tabs
+- Tools: configure your editor for "soft tabs"
 
 ### 2. Strings
 
-Três formas de escrever strings:
+Three ways to write strings:
 
 ```yaml
-# 1. Sem aspas (para textos simples)
+# 1. Without quotes (for simple text)
 path: /users
 
-# 2. Com aspas duplas (quando tem caracteres especiais)
+# 2. With double quotes (when containing special characters)
 body: "Hello, \"World\"!"
 
-# 3. Multi-linha com > (remove quebras de linha)
+# 3. Multi-line with > (removes line breaks)
 body: >
-  Este texto muito longo
-  será convertido em uma
-  única linha.
+  This very long text
+  will be converted to a
+  single line.
 
-# 4. Multi-linha com | (preserva quebras de linha)
+# 4. Multi-line with | (preserves line breaks)
 body: |
-  Linha 1
-  Linha 2
-  Linha 3
+  Line 1
+  Line 2
+  Line 3
 ```
 
-**Para JSON no body, use `>`:**
+**For JSON in body, use `>`:**
 
 ```yaml
 body: >
@@ -106,82 +106,82 @@ body: >
   }
 ```
 
-### 3. Números e Booleanos
+### 3. Numbers and Booleans
 
 ```yaml
-# Números (sem aspas)
+# Numbers (without quotes)
 status: 200
 max-requests: 100
 
-# Booleanos
+# Booleans
 enabled: true
 disabled: false
 ```
 
-### 4. Listas
+### 4. Lists
 
 ```yaml
-# Lista inline
+# Inline list
 tags: [moclojer, api, testing]
 
-# Lista multi-linha (recomendado)
+# Multi-line list (recommended)
 tags:
   - moclojer
   - api
   - testing
 ```
 
-### 5. Objetos (Mapas)
+### 5. Objects (Maps)
 
 ```yaml
 # Inline
 headers: {Content-Type: application/json, X-Custom: value}
 
-# Multi-linha (recomendado)
+# Multi-line (recommended)
 headers:
   Content-Type: application/json
   X-Custom: value
 ```
 
-### 6. Comentários
+### 6. Comments
 
 ```yaml
-# Isto é um comentário
-- endpoint:  # Comentário inline
+# This is a comment
+- endpoint:  # Inline comment
     method: GET
     path: /users
-    # TODO: adicionar paginação
+    # TODO: add pagination
     response:
       status: 200
 ```
 
-## Exemplo Completo Comentado
+## Complete Annotated Example
 
 ```yaml
-# API de Usuários - Exemplo Completo
-# Autor: Equipe Dev
-# Última atualização: 2024-01-15
+# User API - Complete Example
+# Author: Dev Team
+# Last updated: 2024-01-15
 
-# Endpoint 1: Listar todos os usuários
+# Endpoint 1: List all users
 - endpoint:
-    method: GET                    # Método HTTP
-    path: /users                   # Caminho da URL
-    response:                      # Configuração da resposta
+    method: GET                    # HTTP method
+    path: /users                   # URL path
+    response:                      # Response configuration
       status: 200                  # HTTP 200 OK
-      headers:                     # Headers da resposta
+      headers:                     # Response headers
         Content-Type: application/json
         X-Total-Count: "3"
-      body: >                      # JSON inline (quebras removidas)
+      body: >                      # Inline JSON (breaks removed)
         [
           {"id": 1, "name": "Alice"},
           {"id": 2, "name": "Bob"},
           {"id": 3, "name": "Carol"}
         ]
 
-# Endpoint 2: Obter usuário por ID
+# Endpoint 2: Get user by ID
 - endpoint:
     method: GET
-    path: /users/:id               # :id é um parâmetro dinâmico
+    path: /users/:id               # :id is a dynamic parameter
     response:
       status: 200
       headers:
@@ -193,7 +193,7 @@ headers:
           "email": "user{{path-params.id}}@example.com"
         }
 
-# Endpoint 3: Criar novo usuário
+# Endpoint 3: Create new user
 - endpoint:
     method: POST
     path: /users
@@ -210,7 +210,7 @@ headers:
           "created_at": "2024-01-15T10:30:00Z"
         }
 
-# Endpoint 4: Erro - Usuário não encontrado
+# Endpoint 4: Error - User not found
 - endpoint:
     method: GET
     path: /users/999
@@ -226,35 +226,35 @@ headers:
         }
 ```
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use indentação consistente (2 espaços)**
+1. **Use consistent indentation (2 spaces)**
 
    ```yaml
    - endpoint:
-       method: GET    # 2 espaços
-       path: /users   # 2 espaços
+       method: GET    # 2 spaces
+       path: /users   # 2 spaces
    ```
 
-2. **Adicione comentários explicativos**
+2. **Add explanatory comments**
 
    ```yaml
-   # Health check endpoint para monitoramento
+   # Health check endpoint for monitoring
    - endpoint:
        method: GET
        path: /health
    ```
 
-3. **Use `>` para JSON inline**
+3. **Use `>` for inline JSON**
 
    ```yaml
    body: >
      {"key": "value"}
    ```
 
-4. **Agrupe endpoints relacionados**
+4. **Group related endpoints**
 
    ```yaml
    # === USER ENDPOINTS ===
@@ -265,7 +265,7 @@ headers:
    - endpoint: ...
    ```
 
-5. **Ordene por método e path**
+5. **Order by method and path**
 
    ```yaml
    - GET /users
@@ -275,114 +275,114 @@ headers:
    - DELETE /users/:id
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Tabs para indentação**
+1. **Tabs for indentation**
 
    ```yaml
    - endpoint:
-    method: GET    # ❌ Tab causa erro
+    method: GET    # ❌ Tab causes error
    ```
 
-2. **Aspas desnecessárias**
+2. **Unnecessary quotes**
 
    ```yaml
-   method: "GET"       # ❌ Desnecessário
-   method: GET         # ✅ Melhor
+   method: "GET"       # ❌ Unnecessary
+   method: GET         # ✅ Better
    ```
 
-3. **JSON sem `>`**
+3. **JSON without `>`**
 
    ```yaml
-   body: {"key": "value"}   # ❌ Pode quebrar com strings complexas
-   body: >                  # ✅ Sempre funciona
+   body: {"key": "value"}   # ❌ Can break with complex strings
+   body: >                  # ✅ Always works
      {"key": "value"}
    ```
 
-4. **Endpoints sem comentários em arquivos grandes**
+4. **Endpoints without comments in large files**
 
    ```yaml
-   # ✅ Boa prática em arquivos grandes
-   # Autenticação - Login de usuário
+   # ✅ Good practice in large files
+   # Authentication - User login
    - endpoint:
        method: POST
        path: /auth/login
    ```
 
-## Troubleshooting YAML
+## YAML Troubleshooting
 
-### Problema: "YAML parse error: mapping values are not allowed"
+### Problem: "YAML parse error: mapping values are not allowed"
 
-**Causa:** Dois-pontos sem espaço ou aspas
+**Cause:** Colon without space or quotes
 
 ```yaml
-# ❌ Errado
-path: http://example.com    # dois-pontos em URL confunde parser
+# ❌ Wrong
+path: http://example.com    # colon in URL confuses parser
 
-# ✅ Correto
-path: "http://example.com"  # use aspas
+# ✅ Correct
+path: "http://example.com"  # use quotes
 ```
 
-### Problema: "YAML parse error: did not find expected key"
+### Problem: "YAML parse error: did not find expected key"
 
-**Causa:** Indentação incorreta
+**Cause:** Incorrect indentation
 
 ```yaml
-# ❌ Errado
+# ❌ Wrong
 - endpoint:
-  method: GET     # Deveria ter 4 espaços (2 níveis)
+  method: GET     # Should have 4 spaces (2 levels)
 
-# ✅ Correto
+# ✅ Correct
 - endpoint:
-    method: GET   # 4 espaços
+    method: GET   # 4 spaces
 ```
 
-### Problema: JSON quebrado no body
+### Problem: Broken JSON in body
 
-**Causa:** Não usou `>` para multi-linha
+**Cause:** Didn't use `>` for multi-line
 
 ```yaml
-# ❌ Errado
+# ❌ Wrong
 body: {
   "key": "value"
 }
 
-# ✅ Correto
+# ✅ Correct
 body: >
   {
     "key": "value"
   }
 ```
 
-## Validação de YAML
+## YAML Validation
 
 ### Online
 
-- [YAML Lint](http://www.yamllint.com/) - valida sintaxe
-- [YAML to JSON](https://onlineyamltools.com/convert-yaml-to-json) - vê como será parseado
+- [YAML Lint](http://www.yamllint.com/) - validates syntax
+- [YAML to JSON](https://onlineyamltools.com/convert-yaml-to-json) - see how it will be parsed
 
-### Editores
+### Editors
 
-- **VS Code**: extensão "YAML" by Red Hat
-- **Sublime**: extensão "YAML Nav"
-- **Vim**: plugin "vim-yaml"
+- **VS Code**: "YAML" extension by Red Hat
+- **Sublime**: "YAML Nav" extension
+- **Vim**: "vim-yaml" plugin
 
-### Linha de comando
+### Command line
 
 ```bash
-# Validar sintaxe
+# Validate syntax
 yamllint moclojer.yml
 
-# Ver como moclojer vai parsear
+# See how moclojer will parse
 moclojer --validate moclojer.yml
 ```
 
-## Comparação com Outros Formatos
+## Comparison with Other Formats
 
 ### YAML vs JSON
 
 ```yaml
-# YAML - Mais legível
+# YAML - More readable
 - endpoint:
     method: GET
     path: /users
@@ -393,7 +393,7 @@ moclojer --validate moclojer.yml
 ```
 
 ```json
-// JSON - Mais verboso
+// JSON - More verbose
 [
   {
     "endpoint": {
@@ -408,37 +408,37 @@ moclojer --validate moclojer.yml
 ]
 ```
 
-**YAML ganha em:**
+**YAML wins in:**
 
-- Legibilidade (50% menos caracteres)
-- Comentários nativos
-- Strings multi-linha
+- Readability (50% fewer characters)
+- Native comments
+- Multi-line strings
 
-**JSON ganha em:**
+**JSON wins in:**
 
-- Parsing mais rápido
-- Suporte universal
+- Faster parsing
+- Universal support
 
 ### YAML vs EDN
 
-Para a maioria dos usuários, **YAML é mais simples**. Use EDN apenas se você:
+For most users, **YAML is simpler**. Use EDN only if you:
 
-- Trabalha com Clojure
-- Precisa de estruturas de dados complexas
-- Quer integração programática
+- Work with Clojure
+- Need complex data structures
+- Want programmatic integration
 
-Veja [EDN Format Guide](edn-format.md) para detalhes.
+See [EDN Format Guide](edn-format.md) for details.
 
-## Próximos Passos
+## Next Steps
 
-Agora que você domina YAML, explore:
+Now that you've mastered YAML, explore:
 
-1. **[Path Parameters](../parameters/path-parameters.md)** - Parâmetros dinâmicos em URLs
-2. **[Template Variables](../templates/template-variables.md)** - Respostas dinâmicas
-3. **[Configuration Spec](../../reference/configuration-spec.md)** - Referência completa
+1. **[Path Parameters](../parameters/path-parameters.md)** - Dynamic parameters in URLs
+2. **[Template Variables](../templates/template-variables.md)** - Dynamic responses
+3. **[Configuration Spec](../../reference/configuration-spec.md)** - Complete reference
 
-## Veja Também
+## See Also
 
-- [OpenAPI Format](openapi-format.md) - Importar specs OpenAPI
-- [Postman Format](postman-format.md) - Usar Postman Collections
-- [YAML Specification](https://yaml.org/spec/1.2/spec.html) - Spec oficial YAML 1.2
+- [OpenAPI Format](openapi-format.md) - Import OpenAPI specs
+- [Postman Format](postman-format.md) - Use Postman Collections
+- [YAML Specification](https://yaml.org/spec/1.2/spec.html) - Official YAML 1.2 spec

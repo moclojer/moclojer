@@ -1,19 +1,19 @@
 ---
 description: >-
-  Aprenda a trabalhar com body parameters (JSON, form data) no moclojer.
-  Acesse dados do corpo da requisição em POST, PUT e PATCH.
+  Learn how to work with body parameters (JSON, form data) in moclojer.
+  Access data from the request body in POST, PUT, and PATCH.
 ---
 
-# Body Parameters (Parâmetros do Corpo)
+# Body Parameters
 
-Body parameters são dados enviados no corpo (body) de requisições HTTP, principalmente em POST, PUT e PATCH. Moclojer permite acessar esses dados via templates e usá-los em respostas dinâmicas.
+Body parameters are data sent in the body of HTTP requests, primarily in POST, PUT, and PATCH. Moclojer allows you to access this data via templates and use it in dynamic responses.
 
-## O Que São Body Parameters?
+## What Are Body Parameters?
 
-**Body** é onde você envia dados complexos em requisições HTTP:
+**Body** is where you send complex data in HTTP requests:
 
 ```bash
-# Exemplo de POST com JSON no body
+# Example of POST with JSON in body
 curl -X POST http://localhost:8000/users \
   -H "Content-Type: application/json" \
   -d '{
@@ -23,37 +23,37 @@ curl -X POST http://localhost:8000/users \
   }'
 ```
 
-**Diferença de outros parâmetros:**
+**Difference from other parameters:**
 
-- **Path params**: Dados na URL (`/users/:id`)
-- **Query params**: Dados após `?` (`?page=1`)
-- **Body params**: Dados no corpo da requisição (JSON, form data)
+- **Path params**: Data in the URL (`/users/:id`)
+- **Query params**: Data after `?` (`?page=1`)
+- **Body params**: Data in the request body (JSON, form data)
 
-## Por Que Usar Body Parameters?
+## Why Use Body Parameters?
 
-✅ **Dados complexos**: Objetos aninhados, arrays, múltiplos campos
-✅ **Segurança**: Não aparecem na URL (logs, histórico)
-✅ **Tamanho**: Sem limite de URL (que é ~2KB)
-✅ **Estruturado**: JSON permite hierarquias
+✅ **Complex data**: Nested objects, arrays, multiple fields
+✅ **Security**: Don't appear in URL (logs, history)
+✅ **Size**: No URL limit (which is ~2KB)
+✅ **Structured**: JSON allows hierarchies
 
-**Quando usar:**
+**When to use:**
 
-- Criar recursos (POST)
-- Atualizar recursos (PUT, PATCH)
-- Operações com muitos dados
-- Dados sensíveis (senhas, tokens)
+- Create resources (POST)
+- Update resources (PUT, PATCH)
+- Operations with lots of data
+- Sensitive data (passwords, tokens)
 
-**Quando NÃO usar:**
+**When NOT to use:**
 
-- GET requests (GET não deve ter body)
-- DELETE simples (use path params)
-- Filtros/paginação (use query params)
+- GET requests (GET should not have body)
+- Simple DELETE (use path params)
+- Filters/pagination (use query params)
 
 ---
 
-## Acessando Body Parameters
+## Accessing Body Parameters
 
-### Sintaxe: `{{json-params.campo}}`
+### Syntax: `{{json-params.field}}`
 
 ```yaml
 - endpoint:
@@ -70,7 +70,7 @@ curl -X POST http://localhost:8000/users \
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl -X POST http://localhost:8000/users \
@@ -82,7 +82,7 @@ curl -X POST http://localhost:8000/users \
   }'
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 {
@@ -97,7 +97,7 @@ curl -X POST http://localhost:8000/users \
 
 ## Content-Type: application/json
 
-### JSON Simples
+### Simple JSON
 
 ```yaml
 - endpoint:
@@ -124,13 +124,13 @@ curl -X POST http://localhost:8000/users \
 curl -X POST http://localhost:8000/api/tasks \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Comprar leite",
-    "description": "Ir ao mercado",
+    "title": "Buy milk",
+    "description": "Go to the market",
     "priority": "high"
   }'
 ```
 
-### Objetos Aninhados
+### Nested Objects
 
 ```yaml
 - endpoint:
@@ -167,7 +167,7 @@ curl -X POST http://localhost:8000/api/users \
   }'
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 {
@@ -182,7 +182,7 @@ curl -X POST http://localhost:8000/api/users \
 }
 ```
 
-### Arrays no Body
+### Arrays in Body
 
 ```yaml
 - endpoint:
@@ -212,11 +212,11 @@ curl -X POST http://localhost:8000/api/bulk-create \
   }'
 ```
 
-⚠️ **Nota:** Templates não iteram sobre arrays automaticamente. O array é retornado como string.
+⚠️ **Note:** Templates don't iterate over arrays automatically. The array is returned as a string.
 
 ---
 
-## Tipos de Dados
+## Data Types
 
 ### Strings
 
@@ -230,7 +230,7 @@ body: >
 **Request:** `{"name": "Alice"}`
 **Response:** `{"name": "Alice"}`
 
-### Números (sem aspas!)
+### Numbers (no quotes!)
 
 ```yaml
 body: >
@@ -243,9 +243,9 @@ body: >
 **Request:** `{"age": 25, "price": 99.99}`
 **Response:** `{"age": 25, "price": 99.99}`
 
-⚠️ **Importante:** Sem aspas para números! Com aspas vira string.
+⚠️ **Important:** No quotes for numbers! With quotes it becomes string.
 
-### Booleanos
+### Booleans
 
 ```yaml
 body: >
@@ -272,7 +272,7 @@ body: >
 
 ---
 
-## Combinando Parâmetros
+## Combining Parameters
 
 ### Body + Path Parameters
 
@@ -375,9 +375,9 @@ curl -X POST http://localhost:8000/api/protected \
 
 ---
 
-## Casos de Uso Práticos
+## Practical Use Cases
 
-### 1. Criar Usuário (POST)
+### 1. Create User (POST)
 
 ```yaml
 - endpoint:
@@ -411,7 +411,7 @@ curl -X POST http://localhost:8000/api/users \
   }'
 ```
 
-### 2. Atualizar Perfil (PATCH)
+### 2. Update Profile (PATCH)
 
 ```yaml
 - endpoint:
@@ -443,7 +443,7 @@ curl -X PATCH http://localhost:8000/api/users/1/profile \
   }'
 ```
 
-### 3. Login (Autenticação)
+### 3. Login (Authentication)
 
 ```yaml
 - endpoint:
@@ -474,7 +474,7 @@ curl -X POST http://localhost:8000/api/auth/login \
   }'
 ```
 
-### 4. Criar Pedido (E-commerce)
+### 4. Create Order (E-commerce)
 
 ```yaml
 - endpoint:
@@ -520,7 +520,7 @@ curl -X POST http://localhost:8000/api/orders \
   }'
 ```
 
-### 5. Upload Metadata (sem arquivo binário)
+### 5. Upload Metadata (without binary file)
 
 ```yaml
 - endpoint:
@@ -553,14 +553,14 @@ curl -X POST http://localhost:8000/api/uploads \
 
 ---
 
-## Validação e Erros
+## Validation and Errors
 
-### Campos Obrigatórios (Simulação)
+### Required Fields (Simulation)
 
-Moclojer **não valida** automaticamente. Simule com endpoints específicos:
+Moclojer **does not validate** automatically. Simulate with specific endpoints:
 
 ```yaml
-# 1. Endpoint para request sem campo obrigatório (retorna 400)
+# 1. Endpoint for request without required field (returns 400)
 - endpoint:
     method: POST
     path: /api/users
@@ -573,7 +573,7 @@ Moclojer **não valida** automaticamente. Simule com endpoints específicos:
           "code": "VALIDATION_ERROR"
         }
 
-# 2. Endpoint para sucesso (deve vir DEPOIS)
+# 2. Endpoint for success (should come AFTER)
 - endpoint:
     method: POST
     path: /api/users
@@ -587,9 +587,9 @@ Moclojer **não valida** automaticamente. Simule com endpoints específicos:
         }
 ```
 
-⚠️ **Limitação:** Moclojer não valida se campo existe. Use ferramentas como Prism para validação real.
+⚠️ **Limitation:** Moclojer doesn't validate if field exists. Use tools like Prism for real validation.
 
-### Tipos Inválidos
+### Invalid Types
 
 ```yaml
 - endpoint:
@@ -610,7 +610,7 @@ Moclojer **não valida** automaticamente. Simule com endpoints específicos:
         }
 ```
 
-### Email Inválido
+### Invalid Email
 
 ```yaml
 - endpoint:
@@ -635,7 +635,7 @@ Moclojer **não valida** automaticamente. Simule com endpoints específicos:
 
 ## Content-Type: application/x-www-form-urlencoded
 
-Moclojer suporta form data (menos comum em APIs modernas):
+Moclojer supports form data (less common in modern APIs):
 
 ```yaml
 - endpoint:
@@ -659,15 +659,15 @@ curl -X POST http://localhost:8000/api/form-submit \
   -d "name=John&email=john@example.com"
 ```
 
-⚠️ **Nota:** Use JSON quando possível. Form-urlencoded tem limitações (sem objetos aninhados).
+⚠️ **Note:** Use JSON when possible. Form-urlencoded has limitations (no nested objects).
 
 ---
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use JSON para APIs modernas**
+1. **Use JSON for modern APIs**
 
    ```bash
    curl -X POST /api/users \
@@ -675,17 +675,17 @@ curl -X POST http://localhost:8000/api/form-submit \
      -d '{"name": "Alice"}'
    ```
 
-2. **Valide Content-Type no client**
+2. **Validate Content-Type in client**
 
    ```bash
-   # ✅ Sempre especifique Content-Type
+   # ✅ Always specify Content-Type
    -H "Content-Type: application/json"
    ```
 
-3. **Echo de dados recebidos**
+3. **Echo received data**
 
    ```yaml
-   # Cliente vê o que foi enviado
+   # Client sees what was sent
    response:
      body: >
        {
@@ -696,20 +696,20 @@ curl -X POST http://localhost:8000/api/form-submit \
        }
    ```
 
-4. **Use números sem aspas**
+4. **Use numbers without quotes**
 
    ```yaml
-   # ✅ Correto (número)
+   # ✅ Correct (number)
    {"age": {{json-params.age}}}
 
-   # ❌ Errado (string)
+   # ❌ Wrong (string)
    {"age": "{{json-params.age}}"}
    ```
 
-5. **Endpoints de erro para validação**
+5. **Error endpoints for validation**
 
    ```yaml
-   # Simule erros de validação
+   # Simulate validation errors
    - endpoint:
        path: /api/users
        response:
@@ -717,12 +717,12 @@ curl -X POST http://localhost:8000/api/form-submit \
          body: '{"error": "Validation failed"}'
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **GET com body**
+1. **GET with body**
 
    ```bash
-   # ❌ GET não deve ter body
+   # ❌ GET should not have body
    curl -X GET /api/users \
      -d '{"filter": "admin"}'
 
@@ -730,21 +730,21 @@ curl -X POST http://localhost:8000/api/form-submit \
    curl "http://localhost:8000/api/users?filter=admin"
    ```
 
-2. **Dados sensíveis em GET**
+2. **Sensitive data in GET**
 
    ```bash
-   # ❌ NUNCA em query params
+   # ❌ NEVER in query params
    curl "http://localhost:8000/login?password=secret"
 
-   # ✅ Sempre no body (POST)
+   # ✅ Always in body (POST)
    curl -X POST /login \
      -d '{"password": "secret"}'
    ```
 
-3. **Body muito grande inline**
+3. **Very large body inline**
 
    ```yaml
-   # ❌ Difícil de ler
+   # ❌ Hard to read
    body: >
      {"data": [...1000 items...]}
 
@@ -758,70 +758,70 @@ curl -X POST http://localhost:8000/api/form-submit \
 
 ## Troubleshooting
 
-### Problema: Template não é substituído
+### Problem: Template is not replaced
 
-**Causa:** Nome do campo incorreto
+**Cause:** Incorrect field name
 
 ```yaml
 # Request: {"userName": "Alice"}
 
-# ❌ Errado
+# ❌ Wrong
 {"name": "{{json-params.name}}"}  # undefined
 
-# ✅ Correto
+# ✅ Correct
 {"name": "{{json-params.userName}}"}
 ```
 
-### Problema: Número vem como string
+### Problem: Number comes as string
 
-**Causa:** Aspas ao redor do template
+**Cause:** Quotes around template
 
 ```yaml
-# ❌ Retorna "25" (string)
+# ❌ Returns "25" (string)
 {"age": "{{json-params.age}}"}
 
-# ✅ Retorna 25 (número)
+# ✅ Returns 25 (number)
 {"age": {{json-params.age}}}
 ```
 
-### Problema: Objeto aninhado não funciona
+### Problem: Nested object doesn't work
 
-**Causa:** Sintaxe incorreta
+**Cause:** Incorrect syntax
 
 ```yaml
-# ✅ Correto
+# ✅ Correct
 {"city": "{{json-params.address.city}}"}
 
-# ❌ Errado
+# ❌ Wrong
 {"city": "{{json-params[address][city]}}"}
 {"city": "{{json-params.address[city]}}"}
 ```
 
-### Problema: "Unexpected end of JSON"
+### Problem: "Unexpected end of JSON"
 
-**Causa:** Template vazio quebra JSON
+**Cause:** Empty template breaks JSON
 
 ```yaml
-# Se json-params.name está vazio:
+# If json-params.name is empty:
 {"name": {{json-params.name}}}
-# Resulta em: {"name": }  ← INVÁLIDO!
+# Results in: {"name": }  ← INVALID!
 
-# ✅ Solução: sempre com aspas para strings
+# ✅ Solution: always with quotes for strings
 {"name": "{{json-params.name}}"}
-# Resulta em: {"name": ""}  ← VÁLIDO
+# Results in: {"name": ""}  ← VALID
 ```
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- **[Path Parameters](path-parameters.md)** - Parâmetros na URL
-- **[Query Parameters](query-parameters.md)** - Filtros e paginação
-- **[Header Parameters](header-parameters.md)** - Headers HTTP
+- **[Path Parameters](path-parameters.md)** - Parameters in the URL
+- **[Query Parameters](query-parameters.md)** - Filters and pagination
+- **[Header Parameters](header-parameters.md)** - HTTP headers
 - **[HTTP Methods](../endpoints/http-methods.md)** - POST, PUT, PATCH
 
-## Veja Também
+## See Also
 
-- [CRUD Operations](../../how-to/patterns/crud-operations.md) - Exemplos completos
-- [Template Variables](../templates/template-variables.md)  - Referência completa
-- [Dynamic Responses](../../getting-started/dynamic-responses.md) - Tutorial prático
+- [CRUD Operations](../../how-to/patterns/crud-operations.md) - Complete examples
+- [Template Variables](../templates/template-variables.md)  - Complete reference
+- [Dynamic Responses](../../getting-started/dynamic-responses.md) - Practical tutorial

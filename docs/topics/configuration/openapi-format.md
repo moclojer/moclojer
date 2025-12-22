@@ -1,48 +1,48 @@
 ---
 description: >-
-  Aprenda a usar especificações OpenAPI (Swagger) com moclojer. Importe suas
-  specs OpenAPI 3.0/3.1 e gere mocks automaticamente.
+  Learn how to use OpenAPI (Swagger) specifications with moclojer. Import your
+  OpenAPI 3.0/3.1 specs and generate mocks automatically.
 ---
 
 # OpenAPI Format (Swagger)
 
-Moclojer suporta **OpenAPI 3.0 e 3.1** (anteriormente conhecido como Swagger), permitindo que você use suas especificações de API existentes para gerar mocks automaticamente. Não precisa reescrever nada em YAML do moclojer!
+Moclojer supports **OpenAPI 3.0 and 3.1** (formerly known as Swagger), allowing you to use your existing API specifications to generate mocks automatically. No need to rewrite anything in moclojer YAML!
 
-## O Que É OpenAPI?
+## What Is OpenAPI?
 
-**OpenAPI Specification** é um padrão para descrever APIs RESTful de forma legível por máquinas. É amplamente usado para:
+**OpenAPI Specification** is a standard for describing RESTful APIs in a machine-readable format. It's widely used for:
 
-- Documentação de APIs
-- Geração automática de SDKs
-- Validação de contratos
-- **Mock servers** (como o moclojer!)
+- API documentation
+- Automatic SDK generation
+- Contract validation
+- **Mock servers** (like moclojer!)
 
-## Por Que Usar OpenAPI com Moclojer?
+## Why Use OpenAPI with Moclojer?
 
-✅ **Reutilização**: Use suas specs OpenAPI existentes
-✅ **Padronização**: OpenAPI é um padrão da indústria
-✅ **Zero configuração**: Moclojer converte automaticamente
-✅ **Validação**: Specs OpenAPI incluem schemas de validação
-✅ **Documentação viva**: Sua spec é documentação + mock
+✅ **Reusability**: Use your existing OpenAPI specs
+✅ **Standardization**: OpenAPI is an industry standard
+✅ **Zero configuration**: Moclojer converts automatically
+✅ **Validation**: OpenAPI specs include validation schemas
+✅ **Living documentation**: Your spec is documentation + mock
 
-## Suporte OpenAPI no Moclojer
+## OpenAPI Support in Moclojer
 
-### Versões Suportadas
+### Supported Versions
 
 - ✅ OpenAPI 3.0.x
 - ✅ OpenAPI 3.1.x
-- ⚠️ Swagger 2.0 (suporte parcial - recomenda-se converter para 3.x)
+- ⚠️ Swagger 2.0 (partial support - recommend converting to 3.x)
 
-### Formatos Aceitos
+### Accepted Formats
 
 - ✅ JSON (`.json`)
 - ✅ YAML (`.yml`, `.yaml`)
 
-## Início Rápido
+## Quick Start
 
-### 1. Criar ou Obter uma Spec OpenAPI
+### 1. Create or Get an OpenAPI Spec
 
-Exemplo mínimo (`openapi.yml`):
+Minimal example (`openapi.yml`):
 
 ```yaml
 openapi: 3.0.0
@@ -74,26 +74,26 @@ paths:
                   name: Bob
 ```
 
-### 2. Iniciar Moclojer com OpenAPI
+### 2. Start Moclojer with OpenAPI
 
 ```bash
-# Usando arquivo local
+# Using local file
 moclojer --config openapi.yml
 
-# Ou especificar porta
+# Or specify port
 moclojer --config openapi.yml --port 3000
 
-# Habilitar CORS
+# Enable CORS
 moclojer --config openapi.yml --enable-cors
 ```
 
-### 3. Testar
+### 3. Test
 
 ```bash
 curl http://localhost:8000/users
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 [
@@ -102,15 +102,15 @@ curl http://localhost:8000/users
 ]
 ```
 
-🎉 **Pronto!** Moclojer converteu automaticamente sua spec OpenAPI em endpoints funcionais.
+🎉 **Done!** Moclojer automatically converted your OpenAPI spec into functional endpoints.
 
 ---
 
-## Como Moclojer Converte OpenAPI
+## How Moclojer Converts OpenAPI
 
-### Conversão Automática
+### Automatic Conversion
 
-Moclojer detecta automaticamente que é uma spec OpenAPI e converte:
+Moclojer automatically detects it's an OpenAPI spec and converts:
 
 ```yaml
 # OpenAPI spec
@@ -126,7 +126,7 @@ paths:
                 name: John
 ```
 
-**Resulta em (equivalente moclojer interno):**
+**Results in (internal moclojer equivalent):**
 
 ```yaml
 - endpoint:
@@ -145,7 +145,7 @@ paths:
 
 ### Path Parameters
 
-OpenAPI usa `{param}`, moclojer converte para `:param`:
+OpenAPI uses `{param}`, moclojer converts to `:param`:
 
 ```yaml
 # OpenAPI
@@ -163,9 +163,9 @@ paths:
             type: integer
 ```
 
-**Convertido para:** `/users/:userId/posts/:postId`
+**Converted to:** `/users/:userId/posts/:postId`
 
-**Com tipos:**
+**With types:**
 
 - `type: integer` → `:userId|int`
 - `type: string` → `:userId|string`
@@ -188,7 +188,7 @@ paths:
             type: integer
 ```
 
-**Moclojer entende e aceita:**
+**Moclojer understands and accepts:**
 
 ```bash
 curl "http://localhost:8000/products?category=electronics&limit=10"
@@ -217,13 +217,13 @@ paths:
               email: john@example.com
 ```
 
-**Moclojer usa o `example` para a resposta.**
+**Moclojer uses the `example` for the response.**
 
 ---
 
-## Exemplos OpenAPI Completos
+## Complete OpenAPI Examples
 
-### Exemplo 1: API Simples de Usuários
+### Example 1: Simple User API
 
 ```yaml
 openapi: 3.0.0
@@ -425,33 +425,33 @@ components:
           type: string
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
-# Listar usuários
+# List users
 curl http://localhost:8000/users
 
-# Com paginação
+# With pagination
 curl "http://localhost:8000/users?page=1&limit=5"
 
-# Obter usuário específico
+# Get specific user
 curl http://localhost:8000/users/1
 
-# Criar usuário
+# Create user
 curl -X POST http://localhost:8000/users \
   -H "Content-Type: application/json" \
   -d '{"name": "New User", "email": "new@example.com"}'
 
-# Atualizar usuário
+# Update user
 curl -X PUT http://localhost:8000/users/1 \
   -H "Content-Type: application/json" \
   -d '{"name": "Updated Name", "email": "updated@example.com"}'
 
-# Deletar usuário
+# Delete user
 curl -X DELETE http://localhost:8000/users/1
 ```
 
-### Exemplo 2: API de E-commerce
+### Example 2: E-commerce API
 
 ```yaml
 openapi: 3.0.0
@@ -562,9 +562,9 @@ paths:
 
 ---
 
-## Múltiplas Respostas por Status Code
+## Multiple Responses by Status Code
 
-OpenAPI permite definir múltiplas respostas:
+OpenAPI allows defining multiple responses:
 
 ```yaml
 paths:
@@ -592,12 +592,12 @@ paths:
                 error: "Internal server error"
 ```
 
-**Moclojer usa o primeiro `example` encontrado (geralmente 200).**
+**Moclojer uses the first `example` found (usually 200).**
 
-Para simular erros, crie endpoints específicos:
+To simulate errors, create specific endpoints:
 
 ```yaml
-# No moclojer, adicione endpoints separados para erros
+# In moclojer, add separate endpoints for errors
 - endpoint:
     path: /users/999
     response:
@@ -607,9 +607,9 @@ Para simular erros, crie endpoints específicos:
 
 ---
 
-## Headers e Content-Type
+## Headers and Content-Type
 
-OpenAPI define headers automaticamente:
+OpenAPI defines headers automatically:
 
 ```yaml
 responses:
@@ -630,16 +630,16 @@ responses:
           data: []
 ```
 
-**Moclojer adiciona automaticamente:**
+**Moclojer automatically adds:**
 
-- `Content-Type` baseado em `content`
-- Headers customizados definidos em `headers`
+- `Content-Type` based on `content`
+- Custom headers defined in `headers`
 
 ---
 
-## Schemas e $ref
+## Schemas and $ref
 
-OpenAPI usa `$ref` para reutilizar schemas:
+OpenAPI uses `$ref` to reuse schemas:
 
 ```yaml
 components:
@@ -666,13 +666,13 @@ paths:
                 name: "Alice"
 ```
 
-**Moclojer resolve `$ref` e usa o `example` fornecido.**
+**Moclojer resolves `$ref` and uses the provided `example`.**
 
 ---
 
-## Security Schemes (Autenticação)
+## Security Schemes (Authentication)
 
-OpenAPI define esquemas de segurança:
+OpenAPI defines security schemes:
 
 ```yaml
 components:
@@ -706,17 +706,17 @@ paths:
                 error: "Unauthorized"
 ```
 
-**Nota:** Moclojer **não valida autenticação** automaticamente. Para simular:
+**Note:** Moclojer **does not validate authentication** automatically. To simulate:
 
 ```yaml
-# Adicionar endpoint para token inválido
+# Add endpoint for invalid token
 - endpoint:
     path: /protected
     response:
       status: 401
       body: '{"error": "Unauthorized"}'
 
-# E endpoint para sucesso (deve vir depois)
+# And endpoint for success (should come after)
 - endpoint:
     path: /protected
     response:
@@ -726,163 +726,163 @@ paths:
 
 ---
 
-## Ferramentas Úteis
+## Useful Tools
 
-### Editores OpenAPI
+### OpenAPI Editors
 
 1. **Swagger Editor** (online)
    - <https://editor.swagger.io/>
-   - Valida spec em tempo real
+   - Validates spec in real-time
 
 2. **VS Code Extension**
    - "OpenAPI (Swagger) Editor" by 42Crunch
-   - Autocompletion e validação
+   - Autocompletion and validation
 
 3. **Stoplight Studio**
    - <https://stoplight.io/studio>
-   - Editor visual
+   - Visual editor
 
-### Validação de Specs
+### Spec Validation
 
 ```bash
 # Swagger CLI (Node.js)
 npm install -g @apidevtools/swagger-cli
 swagger-cli validate openapi.yml
 
-# Spectral (linting avançado)
+# Spectral (advanced linting)
 npm install -g @stoplight/spectral-cli
 spectral lint openapi.yml
 ```
 
-### Geração de Specs
+### Spec Generation
 
 ```bash
-# A partir de código existente
+# From existing code
 # Spring Boot (Java)
-# FastAPI (Python) gera automaticamente
-# Express (Node.js) com swagger-jsdoc
+# FastAPI (Python) generates automatically
+# Express (Node.js) with swagger-jsdoc
 ```
 
 ---
 
-## Limitações e Workarounds
+## Limitations and Workarounds
 
-### 1. Validação de Request
+### 1. Request Validation
 
-**Limitação:** Moclojer não valida requests contra o schema.
+**Limitation:** Moclojer does not validate requests against the schema.
 
 ```yaml
-# Schema define que 'name' é obrigatório
+# Schema defines 'name' as required
 requestBody:
   schema:
     required: ['name']
 ```
 
-**Moclojer aceita qualquer request**, mesmo sem `name`.
+**Moclojer accepts any request**, even without `name`.
 
-**Workaround:** Use ferramentas como Prism para validação real.
+**Workaround:** Use tools like Prism for real validation.
 
-### 2. Múltiplas Respostas por Status
+### 2. Multiple Responses by Status
 
-**Limitação:** Moclojer usa apenas um `example` por endpoint.
+**Limitation:** Moclojer uses only one `example` per endpoint.
 
-**Workaround:** Crie endpoints separados para cada status code.
+**Workaround:** Create separate endpoints for each status code.
 
-### 3. Callbacks e Links
+### 3. Callbacks and Links
 
-**Limitação:** OpenAPI 3.x suporta callbacks e links complexos, moclojer ignora.
+**Limitation:** OpenAPI 3.x supports complex callbacks and links, moclojer ignores them.
 
 ### 4. oneOf, anyOf, allOf
 
-**Limitação:** Schemas complexos não são processados.
+**Limitation:** Complex schemas are not processed.
 
-**Workaround:** Use `example` explícito.
+**Workaround:** Use explicit `example`.
 
 ---
 
-## OpenAPI vs YAML Nativo do Moclojer
+## OpenAPI vs Native Moclojer YAML
 
-| Aspecto | OpenAPI | Moclojer YAML |
+| Aspect | OpenAPI | Moclojer YAML |
 |---------|---------|---------------|
-| **Padrão** | Indústria (portável) | Específico moclojer |
-| **Verbosidade** | Mais verboso | Mais conciso |
-| **Ferramentas** | Muitas (editores, validadores) | Poucas |
-| **Documentação** | Spec = documentação | Apenas mock |
-| **Dinâmico** | Exemplos estáticos | Templates dinâmicos |
-| **Validação** | Schema validation (com ferramentas) | Nenhuma |
-| **Curva de aprendizado** | Maior (spec complexa) | Menor (YAML simples) |
+| **Standard** | Industry (portable) | Moclojer-specific |
+| **Verbosity** | More verbose | More concise |
+| **Tools** | Many (editors, validators) | Few |
+| **Documentation** | Spec = documentation | Mock only |
+| **Dynamic** | Static examples | Dynamic templates |
+| **Validation** | Schema validation (with tools) | None |
+| **Learning curve** | Higher (complex spec) | Lower (simple YAML) |
 
-**Quando usar OpenAPI:**
+**When to use OpenAPI:**
 
-- Já tem specs OpenAPI existentes
-- Quer gerar SDKs/documentação
-- Precisa de padronização entre equipes
-- API vai além de mocks (produção)
+- Already have existing OpenAPI specs
+- Want to generate SDKs/documentation
+- Need standardization across teams
+- API goes beyond mocks (production)
 
-**Quando usar YAML nativo:**
+**When to use native YAML:**
 
-- Quer respostas dinâmicas com templates
-- Precisa de mocks rápidos e simples
-- Não precisa de portabilidade
-- Quer configuração minimalista
+- Want dynamic responses with templates
+- Need quick and simple mocks
+- Don't need portability
+- Want minimalist configuration
 
 ---
 
-## Combinando OpenAPI + Moclojer YAML
+## Combining OpenAPI + Moclojer YAML
 
-Você pode usar **ambos** no mesmo projeto:
+You can use **both** in the same project:
 
 ```bash
-# Estrutura de arquivos
+# File structure
 project/
-├── openapi.yml        # Spec OpenAPI (endpoints principais)
-├── mocks-extras.yml   # Mocks customizados com templates
-└── mocks-errors.yml   # Simulações de erro
+├── openapi.yml        # OpenAPI spec (main endpoints)
+├── mocks-extras.yml   # Custom mocks with templates
+└── mocks-errors.yml   # Error simulations
 ```
 
-**Iniciar com múltiplos arquivos:**
+**Start with multiple files:**
 
 ```bash
-# Moclojer não suporta múltiplos configs diretamente
-# Workaround: combinar em um arquivo ou usar proxy
+# Moclojer doesn't support multiple configs directly
+# Workaround: combine in one file or use proxy
 ```
 
-**Alternativa:** Converter OpenAPI para moclojer YAML:
+**Alternative:** Convert OpenAPI to moclojer YAML:
 
 ```bash
-# Ferramentas de conversão (criar um script)
+# Conversion tools (create a script)
 # openapi.yml → moclojer.yml
 ```
 
 ---
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use `examples` em todos os endpoints**
+1. **Use `examples` in all endpoints**
 
    ```yaml
    responses:
      '200':
        content:
          application/json:
-           example:  # ← SEMPRE inclua!
+           example:  # ← ALWAYS include!
              id: 1
              name: "John"
    ```
 
-2. **Defina tipos de path parameters**
+2. **Define path parameter types**
 
    ```yaml
    parameters:
      - name: id
        in: path
        schema:
-         type: integer  # → Moclojer usa :id|int
+         type: integer  # → Moclojer uses :id|int
    ```
 
-3. **Organize com tags**
+3. **Organize with tags**
 
    ```yaml
    paths:
@@ -894,7 +894,7 @@ project/
          tags: [products]
    ```
 
-4. **Use `$ref` para reutilizar**
+4. **Use `$ref` to reuse**
 
    ```yaml
    components:
@@ -912,12 +912,12 @@ project/
                    $ref: '#/components/schemas/Error'
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Specs sem `examples`**
+1. **Specs without `examples`**
 
    ```yaml
-   # ❌ Moclojer não sabe o que retornar
+   # ❌ Moclojer doesn't know what to return
    responses:
      '200':
        content:
@@ -926,11 +926,11 @@ project/
              type: object
    ```
 
-2. **Caminhos complexos sem tipos**
+2. **Complex paths without types**
 
    ```yaml
-   # ⚠️ Sem tipo, aceita qualquer string
-   /users/{id}:  # Defina type: integer!
+   # ⚠️ Without type, accepts any string
+   /users/{id}:  # Define type: integer!
    ```
 
 ---
@@ -939,12 +939,12 @@ project/
 
 ### "OpenAPI spec not detected"
 
-**Causa:** Falta campo obrigatório `openapi`.
+**Cause:** Missing required `openapi` field.
 
-**Solução:**
+**Solution:**
 
 ```yaml
-# ✅ Adicione no topo
+# ✅ Add at the top
 openapi: 3.0.0
 info:
   title: My API
@@ -953,43 +953,43 @@ info:
 
 ### "No examples found"
 
-**Causa:** Spec sem `example` ou `examples`.
+**Cause:** Spec without `example` or `examples`.
 
-**Solução:** Adicione examples explícitos:
+**Solution:** Add explicit examples:
 
 ```yaml
 responses:
   '200':
     content:
       application/json:
-        example:  # ← Adicione isto!
+        example:  # ← Add this!
           data: []
 ```
 
 ### "Path parameters not working"
 
-**Causa:** Sintaxe incorreta.
+**Cause:** Incorrect syntax.
 
-**Solução:**
+**Solution:**
 
 ```yaml
-# ✅ OpenAPI usa {param}
+# ✅ OpenAPI uses {param}
 /users/{id}:
 
-# ❌ Não use :param no OpenAPI
+# ❌ Don't use :param in OpenAPI
 /users/:id:
 ```
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- **[Postman Format](postman-format.md)** - Usar Postman Collections
-- **[YAML Format](yaml-format.md)** - Sintaxe nativa do moclojer
-- **[Path Parameters](../parameters/path-parameters.md)** - Parâmetros dinâmicos
+- **[Postman Format](postman-format.md)** - Use Postman Collections
+- **[YAML Format](yaml-format.md)** - Native moclojer syntax
+- **[Path Parameters](../parameters/path-parameters.md)** - Dynamic parameters
 - **[HTTP Methods](../endpoints/http-methods.md)** - GET, POST, PUT, DELETE
 
-## Veja Também
+## See Also
 
 - [OpenAPI 3.1 Specification](https://spec.openapis.org/oas/v3.1.0)
 - [Swagger Editor](https://editor.swagger.io/)

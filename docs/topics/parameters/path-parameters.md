@@ -1,16 +1,16 @@
 ---
 description: >-
-  Aprenda a usar parâmetros de path (URL) no moclojer para criar endpoints
-  dinâmicos que respondem a diferentes valores de ID, slug e outros dados.
+  Learn how to use path parameters (URL) in moclojer to create dynamic
+  endpoints that respond to different ID, slug, and other data values.
 ---
 
-# Path Parameters (Parâmetros de URL)
+# Path Parameters (URL Parameters)
 
-Path parameters permitem que você crie endpoints dinâmicos que respondem a diferentes valores na URL. Por exemplo, um único endpoint `/users/:id` pode responder tanto a `/users/1` quanto a `/users/999`.
+Path parameters allow you to create dynamic endpoints that respond to different values in the URL. For example, a single endpoint `/users/:id` can respond to both `/users/1` and `/users/999`.
 
-## Por que usar Path Parameters?
+## Why Use Path Parameters?
 
-**Antes (sem path params):**
+**Before (without path params):**
 
 ```yaml
 - endpoint:
@@ -23,10 +23,10 @@ Path parameters permitem que você crie endpoints dinâmicos que respondem a dif
     response:
       body: '{"id": 2, "name": "Bob"}'
 
-# ... você precisaria de 1000 endpoints para 1000 usuários! 😱
+# ... you would need 1000 endpoints for 1000 users! 😱
 ```
 
-**Depois (com path params):**
+**After (with path params):**
 
 ```yaml
 - endpoint:
@@ -38,24 +38,24 @@ Path parameters permitem que você crie endpoints dinâmicos que respondem a dif
           "name": "User {{path-params.id}}"
         }
 
-# Um único endpoint responde a QUALQUER ID! 🎉
+# A single endpoint responds to ANY ID! 🎉
 ```
 
-## Sintaxe Básica
+## Basic Syntax
 
-### Declarando um Path Parameter
+### Declaring a Path Parameter
 
-Use dois-pontos (`:`) antes do nome do parâmetro:
+Use a colon (`:`) before the parameter name:
 
 ```yaml
 path: /users/:id
 ```
 
-**Formato:** `/caminho/:nomeDoParametro`
+**Format:** `/path/:parameterName`
 
-### Acessando o Valor
+### Accessing the Value
 
-Use templates `{{path-params.nomeDoParametro}}`:
+Use templates `{{path-params.parameterName}}`:
 
 ```yaml
 - endpoint:
@@ -66,29 +66,29 @@ Use templates `{{path-params.nomeDoParametro}}`:
       body: >
         {
           "id": "{{path-params.id}}",
-          "message": "Você solicitou o usuário {{path-params.id}}"
+          "message": "You requested user {{path-params.id}}"
         }
 ```
 
-**Teste:**
+**Test:**
 
 ```bash
 curl http://localhost:8000/users/123
-# Resposta: {"id": "123", "message": "Você solicitou o usuário 123"}
+# Response: {"id": "123", "message": "You requested user 123"}
 
 curl http://localhost:8000/users/alice
-# Resposta: {"id": "alice", "message": "Você solicitou o usuário alice"}
+# Response: {"id": "alice", "message": "You requested user alice"}
 ```
 
-## Tipos de Path Parameters
+## Path Parameter Types
 
-Moclojer suporta **validação de tipos** usando a sintaxe `:param|tipo`:
+Moclojer supports **type validation** using the `:param|type` syntax:
 
-### String (padrão)
+### String (default)
 
 ```yaml
-path: /users/:username        # Aceita qualquer string
-path: /users/:username|string # Explícito (mesmo comportamento)
+path: /users/:username        # Accepts any string
+path: /users/:username|string # Explicit (same behavior)
 ```
 
 **Matches:**
@@ -109,7 +109,7 @@ path: /users/:id|int
 - `/users/999` ✅
 - `/users/0` ✅
 
-**Não matches:**
+**Doesn't match:**
 
 - `/users/abc` ❌
 - `/users/1.5` ❌
@@ -125,7 +125,7 @@ path: /sessions/:sessionId|uuid
 
 - `/sessions/550e8400-e29b-41d4-a716-446655440000` ✅
 
-**Não matches:**
+**Doesn't match:**
 
 - `/sessions/abc123` ❌
 - `/sessions/123` ❌
@@ -141,14 +141,14 @@ path: /features/:enabled|boolean
 - `/features/true` ✅
 - `/features/false` ✅
 
-**Não matches:**
+**Doesn't match:**
 
 - `/features/yes` ❌
 - `/features/1` ❌
 
-## Múltiplos Path Parameters
+## Multiple Path Parameters
 
-Você pode ter vários parâmetros no mesmo path:
+You can have multiple parameters in the same path:
 
 ```yaml
 - endpoint:
@@ -168,13 +168,13 @@ Você pode ter vários parâmetros no mesmo path:
         }
 ```
 
-**Teste:**
+**Test:**
 
 ```bash
 curl http://localhost:8000/users/42/posts/7
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 {
@@ -188,9 +188,9 @@ curl http://localhost:8000/users/42/posts/7
 }
 ```
 
-## Exemplos Práticos
+## Practical Examples
 
-### Exemplo 1: API de Produtos
+### Example 1: Products API
 
 ```yaml
 - endpoint:
@@ -210,14 +210,14 @@ curl http://localhost:8000/users/42/posts/7
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl http://localhost:8000/products/101
 # {"id": 101, "name": "Product 101", "sku": "PRD-101", ...}
 ```
 
-### Exemplo 2: Blog com Slugs
+### Example 2: Blog with Slugs
 
 ```yaml
 - endpoint:
@@ -229,22 +229,22 @@ curl http://localhost:8000/products/101
         {
           "slug": "{{path-params.slug}}",
           "title": "{{path-params.slug}}",
-          "content": "Este é o conteúdo do post {{path-params.slug}}",
+          "content": "This is the content of post {{path-params.slug}}",
           "publishedAt": "2024-01-15T10:00:00Z"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-curl http://localhost:8000/blog/introducao-ao-moclojer
-curl http://localhost:8000/blog/path-parameters-guia
+curl http://localhost:8000/blog/introduction-to-moclojer
+curl http://localhost:8000/blog/path-parameters-guide
 ```
 
-### Exemplo 3: API RESTful Completa
+### Example 3: Complete RESTful API
 
 ```yaml
-# GET /users/:id - Obter usuário
+# GET /users/:id - Get user
 - endpoint:
     method: GET
     path: /users/:id|int
@@ -257,7 +257,7 @@ curl http://localhost:8000/blog/path-parameters-guia
           "email": "user{{path-params.id}}@example.com"
         }
 
-# PUT /users/:id - Atualizar usuário
+# PUT /users/:id - Update user
 - endpoint:
     method: PUT
     path: /users/:id|int
@@ -271,7 +271,7 @@ curl http://localhost:8000/blog/path-parameters-guia
           "updated": true
         }
 
-# DELETE /users/:id - Deletar usuário
+# DELETE /users/:id - Delete user
 - endpoint:
     method: DELETE
     path: /users/:id|int
@@ -279,7 +279,7 @@ curl http://localhost:8000/blog/path-parameters-guia
       status: 204   # No Content
 ```
 
-### Exemplo 4: Nested Resources
+### Example 4: Nested Resources
 
 ```yaml
 # GET /organizations/:orgId/teams/:teamId/members/:memberId
@@ -302,15 +302,15 @@ curl http://localhost:8000/blog/path-parameters-guia
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl http://localhost:8000/organizations/1/teams/5/members/42
 ```
 
-## Combinando com Outros Parâmetros
+## Combining with Other Parameters
 
-Path parameters funcionam junto com query params e body params:
+Path parameters work together with query params and body params:
 
 ```yaml
 - endpoint:
@@ -330,13 +330,13 @@ Path parameters funcionam junto com query params e body params:
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/users/42/posts?limit=10&offset=0"
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 {
@@ -347,35 +347,35 @@ curl "http://localhost:8000/users/42/posts?limit=10&offset=0"
 }
 ```
 
-## Precedência de Rotas
+## Route Precedence
 
-Quando múltiplos endpoints podem fazer match, moclojer usa a primeira ocorrência:
+When multiple endpoints can match, moclojer uses the first occurrence:
 
 ```yaml
-# ⚠️ Ordem importa!
+# ⚠️ Order matters!
 
-# 1. Rota específica (deve vir PRIMEIRO)
+# 1. Specific route (should come FIRST)
 - endpoint:
     path: /users/me
     response:
       body: '{"currentUser": true}'
 
-# 2. Rota genérica (deve vir DEPOIS)
+# 2. Generic route (should come AFTER)
 - endpoint:
     path: /users/:id
     response:
       body: '{"id": "{{path-params.id}}"}'
 ```
 
-**Como funciona:**
+**How it works:**
 
-- `GET /users/me` → match com endpoint #1 ✅
-- `GET /users/123` → match com endpoint #2 ✅
+- `GET /users/me` → matches endpoint #1 ✅
+- `GET /users/123` → matches endpoint #2 ✅
 
-**Se inverter a ordem:**
+**If you reverse the order:**
 
 ```yaml
-# ❌ PROBLEMA: rota genérica vem primeiro!
+# ❌ PROBLEM: generic route comes first!
 - endpoint:
     path: /users/:id
     response:
@@ -384,20 +384,20 @@ Quando múltiplos endpoints podem fazer match, moclojer usa a primeira ocorrênc
 - endpoint:
     path: /users/me
     response:
-      body: '{"currentUser": true}'  # NUNCA será usado!
+      body: '{"currentUser": true}'  # Will NEVER be used!
 ```
 
-**Resultado:**
+**Result:**
 
-- `GET /users/me` → match com endpoint #1 (`:id` = "me") ❌ Errado!
+- `GET /users/me` → matches endpoint #1 (`:id` = "me") ❌ Wrong!
 
-**Regra de ouro:** **Rotas específicas antes de rotas dinâmicas!**
+**Golden rule:** **Specific routes before dynamic routes!**
 
-## Validação e Erros
+## Validation and Errors
 
-### Tipo Incorreto
+### Incorrect Type
 
-Se você definir um tipo e o valor não corresponder:
+If you define a type and the value doesn't match:
 
 ```yaml
 - endpoint:
@@ -407,12 +407,12 @@ Se você definir um tipo e o valor não corresponder:
 **Requests:**
 
 - `/users/123` → ✅ Match
-- `/users/abc` → ❌ Não match (moclojer retorna 404)
+- `/users/abc` → ❌ No match (moclojer returns 404)
 
-### Criando Endpoints de Erro Específicos
+### Creating Specific Error Endpoints
 
 ```yaml
-# Endpoint específico para ID não encontrado
+# Specific endpoint for ID not found
 - endpoint:
     method: GET
     path: /users/999
@@ -424,7 +424,7 @@ Se você definir um tipo e o valor não corresponder:
           "message": "User with ID 999 does not exist"
         }
 
-# Endpoint genérico (deve vir depois)
+# Generic endpoint (should come after)
 - endpoint:
     method: GET
     path: /users/:id|int
@@ -437,132 +437,132 @@ Se você definir um tipo e o valor não corresponder:
         }
 ```
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use tipos explícitos quando possível**
-
-   ```yaml
-   path: /users/:id|int      # ✅ Valida que é número
-   ```
-
-2. **Nomes descritivos para parâmetros**
+1. **Use explicit types when possible**
 
    ```yaml
-   path: /posts/:postId      # ✅ Claro
-   path: /posts/:id          # ⚠️ Menos claro em nested resources
+   path: /users/:id|int      # ✅ Validates it's a number
    ```
 
-3. **Rotas específicas antes de dinâmicas**
+2. **Descriptive parameter names**
 
    ```yaml
-   - path: /users/me         # ✅ Primeiro
-   - path: /users/:id        # ✅ Depois
+   path: /posts/:postId      # ✅ Clear
+   path: /posts/:id          # ⚠️ Less clear in nested resources
    ```
 
-4. **Use o valor do parâmetro na resposta**
+3. **Specific routes before dynamic ones**
+
+   ```yaml
+   - path: /users/me         # ✅ First
+   - path: /users/:id        # ✅ After
+   ```
+
+4. **Use parameter value in response**
 
    ```yaml
    body: >
-     {"id": "{{path-params.id}}"}  # ✅ Response reflete o input
+     {"id": "{{path-params.id}}"}  # ✅ Response reflects the input
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Parâmetros sem tipo quando deveria ter**
+1. **Parameters without type when should have one**
 
    ```yaml
-   path: /users/:id          # ⚠️ Aceita "abc" como ID
-   path: /users/:id|int      # ✅ Só aceita números
+   path: /users/:id          # ⚠️ Accepts "abc" as ID
+   path: /users/:id|int      # ✅ Only accepts numbers
    ```
 
-2. **Nomes genéricos demais**
+2. **Names too generic**
 
    ```yaml
-   path: /api/:param1/:param2  # ❌ O que são?
-   path: /api/:userId/:postId  # ✅ Autodocumentado
+   path: /api/:param1/:param2  # ❌ What are these?
+   path: /api/:userId/:postId  # ✅ Self-documenting
    ```
 
-3. **Muitos níveis de aninhamento**
+3. **Too many nesting levels**
 
    ```yaml
-   path: /a/:b/c/:d/e/:f/g/:h  # ❌ Difícil de ler
-   path: /users/:id/posts      # ✅ Máximo 2-3 níveis
+   path: /a/:b/c/:d/e/:f/g/:h  # ❌ Hard to read
+   path: /users/:id/posts      # ✅ Maximum 2-3 levels
    ```
 
 ## Troubleshooting
 
-### Problema: "404 Not Found" quando deveria funcionar
+### Problem: "404 Not Found" when it should work
 
-**Possíveis causas:**
+**Possible causes:**
 
-1. **Tipo de parâmetro incorreto**
+1. **Incorrect parameter type**
 
    ```yaml
    path: /users/:id|int
-   # Tentando: /users/abc → 404 (correto, não é int)
+   # Trying: /users/abc → 404 (correct, not an int)
    ```
 
-2. **Ordem de rotas errada**
+2. **Wrong route order**
 
    ```yaml
-   # Se /users/:id está antes de /users/me
-   # /users/me vai fazer match com :id="me"
+   # If /users/:id is before /users/me
+   # /users/me will match with :id="me"
    ```
 
-3. **Método HTTP diferente**
+3. **Different HTTP method**
 
    ```yaml
    method: GET
    path: /users/:id
-   # POST /users/123 → 404 (método errado)
+   # POST /users/123 → 404 (wrong method)
    ```
 
-### Problema: Template `{{path-params.id}}` não é substituído
+### Problem: Template `{{path-params.id}}` is not replaced
 
-**Causa:** Nome do parâmetro não corresponde
+**Cause:** Parameter name doesn't match
 
 ```yaml
-# ❌ Errado
+# ❌ Wrong
 path: /users/:userId
-body: '{"id": "{{path-params.id}}"}'  # Deveria ser userId!
+body: '{"id": "{{path-params.id}}"}'  # Should be userId!
 
-# ✅ Correto
+# ✅ Correct
 path: /users/:userId
 body: '{"id": "{{path-params.userId}}"}'
 ```
 
-### Problema: Parâmetro vem como string quando queria número
+### Problem: Parameter comes as string when wanted number
 
-**Causa:** Template strings sempre retornam strings
+**Cause:** Template strings always return strings
 
 ```yaml
-# ❌ Retorna string "123"
+# ❌ Returns string "123"
 body: >
   {
     "id": "{{path-params.id}}"
   }
 
-# ✅ Retorna número 123
+# ✅ Returns number 123
 body: >
   {
     "id": {{path-params.id}}
   }
 ```
 
-**Nota:** Sem aspas = número, com aspas = string.
+**Note:** Without quotes = number, with quotes = string.
 
-## Próximos Passos
+## Next Steps
 
-Agora que você domina path parameters:
+Now that you've mastered path parameters:
 
-1. **[Query Parameters](query-parameters.md)** - Parâmetros na URL após `?`
-2. **[Body Parameters](body-parameters.md)** - Dados no corpo da requisição
-3. **[Template Variables](../templates/template-variables.md)** - Referência completa de templates
+1. **[Query Parameters](query-parameters.md)** - Parameters in the URL after `?`
+2. **[Body Parameters](body-parameters.md)** - Data in the request body
+3. **[Template Variables](../templates/template-variables.md)** - Complete template reference
 
-## Veja Também
+## See Also
 
 - [HTTP Methods](../endpoints/http-methods.md) - GET, POST, PUT, DELETE, etc.
-- [Path Patterns](../endpoints/path-patterns.md) - Padrões avançados de rotas
-- [Dynamic Responses Tutorial](../../getting-started/dynamic-responses.md) - Tutorial prático
+- [Path Patterns](../endpoints/path-patterns.md) - Advanced route patterns
+- [Dynamic Responses Tutorial](../../getting-started/dynamic-responses.md) - Practical tutorial

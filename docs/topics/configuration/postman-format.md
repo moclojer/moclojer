@@ -1,40 +1,40 @@
 ---
 description: >-
-  Use suas Postman Collections diretamente com moclojer. Importe Collections
-  v2.1, aproveite exemplos de response e crie mocks sem reescrever nada.
+  Use your Postman Collections directly with moclojer. Import Collections
+  v2.1, leverage response examples and create mocks without rewriting anything.
 ---
 
 # Postman Collection Format
 
-moclojer suporta **Postman Collection v2.1**, permitindo que você use suas collections existentes para gerar mocks automaticamente. Não precisa reescrever nada!
+moclojer supports **Postman Collection v2.1**, allowing you to use your existing collections to generate mocks automatically. No need to rewrite anything!
 
-## O Que São Postman Collections?
+## What Are Postman Collections?
 
-**Postman Collections** são arquivos JSON que agrupam requisições HTTP, muito usados para:
+**Postman Collections** are JSON files that group HTTP requests, widely used for:
 
-- Documentação de APIs
-- Testes de API
-- Compartilhamento entre equipe
-- **Mock servers** (como o moclojer!)
+- API documentation
+- API testing
+- Team sharing
+- **Mock servers** (like moclojer!)
 
-## Por Que Usar Postman Collections?
+## Why Use Postman Collections?
 
-✅ **Reutilização**: Use collections existentes do Postman
-✅ **Zero config**: moclojer converte automaticamente
-✅ **Exemplos prontos**: Responses já documentadas
-✅ **Fácil exportar**: Export direto do Postman App
-✅ **Padrão popular**: Time todo já usa Postman
+✅ **Reusability**: Use existing Postman collections
+✅ **Zero config**: moclojer converts automatically
+✅ **Ready examples**: Responses already documented
+✅ **Easy export**: Direct export from Postman App
+✅ **Popular standard**: Whole team already uses Postman
 
 ---
 
-## Suporte no moclojer
+## Support in moclojer
 
-### Versões Suportadas
+### Supported Versions
 
-- ✅ Postman Collection v2.1 (recomendado)
-- ⚠️ Postman Collection v2.0 (suporte parcial)
+- ✅ Postman Collection v2.1 (recommended)
+- ⚠️ Postman Collection v2.0 (partial support)
 
-### Formatos Aceitos
+### Accepted Formats
 
 - ✅ JSON (`.json`)
 
@@ -42,36 +42,36 @@ moclojer suporta **Postman Collection v2.1**, permitindo que você use suas coll
 
 ## Quick Start
 
-### 1. Exportar do Postman
+### 1. Export from Postman
 
-**No Postman App:**
+**In Postman App:**
 
-1. Abra sua Collection
-2. Clique em `...` (três pontos)
+1. Open your Collection
+2. Click `...` (three dots)
 3. **Export** → Collection v2.1
-4. Salve como `postman_collection.json`
+4. Save as `postman_collection.json`
 
-### 2. Rodar com moclojer
+### 2. Run with moclojer
 
 ```bash
 moclojer --config postman_collection.json
 ```
 
-### 3. Testar
+### 3. Test
 
 ```bash
-# moclojer cria endpoints baseados nas requests da collection
+# moclojer creates endpoints based on collection requests
 curl http://localhost:8000/users
 curl http://localhost:8000/users/1
 ```
 
-🎉 **Funcionou!** Sem escrever YAML!
+🎉 **It worked!** Without writing YAML!
 
 ---
 
-## Como moclojer Converte Postman Collections
+## How moclojer Converts Postman Collections
 
-### Estrutura Básica
+### Basic Structure
 
 **Postman Collection:**
 
@@ -107,7 +107,7 @@ curl http://localhost:8000/users/1
 }
 ```
 
-**moclojer converte para:**
+**moclojer converts to:**
 
 ```yaml
 - endpoint:
@@ -146,7 +146,7 @@ curl http://localhost:8000/users/1
 }
 ```
 
-**Convertido para:** `/users/:id`
+**Converted to:** `/users/:id`
 
 ### Query Parameters
 
@@ -167,7 +167,7 @@ curl http://localhost:8000/users/1
 }
 ```
 
-**moclojer aceita:** `/products?category=electronics&limit=10`
+**moclojer accepts:** `/products?category=electronics&limit=10`
 
 ### Request Body
 
@@ -191,7 +191,7 @@ curl http://localhost:8000/users/1
 }
 ```
 
-**moclojer usa o exemplo de response:**
+**moclojer uses the response example:**
 
 ```json
 {
@@ -205,7 +205,7 @@ curl http://localhost:8000/users/1
 
 ---
 
-## Exemplo Completo
+## Complete Example
 
 ### Postman Collection
 
@@ -331,27 +331,27 @@ curl http://localhost:8000/users/1
 }
 ```
 
-### Rodar
+### Run
 
 ```bash
 moclojer --config ecommerce_collection.json
 ```
 
-### Testar
+### Test
 
 ```bash
-# Listar produtos
+# List products
 curl "http://localhost:8000/products?category=electronics&limit=10"
 
-# Produto específico
+# Specific product
 curl http://localhost:8000/products/1
 
-# Criar produto
+# Create product
 curl -X POST http://localhost:8000/products \
   -H "Content-Type: application/json" \
   -d '{"name": "Mouse", "price": 29.99}'
 
-# Listar usuários
+# List users
 curl http://localhost:8000/users
 ```
 
@@ -359,7 +359,7 @@ curl http://localhost:8000/users
 
 ## Nested Folders
 
-Postman Collections suportam pastas aninhadas:
+Postman Collections support nested folders:
 
 ```json
 {
@@ -397,11 +397,11 @@ Postman Collections suportam pastas aninhadas:
 }
 ```
 
-**moclojer processa recursivamente** todos os níveis de folders.
+**moclojer processes recursively** all folder levels.
 
 ---
 
-## Variáveis
+## Variables
 
 ### Collection Variables
 
@@ -427,19 +427,19 @@ Postman Collections suportam pastas aninhadas:
 }
 ```
 
-**moclojer resolve variáveis automaticamente:**
+**moclojer resolves variables automatically:**
 
-- `{{baseUrl}}` → ignora (usa host do moclojer)
+- `{{baseUrl}}` → ignores (uses moclojer host)
 - `{{apiVersion}}` → `/v1/users`
 
 ### Environment Variables
 
-**Postman Environments** não são suportados diretamente.
+**Postman Environments** are not directly supported.
 
-**Workaround:** Exporte collection com valores já resolvidos:
+**Workaround:** Export collection with values already resolved:
 
-1. No Postman, selecione Environment
-2. Export Collection (valores serão inline)
+1. In Postman, select Environment
+2. Export Collection (values will be inline)
 
 ---
 
@@ -469,7 +469,7 @@ Postman Collections suportam pastas aninhadas:
 }
 ```
 
-**moclojer:** Headers de request são informacionais (não validados).
+**moclojer:** Request headers are informational (not validated).
 
 ### Response Headers
 
@@ -492,13 +492,13 @@ Postman Collections suportam pastas aninhadas:
 }
 ```
 
-**moclojer adiciona esses headers à resposta.**
+**moclojer adds these headers to the response.**
 
 ---
 
-## Múltiplas Responses (Examples)
+## Multiple Responses (Examples)
 
-Postman permite múltiplos exemplos por request:
+Postman allows multiple examples per request:
 
 ```json
 {
@@ -527,9 +527,9 @@ Postman permite múltiplos exemplos por request:
 }
 ```
 
-**moclojer usa o primeiro exemplo** (geralmente 200 OK).
+**moclojer uses the first example** (usually 200 OK).
 
-**Para simular erros:** Crie requests separadas
+**To simulate errors:** Create separate requests
 
 ```json
 {
@@ -548,9 +548,9 @@ Postman permite múltiplos exemplos por request:
 
 ---
 
-## Scripts e Tests
+## Scripts and Tests
 
-Postman Collections podem ter scripts Pre-request e Tests:
+Postman Collections can have Pre-request and Test scripts:
 
 ```json
 {
@@ -577,7 +577,7 @@ Postman Collections podem ter scripts Pre-request e Tests:
 }
 ```
 
-**moclojer ignora scripts.** Eles são para execução no Postman, não mock.
+**moclojer ignores scripts.** They are for execution in Postman, not mock.
 
 ---
 
@@ -599,7 +599,7 @@ Postman Collections podem ter scripts Pre-request e Tests:
 }
 ```
 
-**moclojer:** Auth é informacional (não valida tokens).
+**moclojer:** Auth is informational (doesn't validate tokens).
 
 ### API Key
 
@@ -627,13 +627,13 @@ Postman Collections podem ter scripts Pre-request e Tests:
 
 ---
 
-## Limitações e Workarounds
+## Limitations and Workarounds
 
-### 1. Múltiplas Responses
+### 1. Multiple Responses
 
-**Limitação:** moclojer usa apenas o primeiro `response`.
+**Limitation:** moclojer uses only the first `response`.
 
-**Workaround:** Crie requests separadas para cada cenário:
+**Workaround:** Create separate requests for each scenario:
 
 ```json
 // Request 1: Success
@@ -643,63 +643,63 @@ Postman Collections podem ter scripts Pre-request e Tests:
 {"name": "Get User - Not Found", "url": "/users/999", "response": [{"code": 404}]}
 ```
 
-### 2. Scripts Não Executados
+### 2. Scripts Not Executed
 
-**Limitação:** Pre-request e Test scripts são ignorados.
+**Limitation:** Pre-request and Test scripts are ignored.
 
-**Workaround:** Use scripts apenas no Postman, não para lógica de mock.
+**Workaround:** Use scripts only in Postman, not for mock logic.
 
 ### 3. Environment Variables
 
-**Limitação:** Environments não são carregados.
+**Limitation:** Environments are not loaded.
 
-**Workaround:** Exporte collection com valores inline.
+**Workaround:** Export collection with inline values.
 
-### 4. Validação de Request
+### 4. Request Validation
 
-**Limitação:** moclojer não valida se request body está correto.
+**Limitation:** moclojer does not validate if request body is correct.
 
-**Workaround:** Use ferramentas como Postman Runner ou Newman para validação.
+**Workaround:** Use tools like Postman Runner or Newman for validation.
 
 ---
 
-## Postman vs YAML nativo
+## Postman vs Native YAML
 
-| Aspecto | Postman Collection | moclojer YAML |
+| Aspect | Postman Collection | moclojer YAML |
 |---------|-------------------|---------------|
-| **Reutilização** | Collections existentes | Precisa criar do zero |
-| **Ferramentas** | Postman App completo | Editor de texto |
-| **Verbosidade** | JSON verboso | YAML conciso |
-| **Dinâmico** | Exemplos estáticos | Templates dinâmicos |
-| **Curva aprendizado** | Maior (Postman) | Menor (YAML) |
-| **Compartilhamento** | Fácil (workspace) | Arquivos Git |
+| **Reusability** | Existing collections | Need to create from scratch |
+| **Tools** | Complete Postman App | Text editor |
+| **Verbosity** | Verbose JSON | Concise YAML |
+| **Dynamic** | Static examples | Dynamic templates |
+| **Learning curve** | Higher (Postman) | Lower (YAML) |
+| **Sharing** | Easy (workspace) | Git files |
 
-**Quando usar Postman:**
+**When to use Postman:**
 
-- Já tem collections prontas
-- Time usa Postman diariamente
-- Quer interface visual
-- Precisa de documentação rica
+- Already have ready collections
+- Team uses Postman daily
+- Want visual interface
+- Need rich documentation
 
-**Quando usar YAML:**
+**When to use YAML:**
 
-- Quer templates dinâmicos (`{{path-params.id}}`)
-- Precisa de config minimalista
-- Versionar com Git
-- Automação em CI/CD
+- Want dynamic templates (`{{path-params.id}}`)
+- Need minimalist config
+- Version with Git
+- CI/CD automation
 
 ---
 
-## Convertendo Postman → moclojer YAML
+## Converting Postman → moclojer YAML
 
-Se quiser converter permanentemente:
+If you want to convert permanently:
 
-**Opção 1: Manual**
+**Option 1: Manual**
 
-1. Exportar Postman Collection
-2. Ler JSON e reescrever em YAML
+1. Export Postman Collection
+2. Read JSON and rewrite in YAML
 
-**Opção 2: Script (criar um)**
+**Option 2: Script (create one)**
 
 ```javascript
 // postman-to-moclojer.js
@@ -721,11 +721,11 @@ console.log(YAML.stringify(endpoints));
 
 ---
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use exemplos de response**
+1. **Use response examples**
 
    ```json
    {
@@ -733,20 +733,20 @@ console.log(YAML.stringify(endpoints));
        {
          "name": "Success Example",
          "code": 200,
-         "body": "..."  // ← Sempre inclua!
+         "body": "..."  // ← Always include!
        }
      ]
    }
    ```
 
-2. **Organize com folders**
+2. **Organize with folders**
 
    ```json
    {
      "item": [
        {
          "name": "Users",
-         "item": [...]  // Agrupe por recurso
+         "item": [...]  // Group by resource
        },
        {
          "name": "Products",
@@ -756,7 +756,7 @@ console.log(YAML.stringify(endpoints));
    }
    ```
 
-3. **Documente requests**
+3. **Document requests**
 
    ```json
    {
@@ -767,7 +767,7 @@ console.log(YAML.stringify(endpoints));
    }
    ```
 
-4. **Versionamento no nome**
+4. **Versioning in name**
 
    ```json
    {
@@ -778,31 +778,31 @@ console.log(YAML.stringify(endpoints));
    }
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Collections sem examples**
+1. **Collections without examples**
 
    ```json
-   // ❌ moclojer não sabe o que retornar
+   // ❌ moclojer doesn't know what to return
    {
      "response": []
    }
    ```
 
-2. **URLs absolutas hardcoded**
+2. **Hardcoded absolute URLs**
 
    ```json
-   // ❌ Use variáveis
+   // ❌ Use variables
    "url": "http://localhost:8000/users"
 
    // ✅ Use {{baseUrl}}
    "url": "{{baseUrl}}/users"
    ```
 
-3. **Dependência de scripts**
+3. **Script dependency**
 
    ```json
-   // ❌ Scripts não rodam em moclojer
+   // ❌ Scripts don't run in moclojer
    "event": [{"script": {"exec": ["..."]}}]
    ```
 
@@ -812,54 +812,54 @@ console.log(YAML.stringify(endpoints));
 
 ### "Invalid Postman Collection format"
 
-**Causa:** Versão não suportada ou JSON inválido.
+**Cause:** Unsupported version or invalid JSON.
 
-**Solução:**
+**Solution:**
 
 ```bash
-# Validar JSON
+# Validate JSON
 cat postman_collection.json | jq .
 
-# Verificar schema version
+# Check schema version
 cat postman_collection.json | jq '.info.schema'
-# Deve ser v2.1.0
+# Should be v2.1.0
 ```
 
 ### "No responses found"
 
-**Causa:** Requests sem exemplos de response.
+**Cause:** Requests without response examples.
 
-**Solução:** Adicionar examples no Postman:
+**Solution:** Add examples in Postman:
 
-1. Faça request no Postman
-2. Clique "Save Response" → "Save as Example"
+1. Make request in Postman
+2. Click "Save Response" → "Save as Example"
 3. Re-export Collection
 
 ### "Path variables not working"
 
-**Causa:** Sintaxe incorreta.
+**Cause:** Incorrect syntax.
 
-**Solução:** Use `:paramName` no Postman
+**Solution:** Use `:paramName` in Postman
 
 ```json
 {
   "url": {
-    "path": ["users", ":id"]  // ✅ Correto
+    "path": ["users", ":id"]  // ✅ Correct
   }
 }
 ```
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- **[OpenAPI Format](openapi-format.md)** - Importar specs OpenAPI
-- **[YAML Format](yaml-format.md)** - Sintaxe nativa do moclojer
-- **[Path Parameters](../parameters/path-parameters.md)** - Parâmetros dinâmicos
-- **[Your First Mock](../../getting-started/postman-collections.md)** - Tutorial inicial
+- **[OpenAPI Format](openapi-format.md)** - Import OpenAPI specs
+- **[YAML Format](yaml-format.md)** - Native moclojer syntax
+- **[Path Parameters](../parameters/path-parameters.md)** - Dynamic parameters
+- **[Your First Mock](../../getting-started/postman-collections.md)** - Initial tutorial
 
-## Veja Também
+## See Also
 
 - [Postman Collection Format v2.1](https://schema.postman.com/json/collection/v2.1.0/docs/index.html)
 - [Postman Documentation](https://learning.postman.com/docs/getting-started/introduction/)
-- [Configuration Spec](../../reference/configuration-spec.md) - Referência do moclojer
+- [Configuration Spec](../../reference/configuration-spec.md) - moclojer reference

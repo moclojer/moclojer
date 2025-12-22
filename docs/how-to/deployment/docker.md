@@ -1,38 +1,38 @@
 ---
 description: >-
-  Aprenda a rodar moclojer com Docker. Imagens oficiais, Docker Compose,
-  volumes, networks e deployment production-ready.
+  Learn how to run moclojer with Docker. Official images, Docker Compose,
+  volumes, networks and production-ready deployment.
 ---
 
 # Docker Deployment
 
-moclojer oferece imagens Docker oficiais para facilitar deploy e desenvolvimento. Este guia mostra como usar Docker e Docker Compose para rodar seu mock server.
+moclojer offers official Docker images to simplify deployment and development. This guide shows how to use Docker and Docker Compose to run your mock server.
 
-## Por Que Usar Docker?
+## Why Use Docker?
 
-✅ **Isolamento**: Ambiente consistente em qualquer máquina
-✅ **Portabilidade**: Funciona em dev, staging e produção
-✅ **Fácil deployment**: Pull, run, pronto!
-✅ **Versionamento**: Travar versões específicas
-✅ **CI/CD**: Integração fácil com pipelines
+✅ **Isolation**: Consistent environment on any machine
+✅ **Portability**: Works in dev, staging and production
+✅ **Easy deployment**: Pull, run, done!
+✅ **Versioning**: Lock specific versions
+✅ **CI/CD**: Easy integration with pipelines
 
 ---
 
-## Imagem Oficial
+## Official Image
 
-### Repositório
+### Repository
 
 ```bash
 ghcr.io/moclojer/moclojer:latest
 ```
 
-**Tags disponíveis:**
+**Available tags:**
 
-- `latest` - Última versão estável
-- `v0.4.0` - Versão específica
-- `main` - Build da branch main (bleeding edge)
+- `latest` - Latest stable version
+- `v0.4.0` - Specific version
+- `main` - Build from main branch (bleeding edge)
 
-### Verificar Versão
+### Check Version
 
 ```bash
 docker run --rm ghcr.io/moclojer/moclojer:latest --version
@@ -42,9 +42,9 @@ docker run --rm ghcr.io/moclojer/moclojer:latest --version
 
 ## Quick Start
 
-### 1. Criar Arquivo de Configuração
+### 1. Create Configuration File
 
-Crie `moclojer.yml`:
+Create `moclojer.yml`:
 
 ```yaml
 - endpoint:
@@ -70,7 +70,7 @@ Crie `moclojer.yml`:
         ]
 ```
 
-### 2. Rodar com Docker
+### 2. Run with Docker
 
 ```bash
 docker run -it \
@@ -80,22 +80,22 @@ docker run -it \
   --config /app/moclojer.yml
 ```
 
-### 3. Testar
+### 3. Test
 
 ```bash
 curl http://localhost:8000/hello
 curl http://localhost:8000/users
 ```
 
-🎉 **Funciona!**
+🎉 **It works!**
 
 ---
 
 ## Bind Mount vs Volume
 
-### Bind Mount (Desenvolvimento)
+### Bind Mount (Development)
 
-**Vantagens:** Edita arquivo local, mudanças refletem imediatamente
+**Advantages:** Edit local file, changes reflect immediately
 
 ```bash
 docker run -it \
@@ -105,21 +105,21 @@ docker run -it \
   --config /app/moclojer.yml --watch
 ```
 
-**Com `--watch`:** Recarrega automaticamente quando arquivo muda!
+**With `--watch`:** Automatically reloads when file changes!
 
-### Named Volume (Produção)
+### Named Volume (Production)
 
 ```bash
-# Criar volume
+# Create volume
 docker volume create moclojer-config
 
-# Copiar config para o volume
+# Copy config to volume
 docker run --rm \
   -v moclojer-config:/config \
   -v $(pwd)/moclojer.yml:/source/moclojer.yml \
   busybox cp /source/moclojer.yml /config/
 
-# Rodar moclojer
+# Run moclojer
 docker run -d \
   --name moclojer \
   -p 8000:8000 \
@@ -132,9 +132,9 @@ docker run -d \
 
 ## Docker Compose
 
-### Setup Básico
+### Basic Setup
 
-Crie `docker-compose.yml`:
+Create `docker-compose.yml`:
 
 ```yaml
 version: '3.8'
@@ -151,31 +151,31 @@ services:
     restart: unless-stopped
 ```
 
-**Rodar:**
+**Run:**
 
 ```bash
 docker-compose up
 ```
 
-**Rodar em background:**
+**Run in background:**
 
 ```bash
 docker-compose up -d
 ```
 
-**Ver logs:**
+**View logs:**
 
 ```bash
 docker-compose logs -f moclojer
 ```
 
-**Parar:**
+**Stop:**
 
 ```bash
 docker-compose down
 ```
 
-### Com Hot-Reload (Dev)
+### With Hot-Reload (Dev)
 
 ```yaml
 version: '3.8'
@@ -192,7 +192,7 @@ services:
       - MOCLOJER_ENABLE_CORS=true
 ```
 
-### Com Variáveis de Ambiente
+### With Environment Variables
 
 ```yaml
 version: '3.8'
@@ -210,7 +210,7 @@ services:
       - MOCLOJER_HOST=0.0.0.0
 ```
 
-**Criar `.env`:**
+**Create `.env`:**
 
 ```env
 MOCLOJER_PORT=3000
@@ -218,13 +218,13 @@ ENV=staging
 ENABLE_CORS=true
 ```
 
-**Rodar:**
+**Run:**
 
 ```bash
 docker-compose up
 ```
 
-### Com Health Check
+### With Health Check
 
 ```yaml
 version: '3.8'
@@ -245,7 +245,7 @@ services:
       start_period: 10s
 ```
 
-**Verificar status:**
+**Check status:**
 
 ```bash
 docker-compose ps
@@ -253,17 +253,17 @@ docker-compose ps
 
 ---
 
-## Múltiplos Ambientes
+## Multiple Environments
 
-### Estrutura de Arquivos
+### File Structure
 
 ```
 project/
 ├── docker-compose.yml
 ├── mocks/
-│   ├── dev.yml         # Ambiente de desenvolvimento
-│   ├── staging.yml     # Ambiente de staging
-│   └── prod.yml        # Ambiente de produção
+│   ├── dev.yml         # Development environment
+│   ├── staging.yml     # Staging environment
+│   └── prod.yml        # Production environment
 └── .env
 ```
 
@@ -309,7 +309,7 @@ PORT=8080
 MOCLOJER_VERSION=v0.4.0
 ```
 
-**Rodar:**
+**Run:**
 
 ```bash
 # Development
@@ -326,13 +326,13 @@ docker-compose --env-file .env.prod up -d
 
 ## Networking
 
-### Com Outros Serviços
+### With Other Services
 
 ```yaml
 version: '3.8'
 
 services:
-  # Sua aplicação
+  # Your application
   app:
     image: myapp:latest
     ports:
@@ -348,12 +348,12 @@ services:
     volumes:
       - ./mocks/api.yml:/app/moclojer.yml:ro
     command: --config /app/moclojer.yml
-    # Não expõe porta externa (apenas internal network)
+    # Doesn't expose external port (only internal network)
     expose:
       - "8000"
 ```
 
-**Aplicação acessa:** `http://moclojer:8000/api/users`
+**Application accesses:** `http://moclojer:8000/api/users`
 
 ### Custom Network
 
@@ -447,10 +447,10 @@ test:
     - npm test
 ```
 
-### Docker Compose em CI
+### Docker Compose in CI
 
 ```bash
-# Script de CI
+# CI script
 docker-compose -f docker-compose.ci.yml up -d
 docker-compose -f docker-compose.ci.yml run --rm tests
 docker-compose -f docker-compose.ci.yml down
@@ -482,7 +482,7 @@ services:
 
 ---
 
-## Produção
+## Production
 
 ### docker-compose.prod.yml
 
@@ -491,7 +491,7 @@ version: '3.8'
 
 services:
   moclojer:
-    image: ghcr.io/moclojer/moclojer:v0.4.0  # Versão fixada!
+    image: ghcr.io/moclojer/moclojer:v0.4.0  # Fixed version!
     container_name: moclojer-prod
     restart: always
     ports:
@@ -501,7 +501,7 @@ services:
       - moclojer-logs:/var/log/moclojer
     command: --config /app/moclojer.yml --host 0.0.0.0
     environment:
-      - MOCLOJER_ENABLE_CORS=false  # Desabilitar em prod
+      - MOCLOJER_ENABLE_CORS=false  # Disable in prod
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -531,7 +531,7 @@ volumes:
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-### Com Nginx Reverse Proxy
+### With Nginx Reverse Proxy
 
 ```yaml
 version: '3.8'
@@ -582,70 +582,70 @@ server {
 
 ## Troubleshooting
 
-### Container não inicia
+### Container won't start
 
-**Problema:** `docker: Error response from daemon: Conflict`
+**Problem:** `docker: Error response from daemon: Conflict`
 
-**Solução:** Remover container antigo
+**Solution:** Remove old container
 
 ```bash
 docker rm -f moclojer
 docker-compose down
 ```
 
-### Arquivo de config não encontrado
+### Config file not found
 
-**Problema:** `Config file not found`
+**Problem:** `Config file not found`
 
-**Solução:** Verificar mount
+**Solution:** Check mount
 
 ```bash
-# Listar arquivos dentro do container
+# List files inside container
 docker run --rm \
   -v $(pwd)/moclojer.yml:/app/moclojer.yml \
   ghcr.io/moclojer/moclojer:latest \
   ls -la /app/
 
-# Deve mostrar moclojer.yml
+# Should show moclojer.yml
 ```
 
-### Porta já em uso
+### Port already in use
 
-**Problema:** `Bind for 0.0.0.0:8000 failed: port is already allocated`
+**Problem:** `Bind for 0.0.0.0:8000 failed: port is already allocated`
 
-**Solução:** Mudar porta do host
+**Solution:** Change host port
 
 ```bash
 docker run -p 8001:8000 ...
-# Ou
-docker-compose -f docker-compose.yml up  # com ports: "8001:8000"
+# Or
+docker-compose -f docker-compose.yml up  # with ports: "8001:8000"
 ```
 
-### Hot-reload não funciona
+### Hot-reload not working
 
-**Problema:** Mudanças no arquivo não recarregam
+**Problem:** File changes don't reload
 
-**Causas:**
+**Causes:**
 
-1. Não passou `--watch`
-2. Usando imagem nativa (GraalVM) - não suporta watch
+1. Didn't pass `--watch`
+2. Using native image (GraalVM) - doesn't support watch
 
-**Solução:**
+**Solution:**
 
 ```bash
-# Verificar se é nativa
+# Check if it's native
 docker run --rm ghcr.io/moclojer/moclojer:latest --version
 
-# Se for nativa, usar JAR version (se disponível)
-# Ou reiniciar container manualmente
+# If native, use JAR version (if available)
+# Or restart container manually
 docker-compose restart moclojer
 ```
 
-### Permissões no volume
+### Volume permissions
 
-**Problema:** Permission denied
+**Problem:** Permission denied
 
-**Solução:** Ajustar permissões
+**Solution:** Adjust permissions
 
 ```bash
 chmod 644 moclojer.yml
@@ -653,18 +653,18 @@ chmod 644 moclojer.yml
 
 ---
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use versões fixadas em produção**
+1. **Use fixed versions in production**
 
    ```yaml
    image: ghcr.io/moclojer/moclojer:v0.4.0  # ✅
-   # image: ghcr.io/moclojer/moclojer:latest  # ❌ Em prod
+   # image: ghcr.io/moclojer/moclojer:latest  # ❌ In prod
    ```
 
-2. **Read-only volumes quando possível**
+2. **Read-only volumes when possible**
 
    ```yaml
    volumes:
@@ -688,7 +688,7 @@ chmod 644 moclojer.yml
          memory: 512M
    ```
 
-5. **Logging configurado**
+5. **Configure logging**
 
    ```yaml
    logging:
@@ -698,16 +698,16 @@ chmod 644 moclojer.yml
        max-file: "3"
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **`:latest` em produção**
-2. **Rodar como root** (se possível, use USER no Dockerfile)
-3. **Expor portas desnecessárias**
-4. **Volumes sem :ro quando não precisa escrever**
+1. **`:latest` in production**
+2. **Running as root** (if possible, use USER in Dockerfile)
+3. **Exposing unnecessary ports**
+4. **Volumes without :ro when write is not needed**
 
 ---
 
-## Exemplos Completos
+## Complete Examples
 
 ### E2E Testing Setup
 
@@ -716,7 +716,7 @@ chmod 644 moclojer.yml
 version: '3.8'
 
 services:
-  # Mock de API externa
+  # External API mock
   mock-api:
     image: ghcr.io/moclojer/moclojer:latest
     volumes:
@@ -724,7 +724,7 @@ services:
     expose:
       - "8000"
 
-  # Sua aplicação
+  # Your application
   app:
     build: .
     environment:
@@ -732,7 +732,7 @@ services:
     depends_on:
       - mock-api
 
-  # Testes
+  # Tests
   tests:
     image: cypress/included:latest
     depends_on:
@@ -744,7 +744,7 @@ services:
     command: cypress run
 ```
 
-**Rodar testes:**
+**Run tests:**
 
 ```bash
 docker-compose -f docker-compose.test.yml run --rm tests
@@ -752,15 +752,15 @@ docker-compose -f docker-compose.test.yml run --rm tests
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- **[Kubernetes Deployment](kubernetes.md)** - Deploy em K8s
-- **[Cloud Run](cloud-run.md)** - Deploy no Google Cloud
-- **[CI/CD Integration](../testing/integration-testing.md)** - Integração contínua
+- **[Kubernetes Deployment](kubernetes.md)** - Deploy to K8s
+- **[Cloud Run](cloud-run.md)** - Deploy to Google Cloud
+- **[CI/CD Integration](../testing/integration-testing.md)** - Continuous integration
 
-## Veja Também
+## See Also
 
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Reference](https://docs.docker.com/compose/compose-file/)
-- [CLI Reference](../../reference/cli-reference.md) - Flags e opções
-- [Troubleshooting Guide](../../reference/troubleshooting.md) - Problemas comuns
+- [CLI Reference](../../reference/cli-reference.md) - Flags and options
+- [Troubleshooting Guide](../../reference/troubleshooting.md) - Common issues

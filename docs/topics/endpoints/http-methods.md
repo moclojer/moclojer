@@ -1,66 +1,66 @@
 ---
 description: >-
-  Guia completo sobre métodos HTTP (GET, POST, PUT, DELETE, etc.) no moclojer.
-  Aprenda quando usar cada método e como implementar APIs RESTful corretas.
+  Complete guide about HTTP methods (GET, POST, PUT, DELETE, etc.) in moclojer.
+  Learn when to use each method and how to implement correct RESTful APIs.
 ---
 
-# HTTP Methods (Métodos HTTP)
+# HTTP Methods
 
-Métodos HTTP (também chamados de verbos HTTP) definem a ação que você quer realizar em um recurso. Escolher o método correto é fundamental para criar APIs RESTful semânticas e consistentes.
+HTTP methods (also called HTTP verbs) define the action you want to perform on a resource. Choosing the correct method is essential for creating semantic and consistent RESTful APIs.
 
-## Métodos Suportados
+## Supported Methods
 
-Moclojer suporta todos os métodos HTTP padrão:
+Moclojer supports all standard HTTP methods:
 
-| Método | Propósito | Idempotente¹ | Safe² |
+| Method | Purpose | Idempotent¹ | Safe² |
 |--------|-----------|--------------|-------|
-| **GET** | Ler dados | ✅ | ✅ |
-| **POST** | Criar dados | ❌ | ❌ |
-| **PUT** | Atualizar/Substituir | ✅ | ❌ |
-| **PATCH** | Atualizar parcialmente | ❌ | ❌ |
-| **DELETE** | Remover dados | ✅ | ❌ |
-| **HEAD** | Obter headers (sem body) | ✅ | ✅ |
-| **OPTIONS** | Descobrir métodos permitidos | ✅ | ✅ |
+| **GET** | Read data | ✅ | ✅ |
+| **POST** | Create data | ❌ | ❌ |
+| **PUT** | Update/Replace | ✅ | ❌ |
+| **PATCH** | Update partially | ❌ | ❌ |
+| **DELETE** | Remove data | ✅ | ❌ |
+| **HEAD** | Get headers (no body) | ✅ | ✅ |
+| **OPTIONS** | Discover allowed methods | ✅ | ✅ |
 
-¹ **Idempotente**: Múltiplas chamadas idênticas têm o mesmo efeito que uma única chamada
-² **Safe**: Não modifica dados (apenas leitura)
+¹ **Idempotent**: Multiple identical calls have the same effect as a single call
+² **Safe**: Doesn't modify data (read-only)
 
-## Sintaxe no Moclojer
+## Syntax in Moclojer
 
 ```yaml
 - endpoint:
-    method: GET      # Especifica o método HTTP
+    method: GET      # Specifies the HTTP method
     path: /users
     response:
       status: 200
       body: "..."
 ```
 
-**Padrão:** Se você omitir `method`, moclojer usa `GET`.
+**Default:** If you omit `method`, moclojer uses `GET`.
 
 ```yaml
-# Estes são equivalentes:
+# These are equivalent:
 - endpoint:
     path: /users
-    # method: GET é implícito
+    # method: GET is implicit
 
 - endpoint:
     method: GET
     path: /users
 ```
 
-## GET - Ler Dados
+## GET - Read Data
 
-**Propósito:** Recuperar dados sem modificá-los.
+**Purpose:** Retrieve data without modifying it.
 
-**Características:**
+**Characteristics:**
 
-- **Safe**: Não altera dados no servidor
-- **Idempotente**: Múltiplas chamadas retornam o mesmo resultado
-- **Cacheable**: Respostas podem ser cacheadas
-- **Sem body**: Não deveria ter corpo na requisição
+- **Safe**: Doesn't change data on server
+- **Idempotent**: Multiple calls return the same result
+- **Cacheable**: Responses can be cached
+- **No body**: Should not have body in request
 
-### Exemplo: Listar Recursos
+### Example: List Resources
 
 ```yaml
 - endpoint:
@@ -79,13 +79,13 @@ Moclojer suporta todos os métodos HTTP padrão:
         ]
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl http://localhost:8000/users
 ```
 
-### Exemplo: Obter Recurso Específico
+### Example: Get Specific Resource
 
 ```yaml
 - endpoint:
@@ -103,13 +103,13 @@ curl http://localhost:8000/users
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl http://localhost:8000/users/123
 ```
 
-### GET com Query Parameters
+### GET with Query Parameters
 
 ```yaml
 - endpoint:
@@ -127,42 +127,42 @@ curl http://localhost:8000/users/123
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl "http://localhost:8000/products?category=electronics&min_price=100"
 ```
 
-### Quando Usar GET
+### When to Use GET
 
-✅ **Use GET para:**
+✅ **Use GET for:**
 
-- Listar recursos (`GET /users`)
-- Obter detalhes (`GET /users/123`)
-- Buscar/filtrar (`GET /search?q=term`)
-- Exportar dados (`GET /reports/sales`)
+- List resources (`GET /users`)
+- Get details (`GET /users/123`)
+- Search/filter (`GET /search?q=term`)
+- Export data (`GET /reports/sales`)
 
-❌ **Não use GET para:**
+❌ **Don't use GET for:**
 
-- Criar recursos (use POST)
-- Atualizar recursos (use PUT/PATCH)
-- Deletar recursos (use DELETE)
-- Operações com efeitos colaterais
+- Create resources (use POST)
+- Update resources (use PUT/PATCH)
+- Delete resources (use DELETE)
+- Operations with side effects
 
 ---
 
-## POST - Criar Dados
+## POST - Create Data
 
-**Propósito:** Criar novos recursos ou processar dados.
+**Purpose:** Create new resources or process data.
 
-**Características:**
+**Characteristics:**
 
-- **Não idempotente**: Múltiplas chamadas criam múltiplos recursos
-- **Não safe**: Modifica o estado do servidor
-- **Com body**: Geralmente envia dados no corpo
-- **Retorna 201**: Status "Created" quando bem-sucedido
+- **Not idempotent**: Multiple calls create multiple resources
+- **Not safe**: Modifies server state
+- **With body**: Usually sends data in body
+- **Returns 201**: "Created" status when successful
 
-### Exemplo: Criar Recurso
+### Example: Create Resource
 
 ```yaml
 - endpoint:
@@ -182,7 +182,7 @@ curl "http://localhost:8000/products?category=electronics&min_price=100"
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl -X POST http://localhost:8000/users \
@@ -190,7 +190,7 @@ curl -X POST http://localhost:8000/users \
   -d '{"name": "John Doe", "email": "john@example.com"}'
 ```
 
-**Resposta:**
+**Response:**
 
 ```json
 {
@@ -201,7 +201,7 @@ curl -X POST http://localhost:8000/users \
 }
 ```
 
-### POST para Ações Customizadas
+### POST for Custom Actions
 
 ```yaml
 - endpoint:
@@ -218,42 +218,42 @@ curl -X POST http://localhost:8000/users \
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl -X POST http://localhost:8000/users/123/activate
 ```
 
-### Quando Usar POST
+### When to Use POST
 
-✅ **Use POST para:**
+✅ **Use POST for:**
 
-- Criar novos recursos (`POST /users`)
-- Upload de arquivos (`POST /upload`)
-- Ações customizadas (`POST /users/123/activate`)
-- Processamento complexo (`POST /calculate`)
-- Quando a operação não é idempotente
+- Create new resources (`POST /users`)
+- File uploads (`POST /upload`)
+- Custom actions (`POST /users/123/activate`)
+- Complex processing (`POST /calculate`)
+- When operation is not idempotent
 
-❌ **Não use POST para:**
+❌ **Don't use POST for:**
 
-- Leitura de dados (use GET)
-- Atualização completa (use PUT)
-- Remoção (use DELETE)
+- Reading data (use GET)
+- Complete update (use PUT)
+- Removal (use DELETE)
 
 ---
 
-## PUT - Atualizar/Substituir
+## PUT - Update/Replace
 
-**Propósito:** Substituir completamente um recurso existente.
+**Purpose:** Completely replace an existing resource.
 
-**Características:**
+**Characteristics:**
 
-- **Idempotente**: Múltiplas chamadas têm o mesmo efeito
-- **Substitui completamente**: Todos os campos devem ser enviados
-- **Requer ID**: Geralmente usado com `/resource/:id`
-- **Retorna 200**: Status "OK" quando atualizado
+- **Idempotent**: Multiple calls have the same effect
+- **Complete replacement**: All fields must be sent
+- **Requires ID**: Usually used with `/resource/:id`
+- **Returns 200**: "OK" status when updated
 
-### Exemplo: Atualizar Recurso Completo
+### Example: Update Complete Resource
 
 ```yaml
 - endpoint:
@@ -273,7 +273,7 @@ curl -X POST http://localhost:8000/users/123/activate
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl -X PUT http://localhost:8000/users/123 \
@@ -287,53 +287,53 @@ curl -X PUT http://localhost:8000/users/123 \
 
 ### PUT vs POST
 
-**PUT** é idempotente:
+**PUT** is idempotent:
 
 ```bash
-# Chamar 5 vezes resulta no mesmo estado
+# Calling 5 times results in the same state
 PUT /users/123 {"name": "John"}
 PUT /users/123 {"name": "John"}
 PUT /users/123 {"name": "John"}
-# Resultado: user 123 com name="John"
+# Result: user 123 with name="John"
 ```
 
-**POST** não é idempotente:
+**POST** is not idempotent:
 
 ```bash
-# Chamar 5 vezes cria 5 recursos
-POST /users {"name": "John"}  # Cria user 1
-POST /users {"name": "John"}  # Cria user 2
-POST /users {"name": "John"}  # Cria user 3
-# Resultado: 3 users diferentes
+# Calling 5 times creates 5 resources
+POST /users {"name": "John"}  # Creates user 1
+POST /users {"name": "John"}  # Creates user 2
+POST /users {"name": "John"}  # Creates user 3
+# Result: 3 different users
 ```
 
-### Quando Usar PUT
+### When to Use PUT
 
-✅ **Use PUT para:**
+✅ **Use PUT for:**
 
-- Atualizar recurso completo (`PUT /users/123`)
-- Substituir configurações (`PUT /settings`)
-- Operações idempotentes de atualização
+- Update complete resource (`PUT /users/123`)
+- Replace settings (`PUT /settings`)
+- Idempotent update operations
 
-❌ **Não use PUT para:**
+❌ **Don't use PUT for:**
 
-- Criar recursos (use POST)
-- Atualização parcial (use PATCH)
-- Coleções (`PUT /users` não faz sentido)
+- Create resources (use POST)
+- Partial update (use PATCH)
+- Collections (`PUT /users` doesn't make sense)
 
 ---
 
-## PATCH - Atualizar Parcialmente
+## PATCH - Update Partially
 
-**Propósito:** Atualizar apenas alguns campos de um recurso.
+**Purpose:** Update only some fields of a resource.
 
-**Características:**
+**Characteristics:**
 
-- **Parcial**: Envia apenas campos que mudaram
-- **Mais eficiente**: Menos dados trafegados
-- **Não necessariamente idempotente**: Depende da implementação
+- **Partial**: Send only fields that changed
+- **More efficient**: Less data transferred
+- **Not necessarily idempotent**: Depends on implementation
 
-### Exemplo: Atualização Parcial
+### Example: Partial Update
 
 ```yaml
 - endpoint:
@@ -354,10 +354,10 @@ POST /users {"name": "John"}  # Cria user 3
         }
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
-# Atualiza apenas o email (name continua o mesmo)
+# Update only email (name stays the same)
 curl -X PATCH http://localhost:8000/users/123 \
   -H "Content-Type: application/json" \
   -d '{"email": "newemail@example.com"}'
@@ -365,55 +365,55 @@ curl -X PATCH http://localhost:8000/users/123 \
 
 ### PATCH vs PUT
 
-| Aspecto | PUT | PATCH |
+| Aspect | PUT | PATCH |
 |---------|-----|-------|
-| **Escopo** | Substitui recurso completo | Atualiza campos específicos |
-| **Campos** | Todos os campos obrigatórios | Apenas campos que mudam |
-| **Idempotente** | Sim | Depende |
-| **Exemplo** | `PUT /users/1` (todos os dados) | `PATCH /users/1` (só email) |
+| **Scope** | Replace complete resource | Update specific fields |
+| **Fields** | All fields required | Only fields that change |
+| **Idempotent** | Yes | Depends |
+| **Example** | `PUT /users/1` (all data) | `PATCH /users/1` (only email) |
 
-### Quando Usar PATCH
+### When to Use PATCH
 
-✅ **Use PATCH para:**
+✅ **Use PATCH for:**
 
-- Atualizar poucos campos (`PATCH /users/123`)
-- Alternar flags (`PATCH /posts/1 {"published": true}`)
-- Operações de edição parcial
+- Update few fields (`PATCH /users/123`)
+- Toggle flags (`PATCH /posts/1 {"published": true}`)
+- Partial edit operations
 
-❌ **Não use PATCH para:**
+❌ **Don't use PATCH for:**
 
-- Substituir recurso completo (use PUT)
-- Criar recursos (use POST)
+- Replace complete resource (use PUT)
+- Create resources (use POST)
 
 ---
 
-## DELETE - Remover Dados
+## DELETE - Remove Data
 
-**Propósito:** Remover um recurso.
+**Purpose:** Remove a resource.
 
-**Características:**
+**Characteristics:**
 
-- **Idempotente**: Deletar múltiplas vezes = deletar uma vez
-- **Sem body na resposta**: Geralmente retorna 204 No Content
-- **Irreversível**: (em APIs reais, considere soft delete)
+- **Idempotent**: Deleting multiple times = deleting once
+- **No body in response**: Usually returns 204 No Content
+- **Irreversible**: (in real APIs, consider soft delete)
 
-### Exemplo: Deletar Recurso
+### Example: Delete Resource
 
 ```yaml
 - endpoint:
     method: DELETE
     path: /users/:id
     response:
-      status: 204    # No Content (sem body)
+      status: 204    # No Content (no body)
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl -X DELETE http://localhost:8000/users/123
 ```
 
-### DELETE com Confirmação
+### DELETE with Confirmation
 
 ```yaml
 - endpoint:
@@ -432,7 +432,7 @@ curl -X DELETE http://localhost:8000/users/123
         }
 ```
 
-### DELETE para Recurso Não Encontrado
+### DELETE for Resource Not Found
 
 ```yaml
 - endpoint:
@@ -447,33 +447,33 @@ curl -X DELETE http://localhost:8000/users/123
         }
 ```
 
-### Quando Usar DELETE
+### When to Use DELETE
 
-✅ **Use DELETE para:**
+✅ **Use DELETE for:**
 
-- Remover recursos (`DELETE /users/123`)
-- Limpar dados (`DELETE /cache`)
+- Remove resources (`DELETE /users/123`)
+- Clear data (`DELETE /cache`)
 - Logout (`DELETE /sessions/current`)
 
-❌ **Não use DELETE para:**
+❌ **Don't use DELETE for:**
 
-- Leitura (use GET)
-- Atualização (use PUT/PATCH)
-- Ações que não removem dados
+- Reading (use GET)
+- Updating (use PUT/PATCH)
+- Actions that don't remove data
 
 ---
 
-## HEAD - Obter Metadata
+## HEAD - Get Metadata
 
-**Propósito:** Obter headers de uma resposta sem o corpo.
+**Purpose:** Get response headers without the body.
 
-**Características:**
+**Characteristics:**
 
-- Idêntico ao GET, mas **sem corpo na resposta**
-- Útil para checar se recurso existe
-- Verificar tamanho do arquivo antes de baixar
+- Identical to GET, but **no body in response**
+- Useful for checking if resource exists
+- Check file size before downloading
 
-### Exemplo
+### Example
 
 ```yaml
 - endpoint:
@@ -485,36 +485,36 @@ curl -X DELETE http://localhost:8000/users/123
         Content-Type: application/json
         Content-Length: "256"
         Last-Modified: "2024-01-15T10:30:00Z"
-      # body é ignorado em HEAD
+      # body is ignored in HEAD
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl -I http://localhost:8000/users/123
-# Retorna apenas headers, sem body
+# Returns only headers, no body
 ```
 
-### Quando Usar HEAD
+### When to Use HEAD
 
-✅ **Use HEAD para:**
+✅ **Use HEAD for:**
 
-- Verificar se recurso existe
-- Checar `Last-Modified` ou `ETag`
-- Ver tamanho do arquivo (`Content-Length`)
+- Check if resource exists
+- Check `Last-Modified` or `ETag`
+- See file size (`Content-Length`)
 
 ---
 
-## OPTIONS - Descobrir Métodos Permitidos
+## OPTIONS - Discover Allowed Methods
 
-**Propósito:** Descobrir quais métodos HTTP são suportados.
+**Purpose:** Discover which HTTP methods are supported.
 
-**Características:**
+**Characteristics:**
 
-- Usado em **CORS preflight requests**
-- Retorna métodos permitidos em `Allow` header
+- Used in **CORS preflight requests**
+- Returns allowed methods in `Allow` header
 
-### Exemplo
+### Example
 
 ```yaml
 - endpoint:
@@ -528,7 +528,7 @@ curl -I http://localhost:8000/users/123
         Access-Control-Allow-Origin: "*"
 ```
 
-**Uso:**
+**Usage:**
 
 ```bash
 curl -X OPTIONS http://localhost:8000/users
@@ -536,7 +536,7 @@ curl -X OPTIONS http://localhost:8000/users
 
 ### CORS Preflight
 
-Browsers fazem OPTIONS automaticamente antes de requests "complexos":
+Browsers automatically make OPTIONS before "complex" requests:
 
 ```yaml
 - endpoint:
@@ -553,12 +553,12 @@ Browsers fazem OPTIONS automaticamente antes de requests "complexos":
 
 ---
 
-## Múltiplos Métodos, Mesmo Path
+## Multiple Methods, Same Path
 
-Você pode ter o mesmo path com métodos diferentes:
+You can have the same path with different methods:
 
 ```yaml
-# GET /users - Listar
+# GET /users - List
 - endpoint:
     method: GET
     path: /users
@@ -566,7 +566,7 @@ Você pode ter o mesmo path com métodos diferentes:
       status: 200
       body: '[{"id": 1}, {"id": 2}]'
 
-# POST /users - Criar
+# POST /users - Create
 - endpoint:
     method: POST
     path: /users
@@ -574,7 +574,7 @@ Você pode ter o mesmo path com métodos diferentes:
       status: 201
       body: '{"id": 3, "name": "{{json-params.name}}"}'
 
-# DELETE /users (limpar todos - raro!)
+# DELETE /users (clear all - rare!)
 - endpoint:
     method: DELETE
     path: /users
@@ -582,17 +582,17 @@ Você pode ter o mesmo path com métodos diferentes:
       status: 204
 ```
 
-**Resultado:**
+**Result:**
 
-- `GET /users` → lista users
-- `POST /users` → cria user
-- `DELETE /users` → remove todos (cuidado!)
+- `GET /users` → lists users
+- `POST /users` → creates user
+- `DELETE /users` → removes all (careful!)
 
 ---
 
-## API RESTful Completa
+## Complete RESTful API
 
-Exemplo de CRUD completo:
+Example of complete CRUD:
 
 ```yaml
 # CREATE - POST /users
@@ -610,7 +610,7 @@ Exemplo de CRUD completo:
           "email": "{{json-params.email}}"
         }
 
-# READ (lista) - GET /users
+# READ (list) - GET /users
 - endpoint:
     method: GET
     path: /users
@@ -634,7 +634,7 @@ Exemplo de CRUD completo:
           "name": "User {{path-params.id}}"
         }
 
-# UPDATE (completo) - PUT /users/:id
+# UPDATE (complete) - PUT /users/:id
 - endpoint:
     method: PUT
     path: /users/:id
@@ -647,7 +647,7 @@ Exemplo de CRUD completo:
           "email": "{{json-params.email}}"
         }
 
-# UPDATE (parcial) - PATCH /users/:id
+# UPDATE (partial) - PATCH /users/:id
 - endpoint:
     method: PATCH
     path: /users/:id
@@ -669,9 +669,9 @@ Exemplo de CRUD completo:
 
 ---
 
-## Status Codes por Método
+## Status Codes by Method
 
-| Método | Success | Error Comum |
+| Method | Success | Common Error |
 |--------|---------|-------------|
 | GET | 200 OK | 404 Not Found |
 | POST | 201 Created | 400 Bad Request, 422 Unprocessable |
@@ -683,32 +683,32 @@ Exemplo de CRUD completo:
 
 ---
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use o método semântico correto**
+1. **Use the correct semantic method**
 
    ```yaml
-   # ✅ Correto
-   GET /users        # Ler
-   POST /users       # Criar
-   PUT /users/:id    # Atualizar completo
-   PATCH /users/:id  # Atualizar parcial
-   DELETE /users/:id # Remover
+   # ✅ Correct
+   GET /users        # Read
+   POST /users       # Create
+   PUT /users/:id    # Update complete
+   PATCH /users/:id  # Update partial
+   DELETE /users/:id # Remove
    ```
 
-2. **GET e HEAD não devem modificar dados**
+2. **GET and HEAD should not modify data**
 
    ```yaml
-   # ❌ Errado - GET não deve deletar!
+   # ❌ Wrong - GET should not delete!
    GET /users/:id/delete
 
-   # ✅ Correto
+   # ✅ Correct
    DELETE /users/:id
    ```
 
-3. **Use status codes apropriados**
+3. **Use appropriate status codes**
 
    ```yaml
    POST: 201 Created
@@ -716,7 +716,7 @@ Exemplo de CRUD completo:
    DELETE: 204 No Content
    ```
 
-4. **Implemente OPTIONS para CORS**
+4. **Implement OPTIONS for CORS**
 
    ```yaml
    - endpoint:
@@ -728,23 +728,23 @@ Exemplo de CRUD completo:
            Access-Control-Allow-Methods: "*"
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **Métodos na URL**
+1. **Methods in URL**
 
    ```yaml
-   # ❌ Não faça
+   # ❌ Don't do this
    GET /users/create
    GET /users/:id/update
    GET /users/:id/delete
 
-   # ✅ Use os métodos HTTP
+   # ✅ Use HTTP methods
    POST /users
    PUT /users/:id
    DELETE /users/:id
    ```
 
-2. **POST para tudo**
+2. **POST for everything**
 
    ```yaml
    # ❌ Anti-pattern
@@ -760,13 +760,13 @@ Exemplo de CRUD completo:
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- **[Path Patterns](path-patterns.md)** - Padrões de rotas
-- **[Response Structure](response-structure.md)** - Estrutura de respostas
-- **[CRUD Operations How-to](../../how-to/patterns/crud-operations.md)** - CRUD completo
+- **[Path Patterns](path-patterns.md)** - Route patterns
+- **[Response Structure](response-structure.md)** - Response structure
+- **[CRUD Operations How-to](../../how-to/patterns/crud-operations.md)** - Complete CRUD
 
-## Veja Também
+## See Also
 
 - [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 - [REST API Best Practices](https://restfulapi.net/)

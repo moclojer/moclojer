@@ -1,35 +1,35 @@
 ---
 description: >-
-  Aprenda a implementar operações CRUD completas (Create, Read, Update, Delete)
-  com moclojer. Guia prático com exemplos testados.
+  Learn how to implement complete CRUD operations (Create, Read, Update, Delete)
+  with moclojer. Practical guide with tested examples.
 ---
 
 # CRUD Operations (Create, Read, Update, Delete)
 
-Este guia mostra como implementar uma API RESTful completa com todas as operações CRUD usando moclojer. Você vai aprender os padrões corretos para cada operação e como estruturar suas respostas.
+This guide shows how to implement a complete RESTful API with all CRUD operations using moclojer. You'll learn the correct patterns for each operation and how to structure your responses.
 
-## O Que São Operações CRUD?
+## What Are CRUD Operations?
 
-**CRUD** é um acrônimo para as quatro operações básicas de persistência de dados:
+**CRUD** is an acronym for the four basic data persistence operations:
 
-| Operação | Método HTTP | Ação | Exemplo |
+| Operation | HTTP Method | Action | Example |
 |----------|-------------|------|---------|
-| **C**reate | POST | Criar novo recurso | `POST /users` |
-| **R**ead | GET | Ler recurso(s) | `GET /users`, `GET /users/1` |
-| **U**pdate | PUT/PATCH | Atualizar recurso | `PUT /users/1`, `PATCH /users/1` |
-| **D**elete | DELETE | Remover recurso | `DELETE /users/1` |
+| **C**reate | POST | Create new resource | `POST /users` |
+| **R**ead | GET | Read resource(s) | `GET /users`, `GET /users/1` |
+| **U**pdate | PUT/PATCH | Update resource | `PUT /users/1`, `PATCH /users/1` |
+| **D**elete | DELETE | Remove resource | `DELETE /users/1` |
 
-## API Exemplo: Sistema de Tasks (Tarefas)
+## Example API: Task Management System
 
-Vamos criar uma API completa de gerenciamento de tarefas com todas as operações CRUD.
+Let's create a complete task management API with all CRUD operations.
 
-### Estrutura da Tarefa
+### Task Structure
 
 ```json
 {
   "id": 1,
-  "title": "Comprar leite",
-  "description": "Ir ao mercado e comprar 2L de leite",
+  "title": "Buy milk",
+  "description": "Go to the store and buy 2L of milk",
   "completed": false,
   "priority": "medium",
   "createdAt": "2024-01-15T10:00:00Z",
@@ -39,9 +39,9 @@ Vamos criar uma API completa de gerenciamento de tarefas com todas as operaçõe
 
 ---
 
-## CREATE - Criar Recursos
+## CREATE - Create Resources
 
-### POST - Criar Nova Tarefa
+### POST - Create New Task
 
 ```yaml
 - endpoint:
@@ -64,25 +64,25 @@ Vamos criar uma API completa de gerenciamento de tarefas com todas as operaçõe
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl -X POST http://localhost:8000/api/tasks \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Comprar leite",
-    "description": "Ir ao mercado",
+    "title": "Buy milk",
+    "description": "Go to the store",
     "priority": "medium"
   }'
 ```
 
-**Resposta (201 Created):**
+**Response (201 Created):**
 
 ```json
 {
   "id": 1,
-  "title": "Comprar leite",
-  "description": "Ir ao mercado",
+  "title": "Buy milk",
+  "description": "Go to the store",
   "completed": false,
   "priority": "medium",
   "createdAt": "2024-01-15T10:00:00Z",
@@ -90,10 +90,10 @@ curl -X POST http://localhost:8000/api/tasks \
 }
 ```
 
-### Validação de Campos Obrigatórios
+### Required Field Validation
 
 ```yaml
-# Endpoint específico para validação (deve vir ANTES do endpoint de sucesso)
+# Specific endpoint for validation (should come BEFORE the success endpoint)
 - endpoint:
     method: POST
     path: /api/tasks
@@ -115,13 +115,13 @@ curl -X POST http://localhost:8000/api/tasks \
         }
 ```
 
-**Nota:** Em produção real, você validaria o JSON recebido. No mock, você pode criar endpoints específicos para simular erros.
+**Note:** In real production, you would validate the received JSON. In mocks, you can create specific endpoints to simulate errors.
 
 ---
 
-## READ - Ler Recursos
+## READ - Read Resources
 
-### GET - Listar Todas as Tarefas
+### GET - List All Tasks
 
 ```yaml
 - endpoint:
@@ -137,24 +137,24 @@ curl -X POST http://localhost:8000/api/tasks \
           "data": [
             {
               "id": 1,
-              "title": "Comprar leite",
-              "description": "Ir ao mercado",
+              "title": "Buy milk",
+              "description": "Go to the store",
               "completed": false,
               "priority": "medium",
               "createdAt": "2024-01-15T10:00:00Z"
             },
             {
               "id": 2,
-              "title": "Estudar moclojer",
-              "description": "Ler a documentação completa",
+              "title": "Study moclojer",
+              "description": "Read complete documentation",
               "completed": true,
               "priority": "high",
               "createdAt": "2024-01-15T11:00:00Z"
             },
             {
               "id": 3,
-              "title": "Fazer exercícios",
-              "description": "30 minutos de corrida",
+              "title": "Exercise",
+              "description": "30 minutes of running",
               "completed": false,
               "priority": "low",
               "createdAt": "2024-01-15T12:00:00Z"
@@ -168,13 +168,13 @@ curl -X POST http://localhost:8000/api/tasks \
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl http://localhost:8000/api/tasks
 ```
 
-### GET com Paginação
+### GET with Pagination
 
 ```yaml
 - endpoint:
@@ -209,13 +209,13 @@ curl http://localhost:8000/api/tasks
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl "http://localhost:8000/api/tasks?page=1&limit=10"
 ```
 
-### GET - Obter Tarefa Específica
+### GET - Get Specific Task
 
 ```yaml
 - endpoint:
@@ -242,14 +242,14 @@ curl "http://localhost:8000/api/tasks?page=1&limit=10"
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl http://localhost:8000/api/tasks/1
 curl http://localhost:8000/api/tasks/42
 ```
 
-### GET - Tarefa Não Encontrada
+### GET - Task Not Found
 
 ```yaml
 - endpoint:
@@ -267,13 +267,13 @@ curl http://localhost:8000/api/tasks/42
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl http://localhost:8000/api/tasks/999
 ```
 
-### GET com Filtros
+### GET with Filters
 
 ```yaml
 - endpoint:
@@ -299,20 +299,20 @@ curl http://localhost:8000/api/tasks/999
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl "http://localhost:8000/api/tasks?completed=false&priority=high"
-curl "http://localhost:8000/api/tasks?q=comprar"
+curl "http://localhost:8000/api/tasks?q=buy"
 ```
 
 ---
 
-## UPDATE - Atualizar Recursos
+## UPDATE - Update Resources
 
-### PUT - Substituir Tarefa Completa
+### PUT - Replace Complete Task
 
-**PUT substitui o recurso inteiro** - todos os campos devem ser enviados.
+**PUT replaces the entire resource** - all fields must be sent.
 
 ```yaml
 - endpoint:
@@ -334,22 +334,22 @@ curl "http://localhost:8000/api/tasks?q=comprar"
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl -X PUT http://localhost:8000/api/tasks/1 \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Comprar leite e pão",
-    "description": "Ir ao mercado comprar 2L de leite e 1 pão francês",
+    "title": "Buy milk and bread",
+    "description": "Go to the store and buy 2L of milk and 1 French bread",
     "completed": false,
     "priority": "high"
   }'
 ```
 
-### PATCH - Atualizar Parcialmente
+### PATCH - Partial Update
 
-**PATCH atualiza apenas campos específicos** - envie só o que mudou.
+**PATCH updates only specific fields** - send only what changed.
 
 ```yaml
 - endpoint:
@@ -371,7 +371,7 @@ curl -X PUT http://localhost:8000/api/tasks/1 \
         }
 ```
 
-**Testar (atualizar apenas completed):**
+**Test (update only completed):**
 
 ```bash
 curl -X PATCH http://localhost:8000/api/tasks/1 \
@@ -379,18 +379,18 @@ curl -X PATCH http://localhost:8000/api/tasks/1 \
   -d '{"completed": true}'
 ```
 
-**Testar (atualizar título e prioridade):**
+**Test (update title and priority):**
 
 ```bash
 curl -X PATCH http://localhost:8000/api/tasks/1 \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Novo título",
+    "title": "New title",
     "priority": "urgent"
   }'
 ```
 
-### Marcar Tarefa como Completa (Ação Customizada)
+### Mark Task as Complete (Custom Action)
 
 ```yaml
 - endpoint:
@@ -409,13 +409,13 @@ curl -X PATCH http://localhost:8000/api/tasks/1 \
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl -X PATCH http://localhost:8000/api/tasks/1/complete
 ```
 
-### Erro de Validação em Atualização
+### Update Validation Error
 
 ```yaml
 - endpoint:
@@ -441,28 +441,28 @@ curl -X PATCH http://localhost:8000/api/tasks/1/complete
 
 ---
 
-## DELETE - Remover Recursos
+## DELETE - Remove Resources
 
-### DELETE - Remover Tarefa
+### DELETE - Remove Task
 
 ```yaml
 - endpoint:
     method: DELETE
     path: /api/tasks/:id|int
     response:
-      status: 204    # 204 No Content (sem body)
+      status: 204    # 204 No Content (no body)
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl -X DELETE http://localhost:8000/api/tasks/1
-# Resposta vazia com status 204
+# Empty response with status 204
 ```
 
-### DELETE com Confirmação (alternativa)
+### DELETE with Confirmation (alternative)
 
-Alguns preferem retornar 200 com mensagem:
+Some prefer to return 200 with message:
 
 ```yaml
 - endpoint:
@@ -481,13 +481,13 @@ Alguns preferem retornar 200 com mensagem:
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl -X DELETE http://localhost:8000/api/tasks/1
 ```
 
-### DELETE - Tarefa Não Encontrada
+### DELETE - Task Not Found
 
 ```yaml
 - endpoint:
@@ -505,7 +505,7 @@ curl -X DELETE http://localhost:8000/api/tasks/1
         }
 ```
 
-### DELETE em Massa (Limpar Completadas)
+### Bulk DELETE (Clear Completed)
 
 ```yaml
 - endpoint:
@@ -522,7 +522,7 @@ curl -X DELETE http://localhost:8000/api/tasks/1
         }
 ```
 
-**Testar:**
+**Test:**
 
 ```bash
 curl -X DELETE http://localhost:8000/api/tasks/completed
@@ -530,16 +530,16 @@ curl -X DELETE http://localhost:8000/api/tasks/completed
 
 ---
 
-## API Completa: Arquivo Único
+## Complete API: Single File
 
-Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
+Here's the complete `tasks-api.yml` file with all CRUD operations:
 
 ```yaml
 # =====================
 # CREATE (POST)
 # =====================
 
-# Criar nova tarefa
+# Create new task
 - endpoint:
     method: POST
     path: /api/tasks
@@ -563,7 +563,7 @@ Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
 # READ (GET)
 # =====================
 
-# Listar todas as tarefas
+# List all tasks
 - endpoint:
     method: GET
     path: /api/tasks
@@ -575,14 +575,14 @@ Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
       body: >
         {
           "data": [
-            {"id": 1, "title": "Comprar leite", "completed": false},
-            {"id": 2, "title": "Estudar moclojer", "completed": true},
-            {"id": 3, "title": "Fazer exercícios", "completed": false}
+            {"id": 1, "title": "Buy milk", "completed": false},
+            {"id": 2, "title": "Study moclojer", "completed": true},
+            {"id": 3, "title": "Exercise", "completed": false}
           ],
           "meta": {"total": 3, "page": 1, "perPage": 10}
         }
 
-# Obter tarefa não encontrada (específico antes de genérico!)
+# Get task not found (specific before generic!)
 - endpoint:
     method: GET
     path: /api/tasks/999
@@ -594,7 +594,7 @@ Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
           "message": "Task with ID 999 not found"
         }
 
-# Obter tarefa por ID
+# Get task by ID
 - endpoint:
     method: GET
     path: /api/tasks/:id|int
@@ -617,7 +617,7 @@ Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
 # UPDATE (PUT/PATCH)
 # =====================
 
-# Atualizar tarefa completa (PUT)
+# Update complete task (PUT)
 - endpoint:
     method: PUT
     path: /api/tasks/:id|int
@@ -635,7 +635,7 @@ Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
           "updatedAt": "2024-01-15T15:30:00Z"
         }
 
-# Atualizar parcialmente (PATCH)
+# Partial update (PATCH)
 - endpoint:
     method: PATCH
     path: /api/tasks/:id|int
@@ -654,7 +654,7 @@ Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
 # DELETE
 # =====================
 
-# Deletar tarefa não encontrada (específico antes!)
+# Delete task not found (specific first!)
 - endpoint:
     method: DELETE
     path: /api/tasks/999
@@ -663,7 +663,7 @@ Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
       body: >
         {"error": "Not Found", "message": "Task 999 not found"}
 
-# Deletar tarefa
+# Delete task
 - endpoint:
     method: DELETE
     path: /api/tasks/:id|int
@@ -673,50 +673,50 @@ Aqui está o arquivo `tasks-api.yml` completo com todas as operações CRUD:
 
 ---
 
-## Testando a API Completa
+## Testing the Complete API
 
-### Script de Teste Completo
+### Complete Test Script
 
 ```bash
 #!/bin/bash
 API_URL="http://localhost:8000/api/tasks"
 
-echo "=== CREATE - Criar tarefa ==="
+echo "=== CREATE - Create task ==="
 curl -X POST $API_URL \
   -H "Content-Type: application/json" \
-  -d '{"title": "Nova tarefa", "description": "Teste", "priority": "high"}'
+  -d '{"title": "New task", "description": "Test", "priority": "high"}'
 echo -e "\n"
 
-echo "=== READ - Listar todas ==="
+echo "=== READ - List all ==="
 curl $API_URL
 echo -e "\n"
 
-echo "=== READ - Obter específica ==="
+echo "=== READ - Get specific ==="
 curl $API_URL/1
 echo -e "\n"
 
-echo "=== UPDATE - Atualizar completa (PUT) ==="
+echo "=== UPDATE - Update complete (PUT) ==="
 curl -X PUT $API_URL/1 \
   -H "Content-Type: application/json" \
-  -d '{"title": "Atualizada", "description": "PUT test", "completed": false, "priority": "medium"}'
+  -d '{"title": "Updated", "description": "PUT test", "completed": false, "priority": "medium"}'
 echo -e "\n"
 
-echo "=== UPDATE - Atualizar parcial (PATCH) ==="
+echo "=== UPDATE - Partial update (PATCH) ==="
 curl -X PATCH $API_URL/1 \
   -H "Content-Type: application/json" \
   -d '{"completed": true}'
 echo -e "\n"
 
-echo "=== DELETE - Remover tarefa ==="
+echo "=== DELETE - Remove task ==="
 curl -X DELETE $API_URL/1
 echo -e "\n"
 
-echo "=== READ - Tarefa não encontrada ==="
+echo "=== READ - Task not found ==="
 curl $API_URL/999
 echo -e "\n"
 ```
 
-Salve como `test-crud.sh`, dê permissão e execute:
+Save as `test-crud.sh`, give permission and run:
 
 ```bash
 chmod +x test-crud.sh
@@ -725,35 +725,35 @@ chmod +x test-crud.sh
 
 ---
 
-## Boas Práticas
+## Best Practices
 
-### ✅ Faça
+### ✅ Do
 
-1. **Use status codes apropriados**
-   - `201 Created` para POST
-   - `200 OK` para GET/PUT/PATCH
-   - `204 No Content` para DELETE
-   - `404 Not Found` quando recurso não existe
-   - `422 Unprocessable Entity` para erros de validação
+1. **Use appropriate status codes**
+   - `201 Created` for POST
+   - `200 OK` for GET/PUT/PATCH
+   - `204 No Content` for DELETE
+   - `404 Not Found` when resource doesn't exist
+   - `422 Unprocessable Entity` for validation errors
 
-2. **Retorne o recurso criado/atualizado**
+2. **Return the created/updated resource**
 
    ```json
    // POST response
    {
      "id": 1,
-     "...": "dados completos do recurso criado"
+     "...": "complete data of created resource"
    }
    ```
 
-3. **Use rotas específicas antes de genéricas**
+3. **Use specific routes before generic ones**
 
    ```yaml
-   - path: /api/tasks/999  # 404 específico
-   - path: /api/tasks/:id  # genérico (vem depois!)
+   - path: /api/tasks/999  # specific 404
+   - path: /api/tasks/:id  # generic (comes after!)
    ```
 
-4. **Inclua metadata em listas**
+4. **Include metadata in lists**
 
    ```json
    {
@@ -762,57 +762,57 @@ chmod +x test-crud.sh
    }
    ```
 
-5. **Header `Location` em recursos criados**
+5. **`Location` header on created resources**
 
    ```yaml
    headers:
      Location: /api/tasks/1
    ```
 
-### ❌ Evite
+### ❌ Avoid
 
-1. **DELETE retornando 200 com recurso deletado**
+1. **DELETE returning 200 with deleted resource**
 
    ```yaml
-   # ❌ Prefira 204 No Content
+   # ❌ Prefer 204 No Content
    DELETE /tasks/1 → 200 {"id": 1, "deleted": true}
 
-   # ✅ Padrão REST
-   DELETE /tasks/1 → 204 (sem body)
+   # ✅ REST standard
+   DELETE /tasks/1 → 204 (no body)
    ```
 
-2. **GET modificando dados**
+2. **GET modifying data**
 
    ```yaml
-   # ❌ NUNCA!
+   # ❌ NEVER!
    GET /tasks/1/delete
 
    # ✅ Use DELETE
    DELETE /tasks/1
    ```
 
-3. **Campos ID no body de POST**
+3. **ID fields in POST body**
 
    ```json
-   // ❌ Cliente não deve enviar ID
+   // ❌ Client should not send ID
    POST /tasks {"id": 123, "title": "..."}
 
-   // ✅ Servidor gera o ID
+   // ✅ Server generates ID
    POST /tasks {"title": "..."}
    // Response: {"id": 1, "title": "..."}
    ```
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- **[Pagination How-to](pagination.md)** - Implementar paginação
-- **[Authentication Mock](authentication-mock.md)** - Simular autenticação
-- **[Error Handling](error-handling.md)** - Padrões de erros
-- **[HTTP Methods](../../topics/endpoints/http-methods.md)** - Referência de métodos
+- **[Pagination How-to](pagination.md)** - Implement pagination
+- **[Authentication Mock](authentication-mock.md)** - Simulate authentication
+- **[Error Handling](error-handling.md)** - Error patterns
+- **[HTTP Methods](../../topics/endpoints/http-methods.md)** - Methods reference
 
-## Veja Também
+## See Also
 
-- [Your First Mock](../../getting-started/your-first-mock.md) - Tutorial inicial
-- [Dynamic Responses](../../getting-started/dynamic-responses.md) - Respostas dinâmicas
-- [REST API Example](../../examples/rest-api/basic-crud.md) - Exemplo completo
+- [Your First Mock](../../getting-started/your-first-mock.md) - Initial tutorial
+- [Dynamic Responses](../../getting-started/dynamic-responses.md) - Dynamic responses
+- [REST API Example](../../examples/rest-api/basic-crud.md) - Complete example

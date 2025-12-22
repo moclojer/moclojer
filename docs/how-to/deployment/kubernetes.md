@@ -37,7 +37,7 @@ data:
           status: 200
           body: >
             {"status": "ok", "service": "moclojer"}
-    
+
     - endpoint:
         method: GET
         path: /api/users
